@@ -1,0 +1,12 @@
+Package: rTrawl
+Type: Package
+Title: What the package does (short line)
+Version: 1.0
+Date: 2018-03-12
+Author: Dries Cornilly
+Maintainer: Dries Cornilly <driescornilly@gmail.com>
+Description: More about what it does (maybe more than one line)
+License: What license is it under?
+Imports: Rcpp (>= 0.12.15)
+LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 6.0.1

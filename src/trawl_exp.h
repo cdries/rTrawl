@@ -11,4 +11,6 @@ arma::vec survival_EXP(arma::vec unif_seed, double lambda, double Tmax, double b
 
 arma::vec leb_AtA_EXP(arma::vec h, double lambda);
 
+arma::mat d_leb_AtA_EXP(arma::vec h, double lambda);
+
 #endif

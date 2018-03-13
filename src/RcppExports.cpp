@@ -6,6 +6,19 @@
 
 using namespace Rcpp;
 
+// levy_alpha2nu
+arma::mat levy_alpha2nu(arma::mat levy_alpha, double b, double beta_0);
+RcppExport SEXP _rTrawl_levy_alpha2nu(SEXP levy_alphaSEXP, SEXP bSEXP, SEXP beta_0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type levy_alpha(levy_alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_0(beta_0SEXP);
+    rcpp_result_gen = Rcpp::wrap(levy_alpha2nu(levy_alpha, b, beta_0));
+    return rcpp_result_gen;
+END_RCPP
+}
 // levy_alpha_beta
 List levy_alpha_beta(arma::vec p_grid, double T0, double TT);
 RcppExport SEXP _rTrawl_levy_alpha_beta(SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP) {
@@ -122,8 +135,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vs_SY
+List vs_SY(arma::vec h, std::string trawl, arma::vec trawl_par, double beta_0, arma::mat levy_alpha, bool include_cum1, double b, bool include_b);
+RcppExport SEXP _rTrawl_vs_SY(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP beta_0SEXP, SEXP levy_alphaSEXP, SEXP include_cum1SEXP, SEXP bSEXP, SEXP include_bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_0(beta_0SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type levy_alpha(levy_alphaSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_cum1(include_cum1SEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_b(include_bSEXP);
+    rcpp_result_gen = Rcpp::wrap(vs_SY(h, trawl, trawl_par, beta_0, levy_alpha, include_cum1, b, include_b));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},
     {"_rTrawl_simulate_trawl_uv", (DL_FUNC) &_rTrawl_simulate_trawl_uv, 8},
     {"_rTrawl_simulate_trawl_mv", (DL_FUNC) &_rTrawl_simulate_trawl_mv, 9},
@@ -132,6 +164,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_trawl_bounds", (DL_FUNC) &_rTrawl_trawl_bounds, 1},
     {"_rTrawl_trawl_x0", (DL_FUNC) &_rTrawl_trawl_x0, 1},
     {"_rTrawl_vs_sample", (DL_FUNC) &_rTrawl_vs_sample, 6},
+    {"_rTrawl_vs_SY", (DL_FUNC) &_rTrawl_vs_SY, 8},
     {NULL, NULL, 0}
 };
 

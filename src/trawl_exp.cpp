@@ -19,3 +19,10 @@ arma::vec leb_AtA_EXP(arma::vec h, double lambda) {
 
   return leb;
 }
+
+arma::mat d_leb_AtA_EXP(arma::vec h, double lambda) {
+  
+  arma::mat d_leb = -exp(-lambda * h) % (lambda * h + 1.0) / (lambda * lambda);
+  
+  return d_leb;
+}

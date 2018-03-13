@@ -20,6 +20,8 @@ List trawl_bounds(std::string trawl);
 
 arma::vec trawl_x0(std::string trawl);
 
-arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par, double b);
+arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par);
+
+arma::mat d_leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par);
 
 #endif

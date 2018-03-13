@@ -99,13 +99,13 @@ arma::vec trawl_x0(std::string trawl) {
   return x0;
 }
 
-arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par, double b) {
+arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
   
   arma::vec leb;
   if (trawl == "exp") {
-    leb = (1.0 - b) * leb_AtA_EXP(h, trawl_par(0));
-    // } else if (trawl == "gamma") {
-    //   leb = (1.0 - b) * leb_AtA_GAMMA(h, trawl_par(0), trawl_par(1));
+    leb = leb_AtA_EXP(h, trawl_par(0));
+  } else if (trawl == "gamma") {
+    leb = leb_AtA_GAMMA(h, trawl_par(0), trawl_par(1));
     // } else if (trawl == "invGauss") {
     //   leb = (1.0 - b) * leb_AtA_INVGAUSS(h, trawl_par(0), trawl_par(1));
     // } else if (trawl == "gig") {
@@ -115,4 +115,22 @@ arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par, double b)
   }
   
   return leb;
+}
+
+arma::mat d_leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
+  
+  arma::mat d_leb;
+  if (trawl == "exp") {
+    d_leb = d_leb_AtA_EXP(h, trawl_par(0));
+  } else if (trawl == "gamma") {
+    d_leb = d_leb_AtA_GAMMA(h, trawl_par(0), trawl_par(1));
+    // } else if (trawl == "invGauss") {
+    //   leb = (1.0 - b) * leb_AtA_INVGAUSS(h, trawl_par(0), trawl_par(1));
+    // } else if (trawl == "gig") {
+    //   leb = (1.0 - b) * leb_AtA_GIG(h, trawl_par(0), trawl_par(1), trawl_par(2));
+  } else {
+    stop("provide a valid trawl");
+  }
+  
+  return d_leb;
 }

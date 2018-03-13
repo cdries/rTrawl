@@ -96,7 +96,7 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
   }
 
   # objective function
-  obj <- function(theta) { # TODO
+  obj <- function(theta) {
 
     trawl_par <- theta[1:n_trawl]
     if (include_b) b <- theta[n_trawl + 1] else b <- 0
@@ -113,22 +113,18 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
     return (list("objective" = val, "gradient" = grad))
   }
 
-  # optimization - TODO
-  optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 10000, print_level = 0,
-                      check_derivatives = FALSE)
+  # optimization
+  optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 10000, 
+                      print_level = 3, check_derivatives = FALSE)
   sol <- nloptr::nloptr(x0 = x0, eval_f = obj, lb = lb, ub = ub, opts = optscontrol)
 
   # return object
   trawl_par <- sol$solution[1:n_trawl]
   if (include_b) b <- sol$solution[n_trawl + 1] else b <- 0
-  if (levy_seed == "nonpar") {
-    levy_par <- levy_alpha2nu(levy_alpha, b, beta_0)
-  } else {
-    levy_par <- sol$solution[(n_trawl + include_b + 1):(n_theta - include_xi)]
-  }
+  levy_par <- levy_alpha2nu(levy_alpha, b, beta_0)
 
-  return (list("trawl" = trawl, "trawl_par" = trawl_par, "b" = b, "xi" = xi,
-               "levy_seed" = levy_seed, "levy_par" = levy_par))
+  return (list("trawl" = trawl, "trawl_par" = trawl_par, "b" = b,
+               "levy_seed" = "nonpar", "levy_par" = levy_par))
 }
 
 

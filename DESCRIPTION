@@ -7,6 +7,6 @@ Author: Dries Cornilly
 Maintainer: Dries Cornilly <driescornilly@gmail.com>
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
-Imports: Rcpp (>= 0.12.15)
+Depends: Rcpp (>= 0.12.15)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1

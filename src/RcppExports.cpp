@@ -6,55 +6,27 @@
 
 using namespace Rcpp;
 
-// rcpparma_hello_world
-arma::mat rcpparma_hello_world();
-RcppExport SEXP _rTrawl_rcpparma_hello_world() {
+// simulate_trawl_uv
+List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string trawl, arma::vec trawl_par, double T0, double TT, double observed_freq, double b);
+RcppExport SEXP _rTrawl_simulate_trawl_uv(SEXP levy_seedSEXP, SEXP levy_parSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP observed_freqSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(rcpparma_hello_world());
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_outerproduct
-arma::mat rcpparma_outerproduct(const arma::colvec& x);
-RcppExport SEXP _rTrawl_rcpparma_outerproduct(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_outerproduct(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_innerproduct
-double rcpparma_innerproduct(const arma::colvec& x);
-RcppExport SEXP _rTrawl_rcpparma_innerproduct(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_innerproduct(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rcpparma_bothproducts
-Rcpp::List rcpparma_bothproducts(const arma::colvec& x);
-RcppExport SEXP _rTrawl_rcpparma_bothproducts(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::colvec& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(rcpparma_bothproducts(x));
+    Rcpp::traits::input_parameter< std::string >::type levy_seed(levy_seedSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type levy_par(levy_parSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< double >::type T0(T0SEXP);
+    Rcpp::traits::input_parameter< double >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< double >::type observed_freq(observed_freqSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(simulate_trawl_uv(levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rTrawl_rcpparma_hello_world", (DL_FUNC) &_rTrawl_rcpparma_hello_world, 0},
-    {"_rTrawl_rcpparma_outerproduct", (DL_FUNC) &_rTrawl_rcpparma_outerproduct, 1},
-    {"_rTrawl_rcpparma_innerproduct", (DL_FUNC) &_rTrawl_rcpparma_innerproduct, 1},
-    {"_rTrawl_rcpparma_bothproducts", (DL_FUNC) &_rTrawl_rcpparma_bothproducts, 1},
+    {"_rTrawl_simulate_trawl_uv", (DL_FUNC) &_rTrawl_simulate_trawl_uv, 8},
     {NULL, NULL, 0}
 };
 

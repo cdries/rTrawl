@@ -1,0 +1,16 @@
+#ifndef LEVY_WRAP_H
+#define LEVY_WRAP_H
+
+#include "RcppArmadillo.h"
+#include "levy_poisson.h"
+#include "levy_skellam.h"
+#include "levy_negbin.h"
+
+// [[Rcpp::depends(RcppArmadillo)]]
+using namespace Rcpp;
+
+double levy_intens(std::string levy_seed, arma::vec levy_par);
+
+arma::vec levy_rjump(int n, std::string levy_seed, arma::vec levy_par);
+
+#endif

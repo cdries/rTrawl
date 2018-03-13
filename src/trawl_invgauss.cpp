@@ -40,3 +40,26 @@ arma::vec survival_INVGAUSS(arma::vec unif_seed, double gamma, double delta,
   
   return st;
 }
+
+arma::vec leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
+  
+  arma::vec leb = gamma / delta *
+    exp(delta * gamma * (1.0 - arma::sqrt(1.0 + 2.0 * h / (gamma * gamma))));
+  
+  return leb;
+}
+
+arma::mat d_leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
+  
+  double gamma2 = gamma * gamma;
+  arma::vec sqrtdg = arma::sqrt(1.0 + 2.0 * h / gamma2);
+  arma::vec sqrtdg_inv = arma::pow(sqrtdg, -1.0);
+  arma::vec dg1s = delta * gamma * (1.0 - sqrtdg);
+  
+  arma::mat d_leb = arma::zeros(h.n_elem, 2);
+  d_leb.col(0) = exp(dg1s) / delta % 
+    (1.0 + gamma * delta * (1.0 - sqrtdg + 2.0 * h % sqrtdg_inv / gamma2));
+  d_leb.col(1) = gamma * exp(dg1s) % (dg1s - 1.0) / (delta * delta);
+  
+  return d_leb;
+}

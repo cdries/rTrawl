@@ -3,7 +3,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
-// [[Rcpp::export()]]
+
 arma::vec survival_GIG(arma::vec unif_seed, double gamma, double delta, 
                        double nu, double Tmax, double b, double observed_freq) {
   
@@ -42,4 +42,32 @@ arma::vec survival_GIG(arma::vec unif_seed, double gamma, double delta,
   }
   
   return st;
+}
+
+arma::vec leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
+  
+  arma::vec z = arma::sqrt(1.0 + 2.0 * h / (gamma * gamma));
+  double besseldg = Rf_bessel_k(delta * gamma, nu, 1.0);
+  int n_h = h.n_elem;
+  
+  arma::vec leb = arma::zeros(n_h);
+  for (int ii = 0; ii < n_h; ii++) {
+    leb(ii) = gamma / delta * pow(z(ii), 1.0 - nu) *
+      Rf_bessel_k(delta * gamma * z(ii), nu - 1.0, 1.0) / besseldg;
+  }
+
+  return leb;
+}
+
+arma::mat d_leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
+  
+  double eps = 1e-7;
+  arma::vec leb_base = leb_AtA_GIG(h, gamma, delta, nu);
+  
+  arma::mat d_leb = arma::zeros(h.n_elem, 3);
+  d_leb.col(0) = (leb_AtA_GIG(h, gamma + eps, delta, nu) - leb_base) / eps;
+  d_leb.col(1) = (leb_AtA_GIG(h, gamma, delta + eps, nu) - leb_base) / eps;
+  d_leb.col(2) = (leb_AtA_GIG(h, gamma, delta, nu + eps) - leb_base) / eps;
+  
+  return d_leb;
 }

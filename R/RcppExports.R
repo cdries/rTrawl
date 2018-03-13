@@ -5,3 +5,7 @@ simulate_trawl_uv <- function(levy_seed, levy_par, trawl, trawl_par, T0, TT, obs
     .Call('_rTrawl_simulate_trawl_uv', PACKAGE = 'rTrawl', levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b)
 }
 
+survival_GIG <- function(unif_seed, gamma, delta, nu, Tmax, b, observed_freq) {
+    .Call('_rTrawl_survival_GIG', PACKAGE = 'rTrawl', unif_seed, gamma, delta, nu, Tmax, b, observed_freq)
+}
+

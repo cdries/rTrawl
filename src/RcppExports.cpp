@@ -24,9 +24,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// survival_GIG
+arma::vec survival_GIG(arma::vec unif_seed, double gamma, double delta, double nu, double Tmax, double b, double observed_freq);
+RcppExport SEXP _rTrawl_survival_GIG(SEXP unif_seedSEXP, SEXP gammaSEXP, SEXP deltaSEXP, SEXP nuSEXP, SEXP TmaxSEXP, SEXP bSEXP, SEXP observed_freqSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type unif_seed(unif_seedSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type Tmax(TmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type observed_freq(observed_freqSEXP);
+    rcpp_result_gen = Rcpp::wrap(survival_GIG(unif_seed, gamma, delta, nu, Tmax, b, observed_freq));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_simulate_trawl_uv", (DL_FUNC) &_rTrawl_simulate_trawl_uv, 8},
+    {"_rTrawl_survival_GIG", (DL_FUNC) &_rTrawl_survival_GIG, 7},
     {NULL, NULL, 0}
 };
 

@@ -6,6 +6,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
-arma::vec survival_EXP(arma::vec unif_seed, double trawl_par, double Tmax, double b);
+
+arma::vec survival_EXP(arma::vec unif_seed, double lambda, double Tmax, double b);
 
 #endif

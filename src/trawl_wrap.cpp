@@ -26,3 +26,93 @@ arma::vec trawl_times(arma::vec unif_seed, std::string trawl, arma::vec trawl_pa
   
   return surv_times;
 }
+
+// [[Rcpp::export()]]
+int number_parameters_trawl(std::string trawl) {
+  
+  int n = 0;
+  if (trawl == "exp") {
+    n = 1;
+  } else if (trawl == "gamma") {
+    n = 2;
+  } else if (trawl == "invGauss") {
+    n = 2;
+  } else if (trawl == "gig") {
+    n = 3;
+  } else {
+    stop("provide a valid trawl");
+  }
+  
+  return n;
+}
+
+// [[Rcpp::export()]]
+List trawl_bounds(std::string trawl) {
+  
+  arma::vec lb;
+  arma::vec ub;
+  if (trawl == "exp") {
+    lb = ub = arma::ones(1) * 1e-7;
+    ub(0) = arma::datum::inf;
+  } else if (trawl == "gamma") {
+    lb = ub = arma::ones(2) * 1e-7;
+    lb(1) += 1.0;
+    ub(0) = ub(1) = arma::datum::inf;
+  } else if (trawl == "invGauss") {
+    lb = ub = arma::ones(2) * 1e-7;
+    ub(0) = ub(1) = arma::datum::inf;
+  } else if (trawl == "gig") {
+    lb = ub = arma::ones(3) * 1e-7;
+    lb(2) = -arma::datum::inf;
+    lb(0) = lb(1) = lb(2) = arma::datum::inf;
+  } else {
+    stop("provide a valid trawl");
+  }
+  
+  List bounds;
+  bounds["lb"] = lb;
+  bounds["ub"] = ub;
+  
+  return bounds;
+}
+
+// [[Rcpp::export()]]
+arma::vec trawl_x0(std::string trawl) {
+  
+  arma::vec x0;
+  if (trawl == "exp") {
+    x0 = arma::ones(1) * 2.0;
+  } else if (trawl == "gamma") {
+    x0 = arma::ones(2) * 0.2;
+    x0(1) = 1.9;
+  } else if (trawl == "invGauss") {
+    x0 = arma::ones(2) * 0.1;
+    x0(1) = 0.5;
+  } else if (trawl == "gig") {
+    x0 = arma::ones(3) * 0.1;
+    x0(1) = 0.9;
+    x0(2) = -0.2;
+  } else {
+    stop("provide a valid trawl");
+  }
+  
+  return x0;
+}
+
+arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par, double b) {
+  
+  arma::vec leb;
+  if (trawl == "exp") {
+    leb = (1.0 - b) * leb_AtA_EXP(h, trawl_par(0));
+    // } else if (trawl == "gamma") {
+    //   leb = (1.0 - b) * leb_AtA_GAMMA(h, trawl_par(0), trawl_par(1));
+    // } else if (trawl == "invGauss") {
+    //   leb = (1.0 - b) * leb_AtA_INVGAUSS(h, trawl_par(0), trawl_par(1));
+    // } else if (trawl == "gig") {
+    //   leb = (1.0 - b) * leb_AtA_GIG(h, trawl_par(0), trawl_par(1), trawl_par(2));
+  } else {
+    stop("provide a valid trawl");
+  }
+  
+  return leb;
+}

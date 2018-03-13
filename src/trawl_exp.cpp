@@ -12,3 +12,10 @@ arma::vec survival_EXP(arma::vec unif_seed, double lambda, double Tmax, double b
   
   return st;
 }
+
+arma::vec leb_AtA_EXP(arma::vec h, double lambda) {
+
+  arma::vec leb = exp(-lambda * h) / lambda;
+
+  return leb;
+}

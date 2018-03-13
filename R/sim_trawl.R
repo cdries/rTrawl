@@ -39,7 +39,9 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
     lsim <- simulate_trawl_uv(levy_seed, as.numeric(levy_par), trawl, as.numeric(trawl_par), 
                               as.numeric(T0), as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
   } else {
-    lsim <- simulate_trawl_mv(levy_seed, levy_par, trawl, trawl_par, b, T0, TT, observed_freq) # TODO
+    design_matrix <- object$design_matrix
+    lsim <- simulate_trawl_mv(levy_seed, levy_par, trawl, trawl_par, design_matrix, as.numeric(T0), 
+                              as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
   }
   
   # export

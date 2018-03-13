@@ -5,6 +5,7 @@
 #include "levy_poisson.h"
 #include "levy_skellam.h"
 #include "levy_negbin.h"
+#include "levy_dnegbin.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;

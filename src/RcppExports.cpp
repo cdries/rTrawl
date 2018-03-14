@@ -6,6 +6,35 @@
 
 using namespace Rcpp;
 
+// acf_trawl_p
+arma::vec acf_trawl_p(double h, std::string trawl, arma::vec trawl_par, int lag_max);
+RcppExport SEXP _rTrawl_acf_trawl_p(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP lag_maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< int >::type lag_max(lag_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(acf_trawl_p(h, trawl, trawl_par, lag_max));
+    return rcpp_result_gen;
+END_RCPP
+}
+// acf_trawl_dp
+arma::vec acf_trawl_dp(double h, std::string trawl, arma::vec trawl_par, double b, int lag_max);
+RcppExport SEXP _rTrawl_acf_trawl_dp(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP bSEXP, SEXP lag_maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< int >::type lag_max(lag_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(acf_trawl_dp(h, trawl, trawl_par, b, lag_max));
+    return rcpp_result_gen;
+END_RCPP
+}
 // levy_alpha2nu
 arma::mat levy_alpha2nu(arma::mat levy_alpha, double b, double beta_0);
 RcppExport SEXP _rTrawl_levy_alpha2nu(SEXP levy_alphaSEXP, SEXP bSEXP, SEXP beta_0SEXP) {
@@ -156,6 +185,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_rTrawl_acf_trawl_p", (DL_FUNC) &_rTrawl_acf_trawl_p, 4},
+    {"_rTrawl_acf_trawl_dp", (DL_FUNC) &_rTrawl_acf_trawl_dp, 5},
     {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},
     {"_rTrawl_simulate_trawl_uv", (DL_FUNC) &_rTrawl_simulate_trawl_uv, 8},

@@ -119,8 +119,8 @@ fit_trawl_vs_C <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, inclu
   }
 
   # optimization
-  optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 5, 
-                      print_level = 3, check_derivatives = TRUE)
+  optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 50000, 
+                      print_level = 0, check_derivatives = FALSE)
   sol <- nloptr::nloptr(x0 = x0, eval_f = obj, lb = lb, ub = ub, opts = optscontrol)
 
   # return object

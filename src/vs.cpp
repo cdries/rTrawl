@@ -48,8 +48,8 @@ List vs_C(arma::vec h, std::string trawl, arma::vec trawl_par, double omega,
   if (include_cum1) vs_grad = arma::join_rows(vs_grad, h);
   
   List out;
-  out["vs_theor"] = 0.0;
-  out["vs_grad"] = 0.0;
+  out["vs_theor"] = vs_theor;
+  out["vs_grad"] = vs_grad;
   
   return out;
 }

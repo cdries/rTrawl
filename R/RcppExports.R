@@ -33,6 +33,10 @@ vs_sample <- function(h, x_grid, p_grid, T0, TT, multi) {
     .Call('_rTrawl_vs_sample', PACKAGE = 'rTrawl', h, x_grid, p_grid, T0, TT, multi)
 }
 
+vs_C <- function(h, trawl, trawl_par, omega, xi, include_b, eta, include_cum1) {
+    .Call('_rTrawl_vs_C', PACKAGE = 'rTrawl', h, trawl, trawl_par, omega, xi, include_b, eta, include_cum1)
+}
+
 vs_SY <- function(h, trawl, trawl_par, beta_0, levy_alpha, include_cum1, b, include_b) {
     .Call('_rTrawl_vs_SY', PACKAGE = 'rTrawl', h, trawl, trawl_par, beta_0, levy_alpha, include_cum1, b, include_b)
 }

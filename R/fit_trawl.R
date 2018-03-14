@@ -33,15 +33,16 @@ fit_trawl <- function(object, ...) {
 
   if (method == "vs_C") {
 
-    # variance signature plot - cum2 and cum1 as explicit parameters
+    # variance signature plot - cum2_levy, cum2_trawl and cum1_levy as explicit parameters
     include_cum1 <- object$include_cum1
-    include_b <- object$include_b
+    include_b <- object$include_b # if false, only cum2_trawl is a parameter
     h <- object$h
-    lfit <- fit_trawl_vs_C(h, x_grid, p_grid, T0, TT, trawl, include_cum1, include_b, ...)
+    lfit <- fit_trawl_vs_C(as.numeric(h), as.numeric(x_grid), as.numeric(p_grid), as.numeric(T0), 
+                           as.numeric(TT), trawl, include_cum1, include_b, ...)
 
   } else if (method == "vs_SY") {
 
-    # variance signature plot - cum2 and cum1 as function of b, beta_0 and alpha_y
+    # variance signature plot - cum2_Levy and cum1 as function of b, beta_0 and alpha_y
     include_cum1 <- object$include_cum1
     include_b <- object$include_b
     h <- object$h
@@ -66,8 +67,76 @@ fit_trawl <- function(object, ...) {
 
 
 #' @import nloptr
-fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, include_b, ...) {
+fit_trawl_vs_C <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, include_b, ...) {
 
+  # contants
+  n_trawl <- number_parameters_trawl(trawl)
+  n_h <- length(h)
+  if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
+  vs_emp <- vs_sample(h, x_grid, p_grid, T0, TT, multi)
+  
+  # bounds
+  bounds <- trawl_bounds(trawl)
+  lb <- c(bounds$lb, 0)
+  ub <- c(bounds$ub, Inf)
+  if (include_b) {
+    lb <- c(lb, 0)
+    ub <- c(ub, Inf)
+    if (include_cum1) {
+      lb <- c(lb, 0)
+      ub <- c(ub, Inf)
+    }
+  }
+  n_theta <- length(lb)
+
+  # initial estimate
+  if (hasArg(x0)) {
+    x0 <- list(...)$x0
+  } else {
+    x0 <- c(as.numeric(trawl_x0(trawl)), 0.01)
+    if (include_b) x0 <- c(x0, 0.01)
+    if (include_cum1) x0 <- c(x0, 1e-6)
+  }
+
+  # objective function
+  obj <- function(theta) {
+
+    trawl_par <- theta[1:n_trawl]
+    omega <- theta[n_trawl + 1]
+    if (include_b) xi <- theta[n_trawl + 2] else xi <- 0
+    if (include_cum1) eta <- theta[n_trawl + 3] else eta <- 0
+
+    # objective value
+    tmp <- vs_C(h, trawl, trawl_par, omega, xi, include_b, eta, include_cum1)
+    vs_diff <- tmp$vs_theor - vs_emp
+    val <- sum(vs_diff^2)
+
+    # gradient
+    vs_grad <- tmp$vs_grad
+    grad <- 2 * colSums(matrix(vs_diff, nrow = n_h, ncol = n_theta, byrow = FALSE) * vs_grad)
+
+    return (list("objective" = val, "gradient" = grad))
+  }
+
+  # optimization
+  optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 5, 
+                      print_level = 3, check_derivatives = TRUE)
+  sol <- nloptr::nloptr(x0 = x0, eval_f = obj, lb = lb, ub = ub, opts = optscontrol)
+
+  # return object
+  trawl_par <- sol$solution[1:n_trawl]
+  omega <- theta[n_trawl + 1]
+  if (include_b) xi <- theta[n_trawl + 2] else xi <- 0
+  if (include_cum1) eta <- theta[n_trawl + 3] else eta <- 0
+
+  return (list("trawl" = trawl, "trawl_par" = trawl_par, "omega" = omega,
+               "xi" = xi, "eta" = eta))
+}
+
+
+#' @import nloptr
+fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, include_b, ...) {
+  
   # contants
   n_trawl <- number_parameters_trawl(trawl)
   n_h <- length(h)
@@ -86,7 +155,7 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
     ub <- c(ub, 1)
   }
   n_theta <- length(lb)
-
+  
   # initial estimate
   if (hasArg(x0)) {
     x0 <- list(...)$x0
@@ -94,35 +163,35 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
     x0 <- as.numeric(trawl_x0(trawl))
     if (include_b) x0 <- c(x0, 0.5)
   }
-
+  
   # objective function
   obj <- function(theta) {
-
+    
     trawl_par <- theta[1:n_trawl]
     if (include_b) b <- theta[n_trawl + 1] else b <- 0
-
+    
     # objective value
     tmp <- vs_SY(h, trawl, trawl_par, beta_0, levy_alpha, include_cum1, b, include_b)
     vs_diff <- tmp$vs_theor - vs_emp
     val <- sum(vs_diff^2)
-
+    
     # gradient
     vs_grad <- tmp$vs_grad
     grad <- 2 * colSums(matrix(vs_diff, nrow = n_h, ncol = n_theta, byrow = FALSE) * vs_grad)
-
+    
     return (list("objective" = val, "gradient" = grad))
   }
-
+  
   # optimization
   optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 10000, 
                       print_level = 0, check_derivatives = FALSE)
   sol <- nloptr::nloptr(x0 = x0, eval_f = obj, lb = lb, ub = ub, opts = optscontrol)
-
+  
   # return object
   trawl_par <- sol$solution[1:n_trawl]
   if (include_b) b <- sol$solution[n_trawl + 1] else b <- 0
   levy_par <- levy_alpha2nu(levy_alpha, b, beta_0)
-
+  
   return (list("trawl" = trawl, "trawl_par" = trawl_par, "b" = b,
                "levy_seed" = "nonpar", "levy_par" = levy_par))
 }

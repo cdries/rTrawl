@@ -29,6 +29,32 @@ arma::vec vs_sample(arma::vec h, arma::vec x_grid, arma::vec p_grid, double T0, 
 }
 
 // [[Rcpp::export()]]
+List vs_C(arma::vec h, std::string trawl, arma::vec trawl_par, double omega,
+          double xi, bool include_b, double eta, bool include_cum1) {
+  
+  int n_h = h.n_elem;
+  
+  arma::vec hinv = arma::pow(h, -1.0);
+  arma::vec leb0 = arma::ones(n_h) * leb_AtA(arma::zeros(1), trawl, trawl_par)(0);
+  arma::vec lebh = leb_AtA(h, trawl, trawl_par);
+  arma::vec vs_theor = 2.0 * (leb0 - lebh) % hinv * omega + xi + h * eta;
+  
+  arma::mat hinv_mat = arma::repmat(hinv, 1, number_parameters_trawl(trawl));
+  arma::mat dleb0 = arma::repmat(d_leb_AtA(arma::zeros(1), trawl, trawl_par), n_h, 1);
+  arma::mat dlebh = d_leb_AtA(h, trawl, trawl_par);
+  arma::mat vs_grad = 2.0 * (dleb0 - dlebh) % hinv_mat * omega;
+  vs_grad = arma::join_rows(vs_grad, 2.0 * (leb0 - lebh) % hinv);
+  if (include_b) vs_grad = arma::join_rows(vs_grad, arma::ones(n_h));
+  if (include_cum1) vs_grad = arma::join_rows(vs_grad, h);
+  
+  List out;
+  out["vs_theor"] = 0.0;
+  out["vs_grad"] = 0.0;
+  
+  return out;
+}
+
+// [[Rcpp::export()]]
 List vs_SY(arma::vec h, std::string trawl, arma::vec trawl_par, double beta_0,
            arma::mat levy_alpha, bool include_cum1, double b, bool include_b) {
   

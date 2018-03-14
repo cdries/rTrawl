@@ -118,6 +118,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vs_C
+List vs_C(arma::vec h, std::string trawl, arma::vec trawl_par, double omega, double xi, bool include_b, double eta, bool include_cum1);
+RcppExport SEXP _rTrawl_vs_C(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP omegaSEXP, SEXP xiSEXP, SEXP include_bSEXP, SEXP etaSEXP, SEXP include_cum1SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< double >::type omega(omegaSEXP);
+    Rcpp::traits::input_parameter< double >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_b(include_bSEXP);
+    Rcpp::traits::input_parameter< double >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< bool >::type include_cum1(include_cum1SEXP);
+    rcpp_result_gen = Rcpp::wrap(vs_C(h, trawl, trawl_par, omega, xi, include_b, eta, include_cum1));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vs_SY
 List vs_SY(arma::vec h, std::string trawl, arma::vec trawl_par, double beta_0, arma::mat levy_alpha, bool include_cum1, double b, bool include_b);
 RcppExport SEXP _rTrawl_vs_SY(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP beta_0SEXP, SEXP levy_alphaSEXP, SEXP include_cum1SEXP, SEXP bSEXP, SEXP include_bSEXP) {
@@ -146,6 +164,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_trawl_bounds", (DL_FUNC) &_rTrawl_trawl_bounds, 1},
     {"_rTrawl_trawl_x0", (DL_FUNC) &_rTrawl_trawl_x0, 1},
     {"_rTrawl_vs_sample", (DL_FUNC) &_rTrawl_vs_sample, 6},
+    {"_rTrawl_vs_C", (DL_FUNC) &_rTrawl_vs_C, 8},
     {"_rTrawl_vs_SY", (DL_FUNC) &_rTrawl_vs_SY, 8},
     {NULL, NULL, 0}
 };

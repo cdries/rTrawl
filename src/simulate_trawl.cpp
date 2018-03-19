@@ -47,8 +47,8 @@ List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string tr
 
 // [[Rcpp::export()]]
 List simulate_trawl_mv(std::string levy_seed, arma::mat levy_par, List trawl, 
-                       arma::mat trawl_par, arma::mat design_matrix, double T0, double TT, 
-                       double observed_freq, arma::vec b) { 
+                       List trawl_par, arma::mat design_matrix, double T0, double TT, 
+                       double observed_freq, arma::vec b) {
   // TODO - check!!! - this is the Poisson/Skellam case
   // TODO - implement Negative Binomial multivariate case
   
@@ -82,7 +82,7 @@ List simulate_trawl_mv(std::string levy_seed, arma::mat levy_par, List trawl,
 
           x_grid_latent(jj) = x_grid_latent_factor;
 
-          survival_times(jj) = trawl_times(unif_seed, trawl(jj), trawl_par.row(jj).t(),
+          survival_times(jj) = trawl_times(unif_seed, trawl(jj), trawl_par(jj),
                          observed_freq, 2 * (TT - T0), b(jj));
 
           if (design_matrix(jj, ii) > 0.5) {
@@ -96,7 +96,7 @@ List simulate_trawl_mv(std::string levy_seed, arma::mat levy_par, List trawl,
 
           arma::vec survival_times_temp = survival_times(jj);
           survival_times(jj) = arma::join_cols(survival_times_temp,
-                         trawl_times(unif_seed, trawl(jj), trawl_par.row(jj).t(),
+                         trawl_times(unif_seed, trawl(jj), trawl_par(jj),
                                      observed_freq, 2 * (TT - T0), b(jj)));
 
           arma::vec jump_sizes_temp = jump_sizes(jj);

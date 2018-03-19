@@ -156,7 +156,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // simulate_trawl_mv
-List simulate_trawl_mv(std::string levy_seed, arma::mat levy_par, List trawl, arma::mat trawl_par, arma::mat design_matrix, double T0, double TT, double observed_freq, arma::vec b);
+List simulate_trawl_mv(std::string levy_seed, arma::mat levy_par, List trawl, List trawl_par, arma::mat design_matrix, double T0, double TT, double observed_freq, arma::vec b);
 RcppExport SEXP _rTrawl_simulate_trawl_mv(SEXP levy_seedSEXP, SEXP levy_parSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP design_matrixSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP observed_freqSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -164,7 +164,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type levy_seed(levy_seedSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type levy_par(levy_parSEXP);
     Rcpp::traits::input_parameter< List >::type trawl(trawlSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< List >::type trawl_par(trawl_parSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type design_matrix(design_matrixSEXP);
     Rcpp::traits::input_parameter< double >::type T0(T0SEXP);
     Rcpp::traits::input_parameter< double >::type TT(TTSEXP);

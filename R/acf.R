@@ -37,9 +37,9 @@ acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, multi
     acfh <- as.numeric(acf_sample_dp(h, x_grid, p_grid, T0, TT, lag_max, multi))
   }
   
-  if (!drop_zero) acft <- c(1, acft)
+  if (!drop_zero) acfh <- c(1, acfh)
 
-  return (acft)
+  return (acfh)
 }
 
 
@@ -81,7 +81,7 @@ acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {
     acfh <- as.numeric(acf_trawl_dp(h, trawl, trawl_par, b, lag_max))
   }
   
-  if (!drop_zero) acft <- c(1, acft)
+  if (!drop_zero) acfh <- c(1, acfh)
   
-  return (acft)
+  return (acfh)
 }

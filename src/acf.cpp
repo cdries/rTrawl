@@ -37,7 +37,7 @@ double acf_helper(arma::vec x_grid, arma::vec p_grid, double h, int lag) {
       }
     }
   }
-  ac /= (p_grid(n - 1) - x_grid(0) - h * lag);
+  ac /= (x_grid(n - 1) - x_grid(0) - h * lag);
   
   return ac;
 }
@@ -51,23 +51,23 @@ arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid,
   arma::vec acfh = arma::zeros(lag_max);
   
   for (int mm = 0; mm < multi; mm++) {
-    
+
     // observe process
     List obs_process = observe_process(x_grid, p_grid, T0 + T0_offset(mm), TT, h);
     arma::vec obs_x = obs_process["x_grid_observed"];
     arma::vec obs_p = obs_process["p_grid_observed"];
-    
+
     // mean and centered observations
     int n = obs_x.n_elem;
     arma::vec diff_x = arma::diff(obs_x);
-    double k1L = (arma::sum(diff_x % obs_p.head(n - 1)) + 
+    double k1L = (arma::sum(diff_x % obs_p.head(n - 1)) +
                   (TT - obs_x(n - 1)) * obs_p(n - 1)) / (TT - obs_p(0));
     obs_p -= k1L;
-    
+
     // variance
-    double k2L = (arma::sum(diff_x % obs_p.head(n - 1) % obs_p.head(n - 1)) + 
+    double k2L = (arma::sum(diff_x % obs_p.head(n - 1) % obs_p.head(n - 1)) +
                   (TT - obs_x(n - 1)) * obs_p(n - 1) * obs_p(n - 1)) / (TT - obs_p(0));
-    
+
     // autocorrelation
     for (int ii = 0; ii < lag_max; ii++) acfh(ii) += acf_helper(obs_x, obs_p, h, ii + 1) / k2L;
   }
@@ -154,4 +154,27 @@ arma::vec acf_trawl_dp(double h, std::string trawl,
   }
   
   return acfh;
+}
+
+// [[Rcpp::export()]]
+List acf_BN_V(double h, std::string trawl, arma::vec trawl_par, int lag_max) {
+  
+  arma::vec acf_theor = acf_trawl_p(h, trawl, trawl_par, lag_max);
+  
+  arma::vec h_vec = arma::linspace(0.0, lag_max * h, lag_max + 1);
+  
+  arma::mat dlebh = d_leb_AtA(h_vec, trawl, trawl_par);
+  arma::mat dleb0 = arma::repmat(dlebh.row(0), lag_max, 1);
+  
+  arma::mat lebh = arma::repmat(leb_AtA(h_vec, trawl, trawl_par), 1, dlebh.n_cols);
+  arma::mat leb0 = arma::repmat(lebh.row(0), lag_max, 1);
+  arma::mat leb0_2inv = arma::pow(leb0, -2.0);
+  
+  arma::mat acf_grad = (dlebh.tail_rows(lag_max) % leb0 - lebh.tail_rows(lag_max) % dleb0) % leb0_2inv;
+  
+  List out;
+  out["acf_theor"] = acf_theor;
+  out["acf_grad"] = acf_grad;
+  
+  return out;
 }

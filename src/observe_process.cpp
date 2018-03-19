@@ -27,7 +27,7 @@ List observe_process(arma::vec x_grid_latent, arma::vec p_grid_latent,
   // deal with observation at T0
   if (x_grid_latent(0) < T0 + Mprec) {
     int ii = 0;
-    while (x_grid_observed(ii) < T0 + Mprec) {
+    while (x_grid_observed(ii) < T0 + observed_freq / 2.0) {
       ind(ii) = 0;
       ii++;
     }

@@ -55,10 +55,6 @@ fit_trawl <- function(object, ...) {
     lfit <- fit_trawl_acf(as.numeric(h), as.integer(lag_max), as.numeric(x_grid), as.numeric(p_grid), 
                           as.numeric(T0), as.numeric(TT), trawl, ...)
     
-    # then fit the Lévy seed
-    levy_seed <- object$levy_seed
-    lfit2 <- fit_levy_cum(as.numeric(x_grid), as.numeric(p_grid))
-    
   } else {
     stop("Select valid method (vs_C, vs_SY or acf).")
   }

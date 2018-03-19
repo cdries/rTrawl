@@ -16,3 +16,10 @@ arma::vec rjump_POISSON(int n) {
   
   return rj;
 }
+
+arma::vec fit_POISSON(double k1_sample) {
+  
+  arma::vec levy_par = arma::ones(1) * k1_sample;
+  
+  return levy_par;
+}

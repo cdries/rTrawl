@@ -43,3 +43,22 @@ arma::vec levy_rjump(int n, std::string levy_seed, arma::vec levy_par) {
   
   return rj;
 }
+
+// [[Rcpp::export()]]
+arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample) {
+  
+  arma::vec levy_par;
+  if (levy_seed == "Poisson") {
+    levy_par = fit_POISSON(k1_sample);
+  } else if (levy_seed == "Skellam") {
+    levy_par = fit_SKELLAM(k1_sample, k2_sample);
+  } else if (levy_seed == "negBin") {
+    levy_par = fit_NEGBIN(k1_sample, k2_sample);
+  // } else if (levy_seed == "DnegBin") {
+  //   levy_par = fit_DNEGBIN(k1_sample, k2_sample);
+  } else {
+    stop("provide valid Lévy seed");
+  }
+  
+  return levy_par;
+}

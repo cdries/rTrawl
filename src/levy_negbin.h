@@ -13,4 +13,6 @@ arma::vec rjump_NEGBIN(int n, double theta);
 
 double cum_NEGBIN(int ord, double m, double theta);
 
+arma::vec fit_NEGBIN(double k1_sample, double k2_sample);
+
 #endif

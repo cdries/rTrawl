@@ -11,4 +11,6 @@ double intens_POISSON(double nu);
 
 arma::vec rjump_POISSON(int n);
 
+arma::vec fit_POISSON(double k1_sample);
+
 #endif

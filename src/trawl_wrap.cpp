@@ -99,6 +99,7 @@ arma::vec trawl_x0(std::string trawl) {
   return x0;
 }
 
+// [[Rcpp::export()]]
 arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
   
   arma::vec leb;

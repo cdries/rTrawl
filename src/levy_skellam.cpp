@@ -16,3 +16,12 @@ arma::vec rjump_SKELLAM(int n, double nu_p, double nu_m) {
   
   return rj;
 }
+
+arma::vec fit_SKELLAM(double k1_sample, double k2_sample) {
+  
+  arma::vec levy_par = arma::ones(2);
+  levy_par(0) = 0.5 * (k1_sample + k2_sample);
+  levy_par(1) = 0.5 * (k2_sample - k1_sample);
+  
+  return levy_par;
+}

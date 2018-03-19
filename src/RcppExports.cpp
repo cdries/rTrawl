@@ -124,6 +124,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// levy_cum_fit
+arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample);
+RcppExport SEXP _rTrawl_levy_cum_fit(SEXP levy_seedSEXP, SEXP k1_sampleSEXP, SEXP k2_sampleSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type levy_seed(levy_seedSEXP);
+    Rcpp::traits::input_parameter< double >::type k1_sample(k1_sampleSEXP);
+    Rcpp::traits::input_parameter< double >::type k2_sample(k2_sampleSEXP);
+    rcpp_result_gen = Rcpp::wrap(levy_cum_fit(levy_seed, k1_sample, k2_sample));
+    return rcpp_result_gen;
+END_RCPP
+}
 // simulate_trawl_uv
 List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string trawl, arma::vec trawl_par, double T0, double TT, double observed_freq, double b);
 RcppExport SEXP _rTrawl_simulate_trawl_uv(SEXP levy_seedSEXP, SEXP levy_parSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP observed_freqSEXP, SEXP bSEXP) {
@@ -194,6 +207,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// leb_AtA
+arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par);
+RcppExport SEXP _rTrawl_leb_AtA(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    rcpp_result_gen = Rcpp::wrap(leb_AtA(h, trawl, trawl_par));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vs_sample
 arma::vec vs_sample(arma::vec h, arma::vec x_grid, arma::vec p_grid, double T0, double TT, int multi);
 RcppExport SEXP _rTrawl_vs_sample(SEXP hSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP multiSEXP) {
@@ -256,11 +282,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_cum_sample", (DL_FUNC) &_rTrawl_cum_sample, 5},
     {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},
+    {"_rTrawl_levy_cum_fit", (DL_FUNC) &_rTrawl_levy_cum_fit, 3},
     {"_rTrawl_simulate_trawl_uv", (DL_FUNC) &_rTrawl_simulate_trawl_uv, 8},
     {"_rTrawl_simulate_trawl_mv", (DL_FUNC) &_rTrawl_simulate_trawl_mv, 9},
     {"_rTrawl_number_parameters_trawl", (DL_FUNC) &_rTrawl_number_parameters_trawl, 1},
     {"_rTrawl_trawl_bounds", (DL_FUNC) &_rTrawl_trawl_bounds, 1},
     {"_rTrawl_trawl_x0", (DL_FUNC) &_rTrawl_trawl_x0, 1},
+    {"_rTrawl_leb_AtA", (DL_FUNC) &_rTrawl_leb_AtA, 3},
     {"_rTrawl_vs_sample", (DL_FUNC) &_rTrawl_vs_sample, 6},
     {"_rTrawl_vs_C", (DL_FUNC) &_rTrawl_vs_C, 8},
     {"_rTrawl_vs_SY", (DL_FUNC) &_rTrawl_vs_SY, 8},

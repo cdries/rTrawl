@@ -33,6 +33,10 @@ levy_alpha_beta <- function(p_grid, T0, TT) {
     .Call('_rTrawl_levy_alpha_beta', PACKAGE = 'rTrawl', p_grid, T0, TT)
 }
 
+levy_cum_fit <- function(levy_seed, k1_sample, k2_sample) {
+    .Call('_rTrawl_levy_cum_fit', PACKAGE = 'rTrawl', levy_seed, k1_sample, k2_sample)
+}
+
 simulate_trawl_uv <- function(levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b) {
     .Call('_rTrawl_simulate_trawl_uv', PACKAGE = 'rTrawl', levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b)
 }
@@ -51,6 +55,10 @@ trawl_bounds <- function(trawl) {
 
 trawl_x0 <- function(trawl) {
     .Call('_rTrawl_trawl_x0', PACKAGE = 'rTrawl', trawl)
+}
+
+leb_AtA <- function(h, trawl, trawl_par) {
+    .Call('_rTrawl_leb_AtA', PACKAGE = 'rTrawl', h, trawl, trawl_par)
 }
 
 vs_sample <- function(h, x_grid, p_grid, T0, TT, multi) {

@@ -38,7 +38,7 @@ acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, multi
   }
   
   if (!drop_zero) acfh <- c(1, acfh)
-
+  
   return (acfh)
 }
 
@@ -85,3 +85,4 @@ acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {
   
   return (acfh)
 }
+

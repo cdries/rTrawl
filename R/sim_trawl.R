@@ -58,8 +58,8 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
   
   if (hasArg(observe_latent)) {
     if (list(...)$observe_latent) {
-      sim$x_grid <- as.numeric(lsim$x_grid_latent)
-      sim$p_grid <- as.numeric(lsim$p_grid_latent)
+      sim$x_grid <- lsim$x_grid_latent
+      sim$p_grid <- lsim$p_grid_latent
     }
   }
   

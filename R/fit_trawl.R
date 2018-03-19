@@ -51,6 +51,9 @@ fit_trawl <- function(object, ...) {
   } else if (method == "acf") {
     
     # first fit the trawl
+    # TODO - add check for multivariate
+    # TODO - allow multiple h values for each trawl when fitting multivariate
+    # TODO - multivariate is just looping over the univariate cases
     lag_max <- object$lag_max
     lfit <- fit_trawl_acf(as.numeric(h), as.integer(lag_max), as.numeric(x_grid), as.numeric(p_grid), 
                           as.numeric(T0), as.numeric(TT), trawl, ...)

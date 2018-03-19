@@ -27,7 +27,7 @@ arma::mat d_leb_AtA_GAMMA(arma::vec h, double alpha, double H) {
   
   arma::mat d_leb = arma::zeros(h.n_elem, 2);
   d_leb.col(0) = (ha11H - (1.0 - H) * h % arma::pow(ha1, -H) / alpha) / (H - 1.0);
-  d_leb.col(1) = -alpha * ((H - 1.0) * log(ha1) % ha11H + (1.0 + ha11H)) / ((H - 1.0) * (H - 1.0));
+  d_leb.col(1) = -alpha * ((H - 1.0) * log(ha1) % ha11H + ha11H) / ((H - 1.0) * (H - 1.0));
   
   return d_leb;
 }

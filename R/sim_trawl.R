@@ -45,8 +45,8 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
   }
   
   # export
-  sim <- list("x_grid" = as.numeric(lsim$x_grid_observed),
-              "p_grid" = as.numeric(lsim$p_grid_observed),
+  sim <- list("x_grid" = lsim$x_grid_observed,
+              "p_grid" = lsim$p_grid_observed,
               "levy_seed" = levy_seed,
               "levy_par" = levy_par,
               "trawl" = trawl,

@@ -125,9 +125,9 @@ fit_trawl_vs_C <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, inclu
 
   # return object
   trawl_par <- sol$solution[1:n_trawl]
-  omega <- theta[n_trawl + 1]
-  if (include_b) xi <- theta[n_trawl + 2] else xi <- 0
-  if (include_cum1) eta <- theta[n_trawl + 3] else eta <- 0
+  omega <- sol$solution[n_trawl + 1]
+  if (include_b) xi <- sol$solution[n_trawl + 2] else xi <- 0
+  if (include_cum1) eta <- sol$solution[n_trawl + 3] else eta <- 0
 
   return (list("trawl" = trawl, "trawl_par" = trawl_par, "omega" = omega,
                "xi" = xi, "eta" = eta))

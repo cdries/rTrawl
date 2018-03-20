@@ -1,77 +1,29 @@
 #include "RcppArmadillo.h"
 #include "trawl_wrap.h"
 #include "observe_process.h"
+#include "cum.h"
+#include "ccf.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
 
-double acf_helper(arma::vec x_grid, arma::vec p_grid, double h, int lag) {
-  
-  double ac = 0.0;
-  int n = x_grid.n_elem;
-  
-  // iterate over observations
-  for (int ii = 1; ii < n; ii++) {
-    
-    // update at the new observation
-    int Tcurrent = x_grid(ii);
-    int kk = 1;
-    while ((ii - kk > 0.5) && (x_grid(ii - kk) + lag * h > Tcurrent + 0.5 * h)) kk++;
-    if (x_grid(ii - kk) + lag * h < Tcurrent + 0.5 * h) {
-      
-      // add most recent autocorrelation - where price has just changed
-      ac += p_grid(ii - kk) * p_grid(ii); 
-      
-      // update autocorrelations strictly between t_ii and t_{ii = 1}
-      while (Tcurrent > x_grid(ii - 1) + 1.5 * h) {
-        if (x_grid(ii - kk) + lag * h < x_grid(ii - 1) + 1.5 * h) {
-          ac += (Tcurrent - x_grid(ii - 1) - h) * p_grid(ii - kk) * p_grid(ii - 1);
-          Tcurrent = x_grid(ii - 1);
-        } else {
-          ac += (Tcurrent - (x_grid(ii - kk) + h * lag)) * p_grid(ii - kk) * p_grid(ii - 1);
-          Tcurrent = x_grid(ii - kk) + lag * h;
-          kk++;
-          if (ii - kk < -0.5) Tcurrent = x_grid(ii - 1);
-        }
-      }
-    }
-  }
-  ac /= (x_grid(n - 1) - x_grid(0) - h * lag);
-  
-  return ac;
-}
-
-
 // [[Rcpp::export()]]
-arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid, 
-                       double T0, double TT, int lag_max, int multi) {
+arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid, double TT, int lag_max) {
   
-  arma::vec T0_offset = arma::linspace(0.0, h, multi + 1);
   arma::vec acfh = arma::zeros(lag_max);
   
-  for (int mm = 0; mm < multi; mm++) {
-
-    // observe process
-    List obs_process = observe_process(x_grid, p_grid, T0 + T0_offset(mm), TT, h);
-    arma::vec obs_x = obs_process["x_grid_observed"];
-    arma::vec obs_p = obs_process["p_grid_observed"];
-
-    // mean and centered observations
-    int n = obs_x.n_elem;
-    arma::vec diff_x = arma::diff(obs_x);
-    double k1L = (arma::sum(diff_x % obs_p.head(n - 1)) +
-                  (TT - obs_x(n - 1)) * obs_p(n - 1)) / (TT - obs_p(0));
-    obs_p -= k1L;
-
-    // variance
-    double k2L = (arma::sum(diff_x % obs_p.head(n - 1) % obs_p.head(n - 1)) +
-                  (TT - obs_x(n - 1)) * obs_p(n - 1) * obs_p(n - 1)) / (TT - obs_p(0));
-
-    // autocorrelation
-    for (int ii = 0; ii < lag_max; ii++) acfh(ii) += acf_helper(obs_x, obs_p, h, ii + 1) / k2L;
-  }
-  acfh /= multi;
+  // centered observations
+  p_grid -= cum_sample(1, x_grid, p_grid, TT);
+  
+  // variance
+  double k2L = cum_sample(2, x_grid, p_grid, TT);
+  
+  // autocovariance
+  for (int ii = 0; ii < lag_max; ii++) acfh(ii) = ccf_helper(x_grid, p_grid, x_grid, p_grid,TT, (ii + 1) * h);
+  
+  // as correlations
+  acfh /= k2L;
   
   return acfh;
 }
@@ -123,7 +75,7 @@ arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid,
     }
   }
   acfh /= multi;
-
+  
   return acfh;
 }
 

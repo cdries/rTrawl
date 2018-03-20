@@ -5,7 +5,7 @@
 \title{Sample ACF of irregularly observed time series}
 \usage{
 acf_sample(object, h, dff = 0, lag_max = 25, drop_zero = TRUE,
-  multi = 5)
+  multi = 1)
 }
 \arguments{
 \item{\dots}{any other passthru pareters}

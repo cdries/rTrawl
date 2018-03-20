@@ -9,8 +9,8 @@ using namespace Rcpp;
 
 // computes cross covariance between irregularly observed time series / h positive
 // this means time series 2 is trailing: int p_1(t) p_2(t - h) dt
-double ccf_helper(arma::vec x1_grid, arma::vec p1_grid, arma::vec x2_grid, arma::vec p2_grid, 
-                  double TT, double h) {
+double ccf_helper(arma::vec x1_grid, arma::vec p1_grid, arma::vec x2_grid, 
+                  arma::vec p2_grid, double TT, double h) {
   
   int n1 = x1_grid.n_elem;
   int n2 = x2_grid.n_elem;
@@ -97,7 +97,7 @@ arma::vec ccf_sample_p(double h, arma::vec x_grid1, arma::vec p_grid1, arma::vec
   arma::vec ccfh = arma::zeros(n_lags);
   arma::vec h_vec = arma::linspace(-h * lag_max, h * lag_max, n_lags);
   
-  // mean and centered observations
+  // centered observations
   p_grid1 -= cum_sample(1, x_grid1, p_grid1, TT);
   p_grid1 -= cum_sample(1, x_grid2, p_grid2, TT);
   

@@ -7,19 +7,17 @@
 using namespace Rcpp;
 
 // acf_sample_p
-arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid, double T0, double TT, int lag_max, int multi);
-RcppExport SEXP _rTrawl_acf_sample_p(SEXP hSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP lag_maxSEXP, SEXP multiSEXP) {
+arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid, double TT, int lag_max);
+RcppExport SEXP _rTrawl_acf_sample_p(SEXP hSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP TTSEXP, SEXP lag_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type h(hSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type x_grid(x_gridSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type p_grid(p_gridSEXP);
-    Rcpp::traits::input_parameter< double >::type T0(T0SEXP);
     Rcpp::traits::input_parameter< double >::type TT(TTSEXP);
     Rcpp::traits::input_parameter< int >::type lag_max(lag_maxSEXP);
-    Rcpp::traits::input_parameter< int >::type multi(multiSEXP);
-    rcpp_result_gen = Rcpp::wrap(acf_sample_p(h, x_grid, p_grid, T0, TT, lag_max, multi));
+    rcpp_result_gen = Rcpp::wrap(acf_sample_p(h, x_grid, p_grid, TT, lag_max));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -290,7 +288,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_rTrawl_acf_sample_p", (DL_FUNC) &_rTrawl_acf_sample_p, 7},
+    {"_rTrawl_acf_sample_p", (DL_FUNC) &_rTrawl_acf_sample_p, 5},
     {"_rTrawl_acf_sample_dp", (DL_FUNC) &_rTrawl_acf_sample_dp, 7},
     {"_rTrawl_acf_trawl_p", (DL_FUNC) &_rTrawl_acf_trawl_p, 4},
     {"_rTrawl_acf_trawl_dp", (DL_FUNC) &_rTrawl_acf_trawl_dp, 5},

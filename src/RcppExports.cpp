@@ -83,18 +83,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ccf_sample_p
+arma::vec ccf_sample_p(double h, arma::vec x_grid1, arma::vec p_grid1, arma::vec x_grid2, arma::vec p_grid2, double TT, int lag_max);
+RcppExport SEXP _rTrawl_ccf_sample_p(SEXP hSEXP, SEXP x_grid1SEXP, SEXP p_grid1SEXP, SEXP x_grid2SEXP, SEXP p_grid2SEXP, SEXP TTSEXP, SEXP lag_maxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type h(hSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x_grid1(x_grid1SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type p_grid1(p_grid1SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x_grid2(x_grid2SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type p_grid2(p_grid2SEXP);
+    Rcpp::traits::input_parameter< double >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< int >::type lag_max(lag_maxSEXP);
+    rcpp_result_gen = Rcpp::wrap(ccf_sample_p(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cum_sample
-double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double T0, double TT);
-RcppExport SEXP _rTrawl_cum_sample(SEXP ordSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP) {
+double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double TT);
+RcppExport SEXP _rTrawl_cum_sample(SEXP ordSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP TTSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type ord(ordSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type x_grid(x_gridSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type p_grid(p_gridSEXP);
-    Rcpp::traits::input_parameter< double >::type T0(T0SEXP);
     Rcpp::traits::input_parameter< double >::type TT(TTSEXP);
-    rcpp_result_gen = Rcpp::wrap(cum_sample(ord, x_grid, p_grid, T0, TT));
+    rcpp_result_gen = Rcpp::wrap(cum_sample(ord, x_grid, p_grid, TT));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -279,7 +295,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_acf_trawl_p", (DL_FUNC) &_rTrawl_acf_trawl_p, 4},
     {"_rTrawl_acf_trawl_dp", (DL_FUNC) &_rTrawl_acf_trawl_dp, 5},
     {"_rTrawl_acf_BN_V", (DL_FUNC) &_rTrawl_acf_BN_V, 4},
-    {"_rTrawl_cum_sample", (DL_FUNC) &_rTrawl_cum_sample, 5},
+    {"_rTrawl_ccf_sample_p", (DL_FUNC) &_rTrawl_ccf_sample_p, 7},
+    {"_rTrawl_cum_sample", (DL_FUNC) &_rTrawl_cum_sample, 4},
     {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},
     {"_rTrawl_levy_cum_fit", (DL_FUNC) &_rTrawl_levy_cum_fit, 3},

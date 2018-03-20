@@ -22,20 +22,17 @@
 #'
 #' @export ccf_sample
 #' @useDynLib rTrawl
-ccf_sample <- function(object, h, dff = 0, lag_min = -25, lag_max = 25) {
-  # TODO
+ccf_sample <- function(object, h, dff = 0, lag_max = 25) {
+  
   x_grid1 <- object$x_grid[[1]]
   x_grid2 <- object$x_grid[[2]]
   p_grid1 <- object$p_grid[[1]]
   p_grid2 <- object$p_grid[[2]]
-  T0 <- object$T0
   TT <- object$TT
   
   if (dff < 0.5) {
     # cross correlation function of the process itself
-    # TODO
-    ccfh <- as.numeric(ccf_sample_p(h, x_grid1, p_grid1, x_grid2, p_grid2, 
-                                    T0, TT, lag_min, lag_max))
+    ccfh <- as.numeric(ccf_sample_p(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max))
   } else {
     # cross correlation of the differenced process
     # TODO

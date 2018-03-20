@@ -21,8 +21,12 @@ acf_BN_V <- function(h, trawl, trawl_par, lag_max) {
     .Call('_rTrawl_acf_BN_V', PACKAGE = 'rTrawl', h, trawl, trawl_par, lag_max)
 }
 
-cum_sample <- function(ord, x_grid, p_grid, T0, TT) {
-    .Call('_rTrawl_cum_sample', PACKAGE = 'rTrawl', ord, x_grid, p_grid, T0, TT)
+ccf_sample_p <- function(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max) {
+    .Call('_rTrawl_ccf_sample_p', PACKAGE = 'rTrawl', h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max)
+}
+
+cum_sample <- function(ord, x_grid, p_grid, TT) {
+    .Call('_rTrawl_cum_sample', PACKAGE = 'rTrawl', ord, x_grid, p_grid, TT)
 }
 
 levy_alpha2nu <- function(levy_alpha, b, beta_0) {

@@ -5,7 +5,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export()]]
-double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double T0, double TT) {
+double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double TT) {
   
   // mean and centered observations
   int n = x_grid.n_elem;

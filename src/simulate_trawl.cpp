@@ -49,7 +49,6 @@ List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string tr
 List simulate_trawl_mv(std::string levy_seed, arma::mat levy_par, List trawl, 
                        List trawl_par, arma::mat design_matrix, double T0, double TT, 
                        double observed_freq, arma::vec b) {
-  // TODO - check!!! - this is the Poisson/Skellam case
   // TODO - implement Negative Binomial multivariate case
   
   int p = design_matrix.n_rows;

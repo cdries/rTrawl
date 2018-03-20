@@ -4,7 +4,7 @@
 \alias{ccf_sample}
 \title{Sample ACF of irregularly observed time series}
 \usage{
-ccf_sample(object, h, dff = 0, lag_min = -25, lag_max = 25)
+ccf_sample(object, h, dff = 0, lag_max = 25)
 }
 \arguments{
 \item{\dots}{any other passthru pareters}

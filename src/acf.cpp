@@ -2,7 +2,7 @@
 #include "trawl_wrap.h"
 #include "observe_process.h"
 #include "cum.h"
-#include "ccf.h"
+#include "acf_ccf_helper.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;

@@ -27,3 +27,20 @@ double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double TT) {
   
   return cum;
 }
+
+double cum_dp_sample(int ord, double h, arma::vec x_grid, arma::vec diff_p, double TT) {
+  
+  int n = diff_p.n_elem;
+  double n_total = floor((TT - x_grid(0)) / h);
+  x_grid = x_grid.tail(n);
+  double k1L = arma::sum(diff_p) / n_total;
+  
+  double cum = 0.0;
+  if (ord == 1) {
+    cum = k1L;
+  } else if (ord == 2) {
+    cum = arma::sum(diff_p % diff_p) / n_total - k1L * k1L;
+  }
+  
+  return cum;
+}

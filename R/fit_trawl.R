@@ -202,8 +202,7 @@ fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
   
   # contants
   n_trawl <- number_parameters_trawl(trawl)
-  if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
-  acf_emp <- acf_sample_p(h, x_grid, p_grid, T0, TT, lag_max, multi)
+  acf_emp <- acf_sample_p(h, x_grid, p_grid, TT, lag_max)
   
   # bounds
   bounds <- trawl_bounds(trawl)

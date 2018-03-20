@@ -34,7 +34,8 @@ arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid,
   
   arma::vec T0_offset = arma::linspace(0.0, h, multi + 1);
   arma::vec acfh = arma::zeros(lag_max);
-  
+  double k2L;
+  double k1L;
   for (int mm = 0; mm < multi; mm++) {
     
     // observe process
@@ -46,19 +47,19 @@ arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid,
     arma::vec diff_p = arma::diff(obs_p);
 
     // mean center the difference observations
-    double k1L = cum_dp_sample(1, h, x_grid, diff_p, TT);
+    k1L = cum_dp_sample(1, h, obs_x, diff_p, TT);
 
     // variance
-    double k2L = cum_dp_sample(2, h, x_grid, diff_p, TT);
+    k2L = cum_dp_sample(2, h, obs_x, diff_p, TT);
 
     // autocorrelations
     for (int ii = 0; ii < lag_max; ii++) {
-      acfh(ii) += (ccf_dp_helper(h, x_grid, diff_p, x_grid, diff_p, TT, ii + 1) - k1L * k1L) / k2L;
+      acfh(ii) += (ccf_dp_helper(h, obs_x, diff_p, obs_x, diff_p, TT, ii + 1) - k1L * k1L) / k2L;
     }
   }
   
   acfh /= multi;
-  
+
   return acfh;
 }
 

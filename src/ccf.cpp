@@ -60,19 +60,19 @@ arma::vec ccf_sample_dp(double h, arma::vec x_grid1, arma::vec p_grid1, arma::ve
     arma::vec diff_p2 = arma::diff(obs_p2);
     
     // mean center the differences observations
-    double mu1 = cum_dp_sample(1, h, x_grid1, diff_p1, TT);
-    double mu2 = cum_dp_sample(1, h, x_grid2, diff_p2, TT);
+    double mu1 = cum_dp_sample(1, h, obs_x1, diff_p1, TT);
+    double mu2 = cum_dp_sample(1, h, obs_x2, diff_p2, TT);
     
     // standard deviations
-    double sd1 = sqrt(cum_dp_sample(2, h, x_grid1, diff_p1, TT));
-    double sd2 = sqrt(cum_dp_sample(2, h, x_grid2, diff_p2, TT));
+    double sd1 = sqrt(cum_dp_sample(2, h, obs_x1, diff_p1, TT));
+    double sd2 = sqrt(cum_dp_sample(2, h, obs_x2, diff_p2, TT));
     
     // cross correlations
     for (int ii = 0; ii < lag_max; ii++) {
-      ccfh(ii) += (ccf_dp_helper(h, x_grid1, diff_p1, x_grid2, diff_p2, TT, lag_max - ii) - mu1 * mu2) / (sd1 * sd2);
+      ccfh(ii) += (ccf_dp_helper(h, obs_x1, diff_p1, obs_x2, diff_p2, TT, lag_max - ii) - mu1 * mu2) / (sd1 * sd2);
     }
     for (int ii = lag_max; ii < n_lags; ii++) {
-      ccfh(ii) += (ccf_dp_helper(h, x_grid2, diff_p2, x_grid1, diff_p1, TT, ii - lag_max) - mu1 * mu2) / (sd1 * sd2);
+      ccfh(ii) += (ccf_dp_helper(h, obs_x2, diff_p2, obs_x1, diff_p1, TT, ii - lag_max) - mu1 * mu2) / (sd1 * sd2);
     }
   }
   

@@ -42,38 +42,21 @@ arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid,
     arma::vec obs_x = obs_process["x_grid_observed"];
     arma::vec obs_p = obs_process["p_grid_observed"];
     
-    // observation grid of the returns
-    int n = obs_x.n_elem;
-    obs_x = obs_x.tail(n - 1);
-    n--;
-    
-    // mean and centered observations
+    // take differences
     arma::vec diff_p = arma::diff(obs_p);
-    double n_full = floor((TT - T0 - T0_offset(mm)) / h);
-    double k1 = arma::sum(diff_p) / n_full;
-    diff_p -= k1;
-    
+
+    // mean center the difference observations
+    double k1L = cum_dp_sample(1, h, x_grid, diff_p, TT);
+
     // variance
-    double k2 = arma::sum(diff_p % diff_p) / n_full;
-    
-    // autocorrelation
-    for (int ii = 1; ii < lag_max + 1; ii++) {
-      double ac = 0.0;
-      for (int tt = 1; tt < n; tt++) {
-        int kk = tt - 1;
-        while ((kk > -0.5) && (tt - kk < ii + 0.5)) {
-          if ((obs_x(kk) > obs_x(tt) - (ii + 1.0) * h) && (obs_x(kk) < obs_x(tt) - (ii - 1.0) * h)) {
-            ac += obs_p(kk) * obs_x(tt);
-            kk = -1;
-          } else {
-            kk++;
-          }
-        }
-      }
-      ac /= n_full - ii;
-      acfh(ii) += ac / k2;
+    double k2L = sqrt(cum_dp_sample(2, h, x_grid, diff_p, TT));
+
+    // autocorrelations
+    for (int ii = 0; ii < lag_max; ii++) {
+      acfh(ii) += (ccf_dp_helper(h, x_grid, diff_p, x_grid, diff_p, TT, ii + 1) - k1L * k1L) / k2L;
     }
   }
+  
   acfh /= multi;
   
   return acfh;

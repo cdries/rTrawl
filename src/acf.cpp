@@ -49,7 +49,7 @@ arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid,
     double k1L = cum_dp_sample(1, h, x_grid, diff_p, TT);
 
     // variance
-    double k2L = sqrt(cum_dp_sample(2, h, x_grid, diff_p, TT));
+    double k2L = cum_dp_sample(2, h, x_grid, diff_p, TT);
 
     // autocorrelations
     for (int ii = 0; ii < lag_max; ii++) {
@@ -85,7 +85,7 @@ arma::vec acf_trawl_dp(double h, std::string trawl,
     acfh = arma::zeros(lag_max);
   } else {
     acfh = (-leb.tail(lag_max) + 2.0 * leb.subvec(1, lag_max) - leb.head(lag_max)) / 
-      (2.0 * (leb(1) - leb(0)) + h * b / (1.0 - b));
+      (2.0 * (leb(0) - leb(1)) + h * b / (1.0 - b));
   }
   
   return acfh;

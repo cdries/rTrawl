@@ -22,11 +22,10 @@
 #'
 #' @export acf_sample
 #' @useDynLib rTrawl
-acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, multi = 1) {
+acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, ...) {
   
   x_grid <- object$x_grid
   p_grid <- object$p_grid
-  T0 <- object$T0
   TT <- object$TT
   
   if (dff < 0.5) {
@@ -34,6 +33,8 @@ acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, multi
     acfh <- as.numeric(acf_sample_p(h, x_grid, p_grid, TT, lag_max))
   } else {
     # ACF of the differenced process
+    T0 <- object$T0
+    if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
     acfh <- as.numeric(acf_sample_dp(h, x_grid, p_grid, T0, TT, lag_max, multi))
   }
   
@@ -70,7 +71,6 @@ acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {
   
   trawl <- object$trawl
   trawl_par <- object$trawl_par
-  b <- object$b
   
   if (dff < 0.5) {
     # ACF of the process itself - 
@@ -78,6 +78,7 @@ acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {
     acfh <- as.numeric(acf_trawl_p(h, trawl, trawl_par, lag_max))
   } else {
     # ACF of the differenced process
+    b <- object$b
     acfh <- as.numeric(acf_trawl_dp(h, trawl, trawl_par, b, lag_max))
   }
   

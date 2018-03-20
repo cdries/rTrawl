@@ -158,9 +158,9 @@ arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_pa
     }
     
     if (trawl1 == "exp" && trawl2 == "exp") {
-      leb = leb_EXP_EXP(hii, trawl_par1_ii(0), trawl_par2_ii(0));
+      leb(ii) = leb_EXP_EXP(hii, trawl_par1_ii(0), trawl_par2_ii(0));
     } else {
-      leb = leb_GEN_GEN(hii, trawl1_ii, trawl_par1_ii, trawl2_ii, trawl_par2_ii);
+      leb(ii) = leb_GEN_GEN(hii, trawl1_ii, trawl_par1_ii, trawl2_ii, trawl_par2_ii);
     }
     
   }

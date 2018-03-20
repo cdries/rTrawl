@@ -77,7 +77,11 @@ ccf_trawl <- function(object, h, dff = 0, lag_max = 25) {
   if (dff < 0.5) {
     # ACF of the process itself -
     # TODO: make correct when b not equal to zero
-    ccfh <- as.numeric(ccf_trawl_p(h, trawl1, trawl_par1, trawl2, trawl_par2, lag_max))
+    levy_seed <- object$levy_seed
+    levy_par <- object$levy_par
+    design_matrix <- object$design_matrix
+    ccfh <- as.numeric(ccf_trawl_p(h, trawl1, trawl_par1, trawl2, trawl_par2, 
+                                   levy_seed, levy_par, design_matrix, lag_max))
   } else {
     # ACF of the differenced process
     # TODO

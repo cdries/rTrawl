@@ -62,3 +62,18 @@ arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample
   
   return levy_par;
 }
+
+arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat design_matrix) {
+  
+  arma::mat varcovar;
+  if (levy_seed == "Poisson" || levy_seed == "Skellam") {
+    varcovar = design_matrix * arma::diagmat(levy_par.col(0)) * design_matrix.t();
+  // } else if (levy_seed == "negBin") {
+  //   // TODO
+  } else {
+    stop("prove valid Lévy seed");
+  }
+  
+  return varcovar;
+}
+

@@ -118,8 +118,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ccf_trawl_p
-arma::vec ccf_trawl_p(double h, std::string trawl1, arma::vec trawl_par1, std::string trawl2, arma::vec trawl_par2, int lag_max);
-RcppExport SEXP _rTrawl_ccf_trawl_p(SEXP hSEXP, SEXP trawl1SEXP, SEXP trawl_par1SEXP, SEXP trawl2SEXP, SEXP trawl_par2SEXP, SEXP lag_maxSEXP) {
+arma::vec ccf_trawl_p(double h, std::string trawl1, arma::vec trawl_par1, std::string trawl2, arma::vec trawl_par2, std::string levy_seed, arma::mat levy_par, arma::mat design_matrix, int lag_max);
+RcppExport SEXP _rTrawl_ccf_trawl_p(SEXP hSEXP, SEXP trawl1SEXP, SEXP trawl_par1SEXP, SEXP trawl2SEXP, SEXP trawl_par2SEXP, SEXP levy_seedSEXP, SEXP levy_parSEXP, SEXP design_matrixSEXP, SEXP lag_maxSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -128,8 +128,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type trawl_par1(trawl_par1SEXP);
     Rcpp::traits::input_parameter< std::string >::type trawl2(trawl2SEXP);
     Rcpp::traits::input_parameter< arma::vec >::type trawl_par2(trawl_par2SEXP);
+    Rcpp::traits::input_parameter< std::string >::type levy_seed(levy_seedSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type levy_par(levy_parSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type design_matrix(design_matrixSEXP);
     Rcpp::traits::input_parameter< int >::type lag_max(lag_maxSEXP);
-    rcpp_result_gen = Rcpp::wrap(ccf_trawl_p(h, trawl1, trawl_par1, trawl2, trawl_par2, lag_max));
+    rcpp_result_gen = Rcpp::wrap(ccf_trawl_p(h, trawl1, trawl_par1, trawl2, trawl_par2, levy_seed, levy_par, design_matrix, lag_max));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -330,7 +333,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_acf_BN_V", (DL_FUNC) &_rTrawl_acf_BN_V, 4},
     {"_rTrawl_ccf_sample_p", (DL_FUNC) &_rTrawl_ccf_sample_p, 7},
     {"_rTrawl_ccf_sample_dp", (DL_FUNC) &_rTrawl_ccf_sample_dp, 9},
-    {"_rTrawl_ccf_trawl_p", (DL_FUNC) &_rTrawl_ccf_trawl_p, 6},
+    {"_rTrawl_ccf_trawl_p", (DL_FUNC) &_rTrawl_ccf_trawl_p, 9},
     {"_rTrawl_cum_sample", (DL_FUNC) &_rTrawl_cum_sample, 4},
     {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},

@@ -3,6 +3,7 @@
 #include "observe_process.h"
 #include "cum.h"
 #include "acf_ccf_helper.h"
+#include "levy_wrap.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
@@ -17,7 +18,7 @@ arma::vec ccf_sample_p(double h, arma::vec x_grid1, arma::vec p_grid1, arma::vec
   
   // centered observations
   p_grid1 -= cum_sample(1, x_grid1, p_grid1, TT);
-  p_grid1 -= cum_sample(1, x_grid2, p_grid2, TT);
+  p_grid2 -= cum_sample(1, x_grid2, p_grid2, TT);
   
   // standard deviations
   double sd1 = sqrt(cum_sample(2, x_grid1, p_grid1, TT));
@@ -83,7 +84,9 @@ arma::vec ccf_sample_dp(double h, arma::vec x_grid1, arma::vec p_grid1, arma::ve
 
 // [[Rcpp::export()]]
 arma::vec ccf_trawl_p(double h, std::string trawl1, arma::vec trawl_par1, 
-                      std::string trawl2, arma::vec trawl_par2, int lag_max) {
+                      std::string trawl2, arma::vec trawl_par2, 
+                      std::string levy_seed, arma::mat levy_par, arma::mat design_matrix,
+                      int lag_max) {
   
   arma::vec h_vec = arma::linspace(-h * lag_max, h * lag_max, 2 * lag_max + 1);
   arma::vec ccfh = leb_autocorrelator(h_vec, trawl1, trawl_par1, trawl2, trawl_par2);
@@ -91,7 +94,7 @@ arma::vec ccf_trawl_p(double h, std::string trawl1, arma::vec trawl_par1,
   arma::vec leb1 = leb_AtA(arma::zeros(1), trawl1, trawl_par1);
   arma::vec leb2 = leb_AtA(arma::zeros(1), trawl2, trawl_par2);
   
-  arma::mat varcovar = arma::ones(2, 1);
+  arma::mat varcovar = levy_varcovar(levy_seed, levy_par, design_matrix);
   
   ccfh *= varcovar(0, 1) / sqrt(leb1 * leb2 * varcovar(1, 1) * varcovar(0, 0));
   

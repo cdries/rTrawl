@@ -29,8 +29,8 @@ ccf_sample_dp <- function(h, x_grid1, p_grid1, x_grid2, p_grid2, T0, TT, lag_max
     .Call('_rTrawl_ccf_sample_dp', PACKAGE = 'rTrawl', h, x_grid1, p_grid1, x_grid2, p_grid2, T0, TT, lag_max, multi)
 }
 
-ccf_trawl_p <- function(h, trawl1, trawl_par1, trawl2, trawl_par2, lag_max) {
-    .Call('_rTrawl_ccf_trawl_p', PACKAGE = 'rTrawl', h, trawl1, trawl_par1, trawl2, trawl_par2, lag_max)
+ccf_trawl_p <- function(h, trawl1, trawl_par1, trawl2, trawl_par2, levy_seed, levy_par, design_matrix, lag_max) {
+    .Call('_rTrawl_ccf_trawl_p', PACKAGE = 'rTrawl', h, trawl1, trawl_par1, trawl2, trawl_par2, levy_seed, levy_par, design_matrix, lag_max)
 }
 
 cum_sample <- function(ord, x_grid, p_grid, TT) {

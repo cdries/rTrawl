@@ -3,6 +3,7 @@
 #include "trawl_gamma.h"
 #include "trawl_invgauss.h"
 #include "trawl_gig.h"
+#include "trawl_helper.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
@@ -135,3 +136,35 @@ arma::mat d_leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
   
   return d_leb;
 }
+
+arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_par1,
+                             std::string trawl2, arma::vec trawl_par2) {
+  
+  int n_h = h.n_elem;
+  arma::vec leb = arma::zeros(n_h);
+  for (int ii = 0; ii < n_h; ii++) {
+    
+    double hii = h(ii);
+    std::string trawl1_ii = trawl1;
+    std::string trawl2_ii = trawl2;
+    arma::vec trawl_par1_ii = trawl_par1;
+    arma::vec trawl_par2_ii = trawl_par2;
+    if (hii < 0) {
+      hii = -hii;
+      trawl1_ii = trawl2;
+      trawl2_ii = trawl1;
+      trawl_par1_ii = trawl_par2;
+      trawl_par2_ii = trawl_par1;
+    }
+    
+    if (trawl1 == "exp" && trawl2 == "exp") {
+      leb = leb_EXP_EXP(hii, trawl_par1_ii(0), trawl_par2_ii(0));
+    } else {
+      leb = leb_GEN_GEN(hii, trawl1_ii, trawl_par1_ii, trawl2_ii, trawl_par2_ii);
+    }
+    
+  }
+  
+  return leb;
+}
+

@@ -67,22 +67,23 @@ ccf_sample <- function(object, h, dff = 0, lag_max = 25, ...) {
 #' TODO
 #'
 #' @export ccf_trawl
-ccf_trawl <- function(object, h, dff = 0, lag_min = -25, lag_max = 25) {
+ccf_trawl <- function(object, h, dff = 0, lag_max = 25) {
   
-  # trawl <- object$trawl
-  # trawl_par <- object$trawl_par
-  # b <- object$b
-  # 
-  # if (dff < 0.5) {
-  #   # ACF of the process itself - 
-  #   # TODO: make correct when b not equal to zero
-  #   acfh <- as.numeric(acf_trawl_p(h, trawl, trawl_par, lag_max))
-  # } else {
-  #   # ACF of the differenced process
-  #   acfh <- as.numeric(acf_trawl_dp(h, trawl, trawl_par, b, lag_max))
-  # }
-  # 
-  # if (!drop_zero) acfh <- c(1, acfh)
-  
-  return (acfh)
+  trawl1 <- object$trawl[[1]]
+  trawl2 <- object$trawl[[2]]
+  trawl_par1 <- object$trawl_par[[1]]
+  trawl_par2 <- object$trawl_par[[2]]
+
+  if (dff < 0.5) {
+    # ACF of the process itself -
+    # TODO: make correct when b not equal to zero
+    ccfh <- as.numeric(acf_trawl_p(h, trawl, trawl_par, lag_max))
+  } else {
+    # ACF of the differenced process
+    # TODO
+    # b <- object$b
+    # acfh <- as.numeric(acf_trawl_dp(h, trawl, trawl_par, b, lag_max))
+  }
+
+  return (ccfh)
 }

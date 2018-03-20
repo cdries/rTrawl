@@ -4,7 +4,7 @@
 \alias{ccf_trawl}
 \title{ACF of Trawl processes}
 \usage{
-ccf_trawl(object, h, dff = 0, lag_min = -25, lag_max = 25)
+ccf_trawl(object, h, dff = 0, lag_max = 25)
 }
 \arguments{
 \item{\dots}{any other passthru pareters}

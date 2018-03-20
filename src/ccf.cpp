@@ -81,17 +81,23 @@ arma::vec ccf_sample_dp(double h, arma::vec x_grid1, arma::vec p_grid1, arma::ve
   return ccfh;
 }
 
-// // [[Rcpp::export()]]
-// arma::vec acf_trawl_p(double h, std::string trawl, arma::vec trawl_par, int lag_max) {
-//   
-//   arma::vec h_vec = arma::linspace(0.0, lag_max * h, lag_max + 1);
-//   arma::vec acfh = leb_AtA(h_vec, trawl, trawl_par);
-//   acfh /= acfh(0);
-//   acfh = acfh.tail(lag_max);
-//   
-//   return acfh;
-// }
-// 
+// [[Rcpp::export()]]
+arma::vec ccf_trawl_p(double h, std::string trawl1, arma::vec trawl_par1, 
+                      std::string trawl2, arma::vec trawl_par2, int lag_max) {
+  
+  arma::vec h_vec = arma::linspace(-h * lag_max, h * lag_max, 2 * lag_max + 1);
+  arma::vec ccfh = leb_autocorrelator(h_vec, trawl1, trawl_par1, trawl2, trawl_par2);
+  
+  arma::vec leb1 = leb_AtA(arma::zeros(1), trawl1, trawl_par1);
+  arma::vec leb2 = leb_AtA(arma::zeros(1), trawl2, trawl_par2);
+  
+  arma::mat varcovar = arma::ones(2, 1);
+  
+  ccfh *= varcovar(0, 1) / sqrt(leb1 * leb2 * varcovar(1, 1) * varcovar(0, 0));
+  
+  return ccfh;
+}
+
 // // [[Rcpp::export()]]
 // arma::vec acf_trawl_dp(double h, std::string trawl, 
 //                        arma::vec trawl_par,  double b, int lag_max) {

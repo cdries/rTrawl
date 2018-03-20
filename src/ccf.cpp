@@ -28,7 +28,7 @@ arma::vec ccf_sample_p(double h, arma::vec x_grid1, arma::vec p_grid1, arma::vec
     ccfh(ii) = ccf_helper(x_grid1, p_grid1, x_grid2, p_grid2, TT, (lag_max - ii) * h);
   }
   for (int ii = lag_max; ii < n_lags; ii++) {
-    ccfh(ii) = ccf_helper(x_grid2, p_grid2, x_grid1, p_grid1, TT, (lag_max - ii) * h);
+    ccfh(ii) = ccf_helper(x_grid2, p_grid2, x_grid1, p_grid1, TT, (ii - lag_max) * h);
   }
   
   // as correlations
@@ -72,7 +72,7 @@ arma::vec ccf_sample_dp(double h, arma::vec x_grid1, arma::vec p_grid1, arma::ve
       ccfh(ii) += (ccf_dp_helper(h, x_grid1, diff_p1, x_grid2, diff_p2, TT, lag_max - ii) - mu1 * mu2) / (sd1 * sd2);
     }
     for (int ii = lag_max; ii < n_lags; ii++) {
-      ccfh(ii) += (ccf_dp_helper(h, x_grid2, diff_p2, x_grid1, diff_p1, TT, lag_max - ii) - mu1 * mu2) / (sd1 * sd2);
+      ccfh(ii) += (ccf_dp_helper(h, x_grid2, diff_p2, x_grid1, diff_p1, TT, ii - lag_max) - mu1 * mu2) / (sd1 * sd2);
     }
   }
   

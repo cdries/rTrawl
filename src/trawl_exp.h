@@ -13,4 +13,6 @@ arma::vec leb_AtA_EXP(arma::vec h, double lambda);
 
 arma::mat d_leb_AtA_EXP(arma::vec h, double lambda);
 
+arma::vec trawl_EXP(arma::vec h, double lambda);
+
 #endif

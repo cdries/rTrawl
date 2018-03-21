@@ -31,3 +31,10 @@ arma::mat d_leb_AtA_GAMMA(arma::vec h, double alpha, double H) {
   
   return d_leb;
 }
+
+arma::vec trawl_GAMMA(arma::vec h, double alpha, double H) {
+  
+  arma::vec val = arma::pow(1.0 - h / alpha, -H);
+  
+  return val;
+}

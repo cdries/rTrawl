@@ -28,4 +28,6 @@ arma::mat d_leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par);
 arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_par1,
                              std::string trawl2, arma::vec trawl_par2);
 
+arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par);
+
 #endif

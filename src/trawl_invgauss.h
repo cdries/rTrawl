@@ -14,4 +14,6 @@ arma::vec leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta);
 
 arma::mat d_leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta);
 
+arma::vec trawl_INVGAUSS(arma::vec h, double gamma, double delta);
+
 #endif

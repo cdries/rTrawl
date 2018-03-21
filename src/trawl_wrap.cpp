@@ -162,9 +162,26 @@ arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_pa
     } else {
       leb(ii) = leb_GEN_GEN(hii, trawl1_ii, trawl_par1_ii, trawl2_ii, trawl_par2_ii);
     }
-    
   }
   
   return leb;
+}
+
+arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par) {
+  
+  arma::vec val;
+  if (trawl == "exp") {
+    val = trawl_EXP(h, trawl_par(0));
+  } else if (trawl == "gamma") {
+    val = trawl_GAMMA(h, trawl_par(0), trawl_par(1));
+  } else if (trawl == "invGauss") {
+    val = trawl_INVGAUSS(h, trawl_par(0), trawl_par(1));
+  } else if (trawl == "gig") {
+    val = trawl_GIG(h, trawl_par(0), trawl_par(1), trawl_par(2));
+  } else {
+    stop("provide a valid trawl");
+  }
+  
+  return val;
 }
 

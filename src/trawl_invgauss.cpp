@@ -63,3 +63,11 @@ arma::mat d_leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
   
   return d_leb;
 }
+
+arma::vec trawl_INVGAUSS(arma::vec h, double gamma, double delta) {
+  
+  arma::vec z = arma::sqrt(1.0 - 2.0 * h / (gamma * gamma));
+  arma::vec val = arma::pow(z, -1.0) * exp(delta * gamma * (1.0 - z));
+  
+  return val;
+}

@@ -14,4 +14,6 @@ arma::vec leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu);
 
 arma::mat d_leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu);
 
+arma::vec trawl_GIG(arma::vec h, double gamma, double delta, double nu);
+
 #endif

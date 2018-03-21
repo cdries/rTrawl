@@ -13,4 +13,6 @@ arma::vec leb_AtA_GAMMA(arma::vec h, double alpha, double H);
 
 arma::mat d_leb_AtA_GAMMA(arma::vec h, double alpha, double H);
 
+arma::vec trawl_GAMMA(arma::vec h, double alpha, double H);
+
 #endif

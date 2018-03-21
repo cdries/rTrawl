@@ -71,3 +71,16 @@ arma::mat d_leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
   
   return d_leb;
 }
+
+arma::vec trawl_GIG(arma::vec h, double gamma, double delta, double nu) {
+  
+  int n_h = h.n_elem;
+  arma::vec z = arma::sqrt(1.0 - 2.0 * h / (gamma * gamma));
+  arma::vec val = arma::zeros(n_h);
+  for (int ii = 0; ii < n_h; ii++) {
+    val(ii) = Rf_bessel_k(gamma * delta * z(ii), nu, 1.0);
+  }
+  val *= arma::pow(z, -nu) / Rf_bessel_k(gamma * delta, nu, 1.0);
+
+  return val;
+}

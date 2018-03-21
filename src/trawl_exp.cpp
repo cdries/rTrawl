@@ -26,3 +26,10 @@ arma::mat d_leb_AtA_EXP(arma::vec h, double lambda) {
   
   return d_leb;
 }
+
+arma::vec trawl_EXP(arma::vec h, double lambda) {
+  
+  arma::vec val = exp(lambda * h);
+  
+  return val;
+}

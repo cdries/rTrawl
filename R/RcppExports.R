@@ -33,6 +33,10 @@ ccf_trawl_p <- function(h, trawl1, trawl_par1, trawl2, trawl_par2, levy_seed, le
     .Call('_rTrawl_ccf_trawl_p', PACKAGE = 'rTrawl', h, trawl1, trawl_par1, trawl2, trawl_par2, levy_seed, levy_par, design_matrix, lag_max)
 }
 
+ccf_trawl_dp <- function(h, trawl1, trawl_par1, trawl2, trawl_par2, b, levy_seed, levy_par, design_matrix, lag_max) {
+    .Call('_rTrawl_ccf_trawl_dp', PACKAGE = 'rTrawl', h, trawl1, trawl_par1, trawl2, trawl_par2, b, levy_seed, levy_par, design_matrix, lag_max)
+}
+
 cum_sample <- function(ord, x_grid, p_grid, TT) {
     .Call('_rTrawl_cum_sample', PACKAGE = 'rTrawl', ord, x_grid, p_grid, TT)
 }

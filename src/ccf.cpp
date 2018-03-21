@@ -101,20 +101,13 @@ arma::vec ccf_trawl_p(double h, std::string trawl1, arma::vec trawl_par1,
   return ccfh;
 }
 
-// // [[Rcpp::export()]]
-// arma::vec acf_trawl_dp(double h, std::string trawl, 
-//                        arma::vec trawl_par,  double b, int lag_max) {
-//   
-//   arma::vec h_vec = arma::linspace(0.0, (lag_max + 1.0) * h, lag_max + 2);
-//   arma::vec leb = leb_AtA(h_vec, trawl, trawl_par);
-//   
-//   arma::vec acfh(lag_max);
-//   if (b > 1.0 - std::numeric_limits<double>::epsilon()) {
-//     acfh = arma::zeros(lag_max);
-//   } else {
-//     acfh = (-leb.tail(lag_max) + 2.0 * leb.subvec(1, lag_max) - leb.head(lag_max)) / 
-//       (2.0 * (leb(1) - leb(0)) + h * b / (1.0 - b));
-//   }
-//   
-//   return acfh;
-// }
+// [[Rcpp::export()]]
+arma::vec ccf_trawl_dp(double h, std::string trawl1, arma::vec trawl_par1, 
+                       std::string trawl2, arma::vec trawl_par2, arma::vec b,
+                       std::string levy_seed, arma::mat levy_par, arma::mat design_matrix, 
+                       int lag_max) {
+  
+  arma::vec ccfh = arma::zeros(5);
+  
+  return ccfh;
+}

@@ -2,10 +2,7 @@
 #define TRAWL_HELPER_H
 
 #include "RcppArmadillo.h"
-#include "trawl_exp.h"
-#include "trawl_gamma.h"
-#include "trawl_invgauss.h"
-#include "trawl_gig.h"
+#include "trawl_wrap.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;

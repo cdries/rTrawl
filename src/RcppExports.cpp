@@ -272,6 +272,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// trawl_function
+arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par);
+RcppExport SEXP _rTrawl_trawl_function(SEXP hSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type h(hSEXP);
+    Rcpp::traits::input_parameter< std::string >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type trawl_par(trawl_parSEXP);
+    rcpp_result_gen = Rcpp::wrap(trawl_function(h, trawl, trawl_par));
+    return rcpp_result_gen;
+END_RCPP
+}
 // vs_sample
 arma::vec vs_sample(arma::vec h, arma::vec x_grid, arma::vec p_grid, double T0, double TT, int multi);
 RcppExport SEXP _rTrawl_vs_sample(SEXP hSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP multiSEXP) {
@@ -344,6 +357,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_trawl_bounds", (DL_FUNC) &_rTrawl_trawl_bounds, 1},
     {"_rTrawl_trawl_x0", (DL_FUNC) &_rTrawl_trawl_x0, 1},
     {"_rTrawl_leb_AtA", (DL_FUNC) &_rTrawl_leb_AtA, 3},
+    {"_rTrawl_trawl_function", (DL_FUNC) &_rTrawl_trawl_function, 3},
     {"_rTrawl_vs_sample", (DL_FUNC) &_rTrawl_vs_sample, 6},
     {"_rTrawl_vs_C", (DL_FUNC) &_rTrawl_vs_C, 8},
     {"_rTrawl_vs_SY", (DL_FUNC) &_rTrawl_vs_SY, 8},

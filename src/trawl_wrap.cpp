@@ -167,6 +167,7 @@ arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_pa
   return leb;
 }
 
+// [[Rcpp::export()]]
 arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par) {
   
   arma::vec val;

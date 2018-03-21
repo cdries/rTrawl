@@ -73,6 +73,10 @@ leb_AtA <- function(h, trawl, trawl_par) {
     .Call('_rTrawl_leb_AtA', PACKAGE = 'rTrawl', h, trawl, trawl_par)
 }
 
+trawl_function <- function(h, trawl, trawl_par) {
+    .Call('_rTrawl_trawl_function', PACKAGE = 'rTrawl', h, trawl, trawl_par)
+}
+
 vs_sample <- function(h, x_grid, p_grid, T0, TT, multi) {
     .Call('_rTrawl_vs_sample', PACKAGE = 'rTrawl', h, x_grid, p_grid, T0, TT, multi)
 }

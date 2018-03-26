@@ -111,22 +111,19 @@ arma::vec ccf_trawl_dp(double h, std::string trawl1, arma::vec trawl_par1,
   
   arma::vec h_vec = arma::linspace(-h * lag_max, h * lag_max, 2 * lag_max + 1);
   
-  arma::vec lebCC(2 * lag_max + 1);
-  arma::vec lebAC(2 * lag_max + 1);
-  arma::vec lebCA(2 * lag_max + 1);
-  arma::vec lebAA(2 * lag_max + 1);
   for (int ii = 0; ii < 2 * lag_max + 1; ii++) {
-    lebCC(ii) = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
-          true, true, trawl1, trawl2, trawl_par1, trawl_par2);
-    lebAC(ii) = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
-          false, true, trawl1, trawl2, trawl_par1, trawl_par2);
-    lebCA(ii) = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
-          true, false, trawl1, trawl2, trawl_par1, trawl_par2);
-    lebAA(ii) = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
-          false, false, trawl1, trawl2, trawl_par1, trawl_par2);
+    double lebCC = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
+                                              true, true, trawl1, trawl2, trawl_par1, trawl_par2);
+    double lebAC = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
+                                              false, true, trawl1, trawl2, trawl_par1, trawl_par2);
+    double lebCA = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
+                                              true, false, trawl1, trawl2, trawl_par1, trawl_par2);
+    double lebAA = leb_autocorrelator_general(-h, 0.0, h_vec(ii) - h, h_vec(ii), b(0), b(1),
+                                              false, false, trawl1, trawl2, trawl_par1, trawl_par2);
+    
+    ccfh(ii) = lebCC - lebAC - lebCA + lebAA;
   }
-  ccfh = lebCC - lebAC - lebCA + lebAA;
-  
+
   arma::mat varcovar = levy_varcovar(levy_seed, levy_par, design_matrix);
   
   arma::vec h_vec2 = arma::zeros(2);
@@ -138,13 +135,5 @@ arma::vec ccf_trawl_dp(double h, std::string trawl1, arma::vec trawl_par1,
   
   ccfh *= varcovar(0, 1) / (sd1 * sd2);
   
-  
-  // List out;
-  // out["ccfh"] = ccfh;
-  // out["lebCC"] = lebCC;
-  // out["lebCA"] = lebCA;
-  // out["lebAC"] = lebAC;
-  // out["lebAA"] = lebAA;
-  // 
   return ccfh;
 }

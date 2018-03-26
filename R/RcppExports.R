@@ -81,10 +81,6 @@ trawl_function <- function(h, trawl, trawl_par) {
     .Call('_rTrawl_trawl_function', PACKAGE = 'rTrawl', h, trawl, trawl_par)
 }
 
-leb_autocorrelator_general <- function(t1, t2, s1, s2, b1, b2, area1, area2, trawl1, trawl2, trawl_par1, trawl_par2) {
-    .Call('_rTrawl_leb_autocorrelator_general', PACKAGE = 'rTrawl', t1, t2, s1, s2, b1, b2, area1, area2, trawl1, trawl2, trawl_par1, trawl_par2)
-}
-
 vs_sample <- function(h, x_grid, p_grid, T0, TT, multi) {
     .Call('_rTrawl_vs_sample', PACKAGE = 'rTrawl', h, x_grid, p_grid, T0, TT, multi)
 }

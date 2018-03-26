@@ -305,28 +305,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// leb_autocorrelator_general
-double leb_autocorrelator_general(double t1, double t2, double s1, double s2, double b1, double b2, bool area1, bool area2, std::string trawl1, std::string trawl2, arma::vec trawl_par1, arma::vec trawl_par2);
-RcppExport SEXP _rTrawl_leb_autocorrelator_general(SEXP t1SEXP, SEXP t2SEXP, SEXP s1SEXP, SEXP s2SEXP, SEXP b1SEXP, SEXP b2SEXP, SEXP area1SEXP, SEXP area2SEXP, SEXP trawl1SEXP, SEXP trawl2SEXP, SEXP trawl_par1SEXP, SEXP trawl_par2SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< double >::type t1(t1SEXP);
-    Rcpp::traits::input_parameter< double >::type t2(t2SEXP);
-    Rcpp::traits::input_parameter< double >::type s1(s1SEXP);
-    Rcpp::traits::input_parameter< double >::type s2(s2SEXP);
-    Rcpp::traits::input_parameter< double >::type b1(b1SEXP);
-    Rcpp::traits::input_parameter< double >::type b2(b2SEXP);
-    Rcpp::traits::input_parameter< bool >::type area1(area1SEXP);
-    Rcpp::traits::input_parameter< bool >::type area2(area2SEXP);
-    Rcpp::traits::input_parameter< std::string >::type trawl1(trawl1SEXP);
-    Rcpp::traits::input_parameter< std::string >::type trawl2(trawl2SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type trawl_par1(trawl_par1SEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type trawl_par2(trawl_par2SEXP);
-    rcpp_result_gen = Rcpp::wrap(leb_autocorrelator_general(t1, t2, s1, s2, b1, b2, area1, area2, trawl1, trawl2, trawl_par1, trawl_par2));
-    return rcpp_result_gen;
-END_RCPP
-}
 // vs_sample
 arma::vec vs_sample(arma::vec h, arma::vec x_grid, arma::vec p_grid, double T0, double TT, int multi);
 RcppExport SEXP _rTrawl_vs_sample(SEXP hSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP multiSEXP) {
@@ -401,7 +379,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_trawl_x0", (DL_FUNC) &_rTrawl_trawl_x0, 1},
     {"_rTrawl_leb_AtA", (DL_FUNC) &_rTrawl_leb_AtA, 3},
     {"_rTrawl_trawl_function", (DL_FUNC) &_rTrawl_trawl_function, 3},
-    {"_rTrawl_leb_autocorrelator_general", (DL_FUNC) &_rTrawl_leb_autocorrelator_general, 12},
     {"_rTrawl_vs_sample", (DL_FUNC) &_rTrawl_vs_sample, 6},
     {"_rTrawl_vs_C", (DL_FUNC) &_rTrawl_vs_C, 8},
     {"_rTrawl_vs_SY", (DL_FUNC) &_rTrawl_vs_SY, 8},

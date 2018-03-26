@@ -29,7 +29,9 @@ arma::mat d_leb_AtA_EXP(arma::vec h, double lambda) {
 
 arma::vec trawl_EXP(arma::vec h, double lambda) {
   
-  arma::vec val = exp(lambda * h);
+  arma::vec val = arma::zeros(h.n_elem);
+  arma::uvec ind = find(h < std::numeric_limits<double>::epsilon());
+  val.elem(ind) = exp(lambda * h.elem(ind));
   
   return val;
 }

@@ -30,4 +30,9 @@ arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_pa
 
 arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par);
 
+double leb_autocorrelator_general(double t1, double t2, double s1, double s2,
+                                  double b1, double b2, bool area1, bool area2,
+                                  std::string trawl1, std::string trawl2,
+                                  arma::vec trawl_par1, arma::vec trawl_par2);
+
 #endif

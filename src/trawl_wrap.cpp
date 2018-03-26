@@ -186,3 +186,71 @@ arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par) {
   return val;
 }
 
+// [[Rcpp::export()]]
+double leb_autocorrelator_general(double t1, double t2, double s1, double s2, 
+                                  double b1, double b2, bool area1, bool area2,
+                                  std::string trawl1, std::string trawl2,
+                                  arma::vec trawl_par1, arma::vec trawl_par2) {
+  
+  double leb = 0.0;
+  double Nsupp1 = 100000;
+  
+  double TT = s2;
+  if (t2 < s2) TT = t2;
+  
+  arma::vec supp;
+  arma::vec val_trawl1;
+  arma::vec val_trawl2;
+  arma::vec val;
+  
+  if (area1 && area2) {
+    double T0 = s1;
+    if (t1 > s1) T0 = t1;
+    
+    if (T0 < TT) {
+      supp = -TT + (arma::logspace(0.0, 1.0, Nsupp1) - 1.0) * (TT - T0) / 9.0;
+      
+      val_trawl1 = b1 + (1.0 - b1) * trawl_function(-supp - t2, trawl1, trawl_par1);
+      val_trawl2 = b2 + (1.0 - b2) * trawl_function(-supp - s2, trawl2, trawl_par2);
+      
+      val = arma::min(val_trawl1, val_trawl2);
+      arma::mat tmp = arma::trapz(supp, val);
+      leb = tmp(0);
+    }
+  } else {
+    double T0 = TT - 100.0;
+    if (area1) T0 = t1;
+    if (area2) T0 = s1;
+    
+    if (T0 < TT) {
+      supp = -TT + (arma::logspace(0.0, 1.0, Nsupp1) - 1.0) * (TT - T0) / 9.0;
+      
+      val_trawl1 = b1 + (1.0 - b1) * trawl_function(-supp - t2, trawl1, trawl_par1);
+      val_trawl2 = b2 + (1.0 - b2) * trawl_function(-supp - s2, trawl2, trawl_par2);
+      
+      // if (!area1) val_trawl2 = arma::max(val_trawl2, arma::ones(Nsupp1) * b1);
+      // if (!area2) val_trawl1 = arma::max(val_trawl1, arma::ones(Nsupp1) * b2);
+      arma::vec val_trawl1_min = arma::zeros(Nsupp1);
+      arma::vec val_trawl2_min = arma::zeros(Nsupp1);
+      if (!area1) {
+        val_trawl1 = b1 + (1.0 - b1) * trawl_function(-supp - t1, trawl1, trawl_par1);
+        val_trawl1_min = b1 + (1.0 - b1) * trawl_function(-supp - t2, trawl1, trawl_par1);
+      }
+      if (!area2) {
+        val_trawl2 = b2 + (1.0 - b2) * trawl_function(-supp - s1, trawl2, trawl_par2);
+        val_trawl2_min = b2 + (1.0 - b2) * trawl_function(-supp - s2, trawl2, trawl_par2);
+      }
+      arma::vec val_min = arma::max(val_trawl1_min, val_trawl2_min);
+      
+      val = arma::min(val_trawl1, val_trawl2);
+      arma::uvec ind = find(val < val_min);
+      val.elem(ind) = val_min.elem(ind);
+      arma::mat tmp = arma::trapz(supp, val - val_min);
+      
+      leb = tmp(0);
+    }
+  }
+  
+  return leb;
+}
+

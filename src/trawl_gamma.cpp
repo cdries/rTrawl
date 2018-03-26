@@ -34,7 +34,9 @@ arma::mat d_leb_AtA_GAMMA(arma::vec h, double alpha, double H) {
 
 arma::vec trawl_GAMMA(arma::vec h, double alpha, double H) {
   
-  arma::vec val = arma::pow(1.0 - h / alpha, -H);
+  arma::vec val = arma::zeros(h.n_elem);
+  arma::uvec ind = find(h < std::numeric_limits<double>::epsilon());
+  val.elem(ind) = arma::pow(1.0 - h.elem(ind) / alpha, -H);
   
   return val;
 }

@@ -54,8 +54,8 @@ arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample
     levy_par = fit_SKELLAM(k1_sample, k2_sample);
   } else if (levy_seed == "negBin") {
     levy_par = fit_NEGBIN(k1_sample, k2_sample);
-  // } else if (levy_seed == "DnegBin") {
-  //   levy_par = fit_DNEGBIN(k1_sample, k2_sample);
+    // } else if (levy_seed == "DnegBin") {
+    //   levy_par = fit_DNEGBIN(k1_sample, k2_sample);
   } else {
     stop("provide valid Lévy seed");
   }
@@ -68,8 +68,8 @@ arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat des
   arma::mat varcovar;
   if (levy_seed == "Poisson" || levy_seed == "Skellam") {
     varcovar = design_matrix * arma::diagmat(levy_par.col(0)) * design_matrix.t();
-  // } else if (levy_seed == "negBin") {
-  //   // TODO
+    // } else if (levy_seed == "negBin") {
+    //   // TODO
   } else {
     stop("prove valid Lévy seed");
   }

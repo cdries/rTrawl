@@ -41,6 +41,10 @@ cum_sample <- function(ord, x_grid, p_grid, TT) {
     .Call('_rTrawl_cum_sample', PACKAGE = 'rTrawl', ord, x_grid, p_grid, TT)
 }
 
+levy_cum_mv2fit <- function(T0, TT, x_grid, p_grid, trawl, trawl_par, p) {
+    .Call('_rTrawl_levy_cum_mv2fit', PACKAGE = 'rTrawl', T0, TT, x_grid, p_grid, trawl, trawl_par, p)
+}
+
 levy_alpha2nu <- function(levy_alpha, b, beta_0) {
     .Call('_rTrawl_levy_alpha2nu', PACKAGE = 'rTrawl', levy_alpha, b, beta_0)
 }

@@ -170,6 +170,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// levy_cum_mv2fit
+List levy_cum_mv2fit(double T0, double TT, List x_grid, List p_grid, List trawl, List trawl_par, int p);
+RcppExport SEXP _rTrawl_levy_cum_mv2fit(SEXP T0SEXP, SEXP TTSEXP, SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type T0(T0SEXP);
+    Rcpp::traits::input_parameter< double >::type TT(TTSEXP);
+    Rcpp::traits::input_parameter< List >::type x_grid(x_gridSEXP);
+    Rcpp::traits::input_parameter< List >::type p_grid(p_gridSEXP);
+    Rcpp::traits::input_parameter< List >::type trawl(trawlSEXP);
+    Rcpp::traits::input_parameter< List >::type trawl_par(trawl_parSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(levy_cum_mv2fit(T0, TT, x_grid, p_grid, trawl, trawl_par, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 // levy_alpha2nu
 arma::mat levy_alpha2nu(arma::mat levy_alpha, double b, double beta_0);
 RcppExport SEXP _rTrawl_levy_alpha2nu(SEXP levy_alphaSEXP, SEXP bSEXP, SEXP beta_0SEXP) {
@@ -369,6 +386,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_ccf_trawl_p", (DL_FUNC) &_rTrawl_ccf_trawl_p, 9},
     {"_rTrawl_ccf_trawl_dp", (DL_FUNC) &_rTrawl_ccf_trawl_dp, 10},
     {"_rTrawl_cum_sample", (DL_FUNC) &_rTrawl_cum_sample, 4},
+    {"_rTrawl_levy_cum_mv2fit", (DL_FUNC) &_rTrawl_levy_cum_mv2fit, 7},
     {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},
     {"_rTrawl_levy_cum_fit", (DL_FUNC) &_rTrawl_levy_cum_fit, 3},

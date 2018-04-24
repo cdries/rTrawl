@@ -23,3 +23,12 @@ arma::mat rjump_BIVLOG(int n, double p1, double p2) {
   
   return rj;
 }
+
+double intens_BIVLOG(double m, double theta1, double theta2) {
+  
+  double alpha1 = 1.0 / (1.0 + theta1);
+  double alpha2 = 1.0 / (1.0 + theta2);
+  double intens = m * log(1.0 + alpha1 + alpha2);
+  
+  return intens;
+}

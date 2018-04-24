@@ -80,13 +80,39 @@ arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample
   return levy_par;
 }
 
+// [[Rcpp::export()]]
 arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat design_matrix) {
   
   arma::mat varcovar;
   if (levy_seed == "Poisson" || levy_seed == "Skellam") {
     varcovar = design_matrix * arma::diagmat(levy_par.col(0)) * design_matrix.t();
-    // } else if (levy_seed == "negBin") {
-    //   // TODO
+  } else if (levy_seed == "negBin") {
+    int p = design_matrix.n_rows;
+    int k = design_matrix.n_cols;
+    
+    varcovar = arma::zeros(p, p);
+    for (int ii = 0; ii < k; ii++) {
+      if (arma::sum(design_matrix.col(ii)) < 1.5) {
+        double alpha = 1.0 / (1.0 + levy_par(ii, 1));
+        double varV = levy_par(ii, 0) * alpha * alpha;
+        double eV = levy_par(ii, 0) * alpha;
+        
+        arma::uvec ind = find(design_matrix.col(ii) > 0.5);
+        varcovar(ind(0), ind(0)) += varV + eV;
+      } else {
+        double alpha_i = 1.0 / (1.0 + levy_par(ii, 1));
+        double alpha_j = 1.0 / (1.0 + levy_par(ii, 2));
+        
+        double varU = levy_par(ii, 0);
+        double eU = levy_par(ii, 0);
+        
+        arma::uvec ind = find(design_matrix.col(ii) > 0.5);
+        varcovar(ind(0), ind(1)) += alpha_i * alpha_j * varU;
+        varcovar(ind(1), ind(0)) += alpha_i * alpha_j * varU;
+        varcovar(ind(0), ind(0)) += alpha_i * alpha_i * varU + alpha_i * eU;
+        varcovar(ind(1), ind(1)) += alpha_j * alpha_j * varU + alpha_j * eU;
+      } 
+    }
   } else {
     stop("prove valid Lévy seed");
   }

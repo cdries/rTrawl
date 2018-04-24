@@ -6,6 +6,7 @@
 #include "levy_skellam.h"
 #include "levy_negbin.h"
 #include "levy_dnegbin.h"
+#include "levy_bivlog.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;

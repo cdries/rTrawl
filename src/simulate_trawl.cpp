@@ -148,7 +148,7 @@ List simulate_trawl_mv_Poisson(arma::mat levy_par, List trawl, List trawl_par,
 }
 
 // [[Rcpp::export()]]
-List simulate_trawl_mv_negBin(List levy_par, List trawl, List trawl_par, 
+List simulate_trawl_mv_negBin(arma::mat levy_par, List trawl, List trawl_par, 
                               arma::mat design_matrix, double T0, double TT, 
                               double observed_freq, arma::vec b) {
   
@@ -165,9 +165,9 @@ List simulate_trawl_mv_negBin(List levy_par, List trawl, List trawl_par,
     // latent time grid
     double intens = 0.0;
     if (arma::sum(design_matrix.col(ii)) < 1.5) {
-      intens = levy_intens("negBin", levy_par(ii));
+      intens = levy_intens("negBin", levy_par.row(ii).t());
     } else {
-      intens = levy_intens("bivlog", levy_par(ii));
+      intens = levy_intens("bivlog", levy_par.row(ii).t());
     }
     int n_jumps = rpois(1, 1.5 * (TT - T0) * intens)(0);
     arma::vec jump_times = runif(n_jumps, T0 - 0.5 * (TT - T0), TT);
@@ -176,9 +176,9 @@ List simulate_trawl_mv_negBin(List levy_par, List trawl, List trawl_par,
     // jump sizes and random seed
     arma::mat jump_sizes_factor;
     if (arma::sum(design_matrix.col(ii)) < 1.5) {
-      jump_sizes_factor = levy_rjump(n_jumps, "negBin", levy_par(ii));
+      jump_sizes_factor = levy_rjump(n_jumps, "negBin", levy_par.row(ii).t());
     } else {
-      jump_sizes_factor = levy_rjump_mv(n_jumps, 2, "bivlog", levy_par(ii));
+      jump_sizes_factor = levy_rjump_mv(n_jumps, 2, "bivlog", levy_par.row(ii).t());
     }
     arma::vec unif_seed = runif(n_jumps, 0.0, 1.0);
     

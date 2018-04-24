@@ -226,6 +226,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// levy_varcovar
+arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat design_matrix);
+RcppExport SEXP _rTrawl_levy_varcovar(SEXP levy_seedSEXP, SEXP levy_parSEXP, SEXP design_matrixSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type levy_seed(levy_seedSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type levy_par(levy_parSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type design_matrix(design_matrixSEXP);
+    rcpp_result_gen = Rcpp::wrap(levy_varcovar(levy_seed, levy_par, design_matrix));
+    return rcpp_result_gen;
+END_RCPP
+}
 // simulate_trawl_uv
 List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string trawl, arma::vec trawl_par, double T0, double TT, double observed_freq, double b);
 RcppExport SEXP _rTrawl_simulate_trawl_uv(SEXP levy_seedSEXP, SEXP levy_parSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP observed_freqSEXP, SEXP bSEXP) {
@@ -263,12 +276,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // simulate_trawl_mv_negBin
-List simulate_trawl_mv_negBin(List levy_par, List trawl, List trawl_par, arma::mat design_matrix, double T0, double TT, double observed_freq, arma::vec b);
+List simulate_trawl_mv_negBin(arma::mat levy_par, List trawl, List trawl_par, arma::mat design_matrix, double T0, double TT, double observed_freq, arma::vec b);
 RcppExport SEXP _rTrawl_simulate_trawl_mv_negBin(SEXP levy_parSEXP, SEXP trawlSEXP, SEXP trawl_parSEXP, SEXP design_matrixSEXP, SEXP T0SEXP, SEXP TTSEXP, SEXP observed_freqSEXP, SEXP bSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type levy_par(levy_parSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type levy_par(levy_parSEXP);
     Rcpp::traits::input_parameter< List >::type trawl(trawlSEXP);
     Rcpp::traits::input_parameter< List >::type trawl_par(trawl_parSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type design_matrix(design_matrixSEXP);
@@ -407,6 +420,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 3},
     {"_rTrawl_levy_cum_fit", (DL_FUNC) &_rTrawl_levy_cum_fit, 3},
+    {"_rTrawl_levy_varcovar", (DL_FUNC) &_rTrawl_levy_varcovar, 3},
     {"_rTrawl_simulate_trawl_uv", (DL_FUNC) &_rTrawl_simulate_trawl_uv, 8},
     {"_rTrawl_simulate_trawl_mv_Poisson", (DL_FUNC) &_rTrawl_simulate_trawl_mv_Poisson, 8},
     {"_rTrawl_simulate_trawl_mv_negBin", (DL_FUNC) &_rTrawl_simulate_trawl_mv_negBin, 8},

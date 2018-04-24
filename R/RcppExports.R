@@ -57,6 +57,10 @@ levy_cum_fit <- function(levy_seed, k1_sample, k2_sample) {
     .Call('_rTrawl_levy_cum_fit', PACKAGE = 'rTrawl', levy_seed, k1_sample, k2_sample)
 }
 
+levy_varcovar <- function(levy_seed, levy_par, design_matrix) {
+    .Call('_rTrawl_levy_varcovar', PACKAGE = 'rTrawl', levy_seed, levy_par, design_matrix)
+}
+
 simulate_trawl_uv <- function(levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b) {
     .Call('_rTrawl_simulate_trawl_uv', PACKAGE = 'rTrawl', levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b)
 }

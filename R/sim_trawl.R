@@ -39,9 +39,16 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
     lsim <- simulate_trawl_uv(levy_seed, as.numeric(levy_par), trawl, as.numeric(trawl_par), 
                               as.numeric(T0), as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
   } else {
-    design_matrix <- object$design_matrix
-    lsim <- simulate_trawl_mv(levy_seed, levy_par, trawl, trawl_par, design_matrix, as.numeric(T0), 
-                              as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
+    if (sum(levy_seed %in% c("Poisson", "Skellam")) > 0.5) {
+      design_matrix <- object$design_matrix
+      lsim <- simulate_trawl_mv_Poisson(levy_par, trawl, trawl_par, design_matrix, as.numeric(T0), 
+                                        as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
+    } else if (levy_seed == "negBin") {
+      lsim <- simulate_trawl_mv_negBin(levy_par, trawl, trawl_par, design_matrix, as.numeric(T0), 
+                                       as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
+    } else {
+      stop("Multivariate trawls are not implemented for this choice of Lévy seed.")
+    }
   }
   
   # export

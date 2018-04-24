@@ -61,8 +61,12 @@ simulate_trawl_uv <- function(levy_seed, levy_par, trawl, trawl_par, T0, TT, obs
     .Call('_rTrawl_simulate_trawl_uv', PACKAGE = 'rTrawl', levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b)
 }
 
-simulate_trawl_mv <- function(levy_seed, levy_par, trawl, trawl_par, design_matrix, T0, TT, observed_freq, b) {
-    .Call('_rTrawl_simulate_trawl_mv', PACKAGE = 'rTrawl', levy_seed, levy_par, trawl, trawl_par, design_matrix, T0, TT, observed_freq, b)
+simulate_trawl_mv_Poisson <- function(levy_par, trawl, trawl_par, design_matrix, T0, TT, observed_freq, b) {
+    .Call('_rTrawl_simulate_trawl_mv_Poisson', PACKAGE = 'rTrawl', levy_par, trawl, trawl_par, design_matrix, T0, TT, observed_freq, b)
+}
+
+simulate_trawl_mv_negBin <- function(levy_par, trawl, trawl_par, design_matrix, T0, TT, observed_freq, b) {
+    .Call('_rTrawl_simulate_trawl_mv_negBin', PACKAGE = 'rTrawl', levy_par, trawl, trawl_par, design_matrix, T0, TT, observed_freq, b)
 }
 
 number_parameters_trawl <- function(trawl) {

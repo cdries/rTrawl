@@ -51,8 +51,8 @@ arma::mat levy_rjump_mv(int n, int k, std::string levy_seed, arma::vec levy_par)
   
   arma::mat rj = arma::zeros(n, k);
   if (levy_seed == "bivlog") {
-    double alpha1 = 1.0 / (1.0 + levy_par(1));
-    double alpha2 = 1.0 / (1.0 + levy_par(2));
+    double alpha1 = levy_par(1) / (1.0 - levy_par(1));
+    double alpha2 = levy_par(2) / (1.0 - levy_par(2));
     rj = rjump_BIVLOG(n, alpha1 / (alpha1 + alpha2 + 1.0), alpha2 / (alpha1 + alpha2 + 1.0));
   } else {
     stop("provide valid Lévy seed");
@@ -93,15 +93,15 @@ arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat des
     varcovar = arma::zeros(p, p);
     for (int ii = 0; ii < k; ii++) {
       if (arma::sum(design_matrix.col(ii)) < 1.5) {
-        double alpha = 1.0 / (1.0 + levy_par(ii, 1));
+        double alpha = levy_par(ii, 1) / (1.0 - levy_par(ii, 1));
         double varV = levy_par(ii, 0) * alpha * alpha;
         double eV = levy_par(ii, 0) * alpha;
         
         arma::uvec ind = find(design_matrix.col(ii) > 0.5);
         varcovar(ind(0), ind(0)) += varV + eV;
       } else {
-        double alpha_i = 1.0 / (1.0 + levy_par(ii, 1));
-        double alpha_j = 1.0 / (1.0 + levy_par(ii, 2));
+        double alpha_i = levy_par(ii, 1) / (1.0 - levy_par(ii, 1));
+        double alpha_j = levy_par(ii, 2) / (1.0 - levy_par(ii, 2));
         
         double varU = levy_par(ii, 0);
         double eU = levy_par(ii, 0);

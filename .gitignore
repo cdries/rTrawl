@@ -2,12 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-
 .Rbuildignore
 .Rproj.user/**
-
 *.Rproj
-
 *.so
-
 *.o
+.directory

@@ -193,7 +193,8 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
   levy_par <- levy_alpha2nu(levy_alpha, b, beta_0)
   
   return (list("trawl" = trawl, "trawl_par" = trawl_par, "b" = b,
-               "levy_seed" = "nonpar", "levy_par" = levy_par))
+               "levy_seed" = "nonpar", "levy_par" = levy_par, 
+               "beta_0" = beta_0, "levy_alpha" = levy_alpha, "include_cum1" = include_cum1))
 }
 
 

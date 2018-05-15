@@ -79,6 +79,10 @@ acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {
   } else {
     # ACF of the differenced process
     b <- object$b
+    if (is.null(b)) {
+      b <- object$xi / object$omega
+      b <- b / (1 + b)
+    }
     acfh <- as.numeric(acf_trawl_dp(h, trawl, trawl_par, b, lag_max))
   }
   

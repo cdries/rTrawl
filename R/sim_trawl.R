@@ -39,7 +39,7 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
     lsim <- simulate_trawl_uv(levy_seed, as.numeric(levy_par), trawl, as.numeric(trawl_par), 
                               as.numeric(T0), as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
   } else {
-    if (sum(levy_seed %in% c("Poisson", "Skellam")) > 0.5) {
+    if (levy_seed %in% c("Poisson", "Skellam")) {
       design_matrix <- object$design_matrix
       lsim <- simulate_trawl_mv_Poisson(levy_par, trawl, trawl_par, design_matrix, as.numeric(T0), 
                                         as.numeric(TT), as.numeric(observed_freq), as.numeric(b))

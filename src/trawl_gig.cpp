@@ -82,7 +82,7 @@ arma::vec trawl_GIG(arma::vec h, double gamma, double delta, double nu) {
       val(ii) = Rf_bessel_k(gamma * delta * z(ii), nu, 1.0);
     }
   }
-  val *= arma::pow(z, -nu) / Rf_bessel_k(gamma * delta, nu, 1.0);
+  val %= arma::pow(z, -nu) / Rf_bessel_k(gamma * delta, nu, 1.0);
 
   return val;
 }

@@ -153,7 +153,6 @@ levy_cum_fit_mv <- function(levy_seed, k1_sample, k2_sample, design_matrix, cons
     optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 10000, 
                         print_level = 0, check_derivatives = FALSE)
     ub <- rep(Inf, k)
-    # ub[1:nrow(design_matrix)] <- 1
     sol <- nloptr::nloptr(x0 = x0, eval_f = obj, lb = rep(0, k), ub = ub, opts = optscontrol)
     levy_par <- theta2theta_par(sol$solution, design_matrix)
   }

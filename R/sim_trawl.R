@@ -23,6 +23,7 @@
 #' #TODO
 #'
 #' @importFrom methods hasArg
+#' @importFrom Rcpp evalCpp
 #' @useDynLib rTrawl
 #' @export sim_trawl
 sim_trawl <- function(object, univariate = TRUE, ...) {
@@ -67,7 +68,8 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
               "observed_freq" = observed_freq)
   
   if (hasArg(observe_latent)) {
-    if (list(...)$observe_latent) {
+    observe_latent <- list(...)$observe_latent
+    if (observe_latent) {
       sim$x_grid <- lsim$x_grid_latent
       sim$p_grid <- lsim$p_grid_latent
     }

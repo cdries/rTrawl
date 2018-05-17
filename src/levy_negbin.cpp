@@ -5,6 +5,14 @@ using namespace Rcpp;
 
 
 double intens_NEGBIN(double m, double theta) {
+  // Poisson intensity for the negative binomial levy process,
+  // see Barndorff-Nielsen, Lunde, Shephard and Veraart (2014)
+  //
+  // arguments:
+  // m        : first parameter in the negative binomial
+  // theta    : second parameter in the negative binomial
+  //
+  // author: Dries Cornilly
   
   double intens = -m * log(1.0 - theta);
   
@@ -12,6 +20,14 @@ double intens_NEGBIN(double m, double theta) {
 }
 
 arma::vec rjump_NEGBIN(int n, double theta) {
+  // sample jump sizes for the negative binomial levy process,
+  // see Barndorff-Nielsen, Lunde, Shephard and Veraart (2014)
+  //
+  // arguments:
+  // n        : sample size
+  // theta    : second parameter in the negative binomial
+  //
+  // author: Dries Cornilly
   
   arma::vec rj = runif(n, 0.0, 1.0);
   double log1theta = -log(1.0 - theta);
@@ -31,6 +47,15 @@ arma::vec rjump_NEGBIN(int n, double theta) {
 }
 
 double cum_NEGBIN(int ord, double m, double theta) {
+  // compute cumulants of the negative binomial distribution,
+  // see Barndorff-Nielsen, Lunde, Shephard and Veraart (2014)
+  //
+  // arguments:
+  // ord      : order of the cumulant - 1 or 2
+  // m        : first parameter in the negative binomial
+  // theta    : second parameter in the negative binomial
+  //
+  // author: Dries Cornilly
   
   double cum = 0.0;
   if (ord == 1) cum = m * theta / (1 - theta);

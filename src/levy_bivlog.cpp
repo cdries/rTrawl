@@ -6,6 +6,14 @@ using namespace Rcpp;
 
 
 arma::mat rjump_BIVLOG(int n, double p1, double p2) {
+  // bivariate logarithmic distribution, as described in Veraart (2018)
+  // 
+  // arguments:
+  // n        : sample size
+  // p1       : probability parameter for marginal 1
+  // p2       : probability parameter for marginal 2
+  //
+  // author: Dries Cornilly
   
   arma::mat rj = arma::zeros(n, 2);
   rj.col(0) = rjump_NEGBIN(n, p1 / (1.0 - p2));
@@ -28,6 +36,15 @@ arma::mat rjump_BIVLOG(int n, double p1, double p2) {
 }
 
 double intens_BIVLOG(double m, double theta1, double theta2) {
+  // Poisson intensity for bivariate negative binomial distribution,
+  // see Veraart (2018)
+  //
+  // arguments:
+  // m      : first parameter in the negative binomial, joint for both marginals
+  // theta1 : second parameter in the negative binomial, marginal 1
+  // theta2 : second parameter in the negative binomial, marginal 2
+  //
+  // author: Dries Cornilly
   
   double alpha1 = theta1 / (1.0 - theta1);
   double alpha2 = theta2 / (1.0 - theta2);

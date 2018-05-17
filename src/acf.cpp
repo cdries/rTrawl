@@ -10,6 +10,16 @@ using namespace Rcpp;
 
 // [[Rcpp::export()]]
 arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid, double TT, int lag_max) {
+  // computes sample autocorrelation function of the process
+  // 
+  // arguments:
+  // h        : time interval between observations / observation frequency
+  // x_grid   : vector with times for given process values 
+  // p_grid   : vector with process values
+  // TT       : endpoint of observation interval
+  // lag_max  : number of lags to look back, excludes lag 0
+  //
+  // author: Dries Cornilly
   
   arma::vec acfh = arma::zeros(lag_max);
   
@@ -31,6 +41,18 @@ arma::vec acf_sample_p(double h, arma::vec x_grid, arma::vec p_grid, double TT, 
 // [[Rcpp::export()]]
 arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid, 
                         double T0, double TT, int lag_max, int multi) {
+  // computes sample autocorrelation function of the differenced process
+  // 
+  // arguments:
+  // h        : length of differences / observation frequency
+  // x_grid   : vector with times for given process values 
+  // p_grid   : vector with process values
+  // T0       : beginpoint of observation interval
+  // TT       : endpoint of observation interval
+  // lag_max  : number of lags to look back, excludes lag 0
+  // multi    : number of offsets to use in order to reduce estimation variance
+  //
+  // author: Dries Cornilly
   
   arma::vec T0_offset = arma::linspace(0.0, h, multi + 1);
   arma::vec acfh = arma::zeros(lag_max);
@@ -65,6 +87,15 @@ arma::vec acf_sample_dp(double h, arma::vec x_grid, arma::vec p_grid,
 
 // [[Rcpp::export()]]
 arma::vec acf_trawl_p(double h, std::string trawl, arma::vec trawl_par, int lag_max) {
+  // computes theoretical autocorrelation function of the process
+  // 
+  // arguments:
+  // h          : time interval between observations / observation frequency
+  // trawl      : the trawl function in the process
+  // trawl_par  : trawl parameters
+  // lag_max    : number of lags to look back, excludes lag 0
+  //
+  // author: Dries Cornilly
   
   arma::vec h_vec = arma::linspace(0.0, lag_max * h, lag_max + 1);
   arma::vec acfh = leb_AtA(h_vec, trawl, trawl_par);
@@ -77,6 +108,16 @@ arma::vec acf_trawl_p(double h, std::string trawl, arma::vec trawl_par, int lag_
 // [[Rcpp::export()]]
 arma::vec acf_trawl_dp(double h, std::string trawl, 
                        arma::vec trawl_par,  double b, int lag_max) {
+  // computes theoretical autocorrelation function of the process
+  // 
+  // arguments:
+  // h          : length of differences / observation frequency
+  // trawl      : the trawl function in the process
+  // trawl_par  : trawl parameters
+  // b          : b parameter as used in Shepard and Yang (2017)
+  // lag_max    : number of lags to look back, excludes lag 0
+  //
+  // author: Dries Cornilly
   
   arma::vec h_vec = arma::linspace(0.0, (lag_max + 1.0) * h, lag_max + 2);
   arma::vec leb = leb_AtA(h_vec, trawl, trawl_par);
@@ -94,9 +135,21 @@ arma::vec acf_trawl_dp(double h, std::string trawl,
 
 // [[Rcpp::export()]]
 List acf_BN_V(double h, std::string trawl, arma::vec trawl_par, int lag_max) {
+  // computes theoretical autocorrelation function of the process
+  // together with the gradient with respect to the trawl parameters
+  // 
+  // arguments:
+  // h          : time interval between observations / observation frequency
+  // trawl      : the trawl function in the process
+  // trawl_par  : trawl parameters
+  // lag_max    : number of lags to look back, excludes lag 0
+  //
+  // author: Dries Cornilly
   
+  // get theoretical acf
   arma::vec acf_theor = acf_trawl_p(h, trawl, trawl_par, lag_max);
   
+  // compute necessary lebesgue measures and derivatives
   arma::vec h_vec = arma::linspace(0.0, lag_max * h, lag_max + 1);
   
   arma::mat dlebh = d_leb_AtA(h_vec, trawl, trawl_par);
@@ -106,6 +159,7 @@ List acf_BN_V(double h, std::string trawl, arma::vec trawl_par, int lag_max) {
   arma::mat leb0 = arma::repmat(lebh.row(0), lag_max, 1);
   arma::mat leb0_2inv = arma::pow(leb0, -2.0);
   
+  // combine into the gradient
   arma::mat acf_grad = (dlebh.tail_rows(lag_max) % leb0 - lebh.tail_rows(lag_max) % dleb0) % leb0_2inv;
   
   List out;

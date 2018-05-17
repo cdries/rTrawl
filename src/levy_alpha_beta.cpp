@@ -6,12 +6,22 @@ using namespace Rcpp;
 
 // [[Rcpp::export()]]
 List levy_alpha_beta(arma::vec p_grid, double T0, double TT) {
+  // computes instantaneous jump probabilities and
+  // jump rate, as in Shephard and Yang (2017) - needs integer jump sizes!
+  // 
+  // arguments:
+  // p_grid   : vector with process values
+  // T0       : beginpoint of observation interval
+  // TT       : endpoint of observation interval
+  //
+  // author: Dries Cornilly
   
   double Mprec = std::numeric_limits<double>::epsilon();
   
   arma::vec Dp_grid = diff(p_grid, 1);
   double beta_0 = sum(abs(diff(p_grid)) > sqrt(Mprec)) / (TT - T0);
   
+  // build basis based on unique observed jump sizes
   arma::vec LB = sort(unique(Dp_grid));
   int n_basis = LB.n_elem;
   arma::mat alpha_LB_temp(n_basis, 2);

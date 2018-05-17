@@ -22,6 +22,7 @@
 #' # simulations estimation
 #' #TODO
 #'
+#' @importFrom methods hasArg
 #' @useDynLib rTrawl
 #' @export sim_trawl
 sim_trawl <- function(object, univariate = TRUE, ...) {

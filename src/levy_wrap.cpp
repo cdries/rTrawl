@@ -114,7 +114,7 @@ arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat des
       } 
     }
   } else {
-    stop("prove valid Lévy seed");
+    stop("provide valid Lévy seed");
   }
   
   return varcovar;

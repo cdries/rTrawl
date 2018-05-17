@@ -4,10 +4,20 @@
 using namespace Rcpp;
 
 
-// computes cross covariance between irregularly observed time series / h positive
-// this means time series 2 is trailing: int p_1(t) p_2(t - h) dt
 double ccf_helper(arma::vec x1_grid, arma::vec p1_grid, arma::vec x2_grid, 
                   arma::vec p2_grid, double TT, double h) {
+  // computes cross covariance between irregularly observed time series / h positive
+  // this means time series 2 is trailing: int p_1(t) p_2(t - h) dt
+  // 
+  // arguments:
+  // x1_grid    : vector with times for given process values - process 1
+  // p1_grid    : vector with process values - process 1
+  // x2_grid    : vector with times for given process values - process 2
+  // p2_grid    : vector with process values - process 2
+  // T0         : beginpoint of observation interval
+  // TT         : endpoint of observation interval
+  //
+  // author: Dries Cornilly
   
   int n1 = x1_grid.n_elem;
   int n2 = x2_grid.n_elem;
@@ -85,11 +95,22 @@ double ccf_helper(arma::vec x1_grid, arma::vec p1_grid, arma::vec x2_grid,
   return cc;
 }
 
-// computes cross product between observed time series on h grid / h positive
-// with lg a positive (or zero) integer
-// this means time series 2 is trailing: sum p_1(t) p_2(t - lg * h)
 double ccf_dp_helper(double h, arma::vec x_grid1, arma::vec diff_p1, arma::vec x_grid2, 
                      arma::vec diff_p2, double TT, int lg) {
+  // computes cross product between observed time series on h grid / h positive
+  // with lg a positive (or zero) integer
+  // this means time series 2 is trailing: sum p_1(t) p_2(t - lg * h)
+  // 
+  // arguments:
+  // h          : length of differences / observation frequency
+  // x_grid1    : vector with times for given process values - process 1
+  // diff_p1    : vector with observed process differences - process 1
+  // x_grid2    : vector with times for given process values - process 2
+  // diff_p2    : vector with observed process differences - process 2
+  // TT         : endpoint of observation interval
+  // lg         : which lag to compute the cross products at
+  //
+  // author: Dries Cornilly
   
   int n1 = diff_p1.n_elem;
   int n2 = diff_p2.n_elem;

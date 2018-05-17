@@ -10,6 +10,13 @@ using namespace Rcpp;
 
 
 double levy_intens(std::string levy_seed, arma::vec levy_par) {
+  // wrapper function to compute Poisson intensity for some levy process
+  //
+  // arguments:
+  // levy_seed  : levy seed of the process
+  // levy_par   : corresponding parameters
+  //
+  // author: Dries Cornilly
   
   double intens = 0.0;
   if (levy_seed == "Poisson") {
@@ -30,6 +37,14 @@ double levy_intens(std::string levy_seed, arma::vec levy_par) {
 }
 
 arma::vec levy_rjump(int n, std::string levy_seed, arma::vec levy_par) {
+  // wrapper function to compute jump sizes in a compound Poisson model
+  //
+  // arguments:
+  // n          : sample size
+  // levy_seed  : levy seed of the process
+  // levy_par   : corresponding parameters
+  //
+  // author: Dries Cornilly
   
   arma::vec rj = arma::zeros(n);
   if (levy_seed == "Poisson") {
@@ -48,6 +63,15 @@ arma::vec levy_rjump(int n, std::string levy_seed, arma::vec levy_par) {
 }
 
 arma::mat levy_rjump_mv(int n, int k, std::string levy_seed, arma::vec levy_par) {
+  // wrapper function to compute jump sizes in a multivariate compound Poisson model
+  //
+  // arguments:
+  // n          : sample size
+  // k          : dimension
+  // levy_seed  : levy seed of the process
+  // levy_par   : corresponding parameters
+  //
+  // author: Dries Cornilly
   
   arma::mat rj = arma::zeros(n, k);
   if (levy_seed == "bivlog") {
@@ -63,6 +87,14 @@ arma::mat levy_rjump_mv(int n, int k, std::string levy_seed, arma::vec levy_par)
 
 // [[Rcpp::export()]]
 arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample) {
+  // wrapper function to fit univariate levy seed based on its first two cumulants
+  //
+  // arguments:
+  // levy_seed  : levy seed of the process
+  // k1_sample  : first cumulant
+  // k2_sample  : second cumulant
+  //
+  // author: Dries Cornilly
   
   arma::vec levy_par;
   if (levy_seed == "Poisson") {
@@ -82,6 +114,15 @@ arma::vec levy_cum_fit(std::string levy_seed, double k1_sample, double k2_sample
 
 // [[Rcpp::export()]]
 arma::mat levy_varcovar(std::string levy_seed, arma::mat levy_par, arma::mat design_matrix) {
+  // wrapper function to compute the variance covariance matrix of a multivariate levy seed,
+  // see Veraart (2018)
+  //
+  // arguments:
+  // levy_seed      : levy seed of the process
+  // levy_par       : corresponding parameters
+  // design_matrix  : design_matrix used in the multivariate levy seed
+  //
+  // author: Dries Cornilly
   
   arma::mat varcovar;
   if (levy_seed == "Poisson" || levy_seed == "Skellam") {

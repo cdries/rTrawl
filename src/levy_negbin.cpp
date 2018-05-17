@@ -43,6 +43,7 @@ arma::vec fit_NEGBIN(double k1_sample, double k2_sample) {
   
   arma::vec levy_par = arma::ones(2);
   levy_par(1) = 1.0 - k1_sample / k2_sample;
+  if (levy_par(1) < 0) levy_par(1) = 0.001;
   levy_par(0) = (1.0 - levy_par(1)) * k1_sample / levy_par(1);
   
   return levy_par;

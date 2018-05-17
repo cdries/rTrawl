@@ -6,6 +6,17 @@ using namespace Rcpp;
 
 arma::vec survival_INVGAUSS(arma::vec unif_seed, double gamma, double delta, 
                             double Tmax, double b, double observed_freq) {
+  // computes the time an observation is covered by the inverse Gaussian trawl
+  //
+  // arguments:
+  // unif_seed  : standard uniform randomly generated numbers
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  // Tmax       : maximum observation window, times larger than this are not useful
+  // b          : b parameters, as in Shephard and Yang (2017)
+  // observed_freq : determines how accurate survival times should be approximated
+  //
+  // author: Dries Cornilly
   
   arma::vec st = Tmax * arma::ones(unif_seed.n_elem);
   arma::uvec ind_trawl = find(unif_seed > b);
@@ -23,8 +34,14 @@ arma::vec survival_INVGAUSS(arma::vec unif_seed, double gamma, double delta,
     
     if (pow(1.0 + 2.0 * upper / gamma2, -0.5) *
         exp(gd * (1.0 - sqrt(1.0 + 2.0 * upper / gamma2))) > uii) {
+      
+      // survival time is longer than maximum observation time
       st(ind_trawl(ii)) = Tmax;
+      
     } else {
+      
+      // divide and search algorithm untill the interval length containing
+      // the survival time is within the required accuracy
       while (upper - lower > eps) {
         double ulm = 0.5 * (upper + lower);
         if (pow(1.0 + 2.0 * ulm / gamma2, -0.5) *
@@ -42,6 +59,14 @@ arma::vec survival_INVGAUSS(arma::vec unif_seed, double gamma, double delta,
 }
 
 arma::vec leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
+  // computes lebesgue measure of A_0 cap A_h for the inverse Gaussian trawl
+  //
+  // arguments:
+  // h          : determines A_h, if 0, then leb(A) is computed
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  //
+  // author: Dries Cornilly
   
   arma::vec leb = gamma / delta *
     exp(delta * gamma * (1.0 - arma::sqrt(1.0 + 2.0 * h / (gamma * gamma))));
@@ -50,6 +75,15 @@ arma::vec leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
 }
 
 arma::mat d_leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
+  // derivative of the lebesgue measure of A_0 cap A_h with respect to the 
+  // trawl parameters
+  //
+  // arguments:
+  // h          : determines A_h, if 0, then leb(A) is computed
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  //
+  // author: Dries Cornilly
   
   double gamma2 = gamma * gamma;
   arma::vec sqrtdg = arma::sqrt(1.0 + 2.0 * h / gamma2);
@@ -65,6 +99,14 @@ arma::mat d_leb_AtA_INVGAUSS(arma::vec h, double gamma, double delta) {
 }
 
 arma::vec trawl_INVGAUSS(arma::vec h, double gamma, double delta) {
+  // inverse Gaussian trawl function
+  //
+  // arguments:
+  // h          : argument at which to compute the function
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  //
+  // author: Dries Cornilly
   
   arma::vec val = arma::zeros(h.n_elem);
   arma::uvec ind = find(h < std::numeric_limits<double>::epsilon());

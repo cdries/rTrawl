@@ -6,6 +6,18 @@ using namespace Rcpp;
 
 arma::vec survival_GIG(arma::vec unif_seed, double gamma, double delta, 
                        double nu, double Tmax, double b, double observed_freq) {
+  // computes the time an observation is covered by the gig trawl
+  //
+  // arguments:
+  // unif_seed  : standard uniform randomly generated numbers
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  // nu         : trawl parameter
+  // Tmax       : maximum observation window, times larger than this are not useful
+  // b          : b parameters, as in Shephard and Yang (2017)
+  // observed_freq : determines how accurate survival times should be approximated
+  //
+  // author: Dries Cornilly
   
   arma::vec st = Tmax * arma::ones(unif_seed.n_elem);
   arma::uvec ind_trawl = find(unif_seed > b);
@@ -25,8 +37,14 @@ arma::vec survival_GIG(arma::vec unif_seed, double gamma, double delta,
     if (pow(1.0 + 2.0 * upper / gamma2, -0.5 * nu) *
         Rf_bessel_k(gd * sqrt(1.0 + 2.0 * upper / gamma2), nu, 1.0) /
           Kngd > uii) {
+      
+      // survival time is longer than maximum observation time
       st(ind_trawl(ii)) = Tmax;
+      
     } else {
+      
+      // divide and search algorithm untill the interval length containing
+      // the survival time is within the required accuracy
       while (upper - lower > eps) {
         double ulm = 0.5 * (upper + lower);
         if (pow(1.0 + 2.0 * ulm / gamma2, -0.5 * nu) *
@@ -45,6 +63,15 @@ arma::vec survival_GIG(arma::vec unif_seed, double gamma, double delta,
 }
 
 arma::vec leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
+  // computes lebesgue measure of A_0 cap A_h for the gig trawl
+  //
+  // arguments:
+  // h          : determines A_h, if 0, then leb(A) is computed
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  // nu         : trawl parameter
+  //
+  // author: Dries Cornilly
   
   arma::vec z = arma::sqrt(1.0 + 2.0 * h / (gamma * gamma));
   double besseldg = Rf_bessel_k(delta * gamma, nu, 1.0);
@@ -60,6 +87,16 @@ arma::vec leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
 }
 
 arma::mat d_leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
+  // derivative of the lebesgue measure of A_0 cap A_h with respect to the 
+  // trawl parameters
+  //
+  // arguments:
+  // h          : determines A_h, if 0, then leb(A) is computed
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  // nu         : trawl parameter
+  //
+  // author: Dries Cornilly
   
   double eps = 1e-7;
   arma::vec leb_base = leb_AtA_GIG(h, gamma, delta, nu);
@@ -73,6 +110,15 @@ arma::mat d_leb_AtA_GIG(arma::vec h, double gamma, double delta, double nu) {
 }
 
 arma::vec trawl_GIG(arma::vec h, double gamma, double delta, double nu) {
+  // gig trawl function
+  //
+  // arguments:
+  // h          : argument at which to compute the function
+  // gamma      : trawl parameter
+  // delta      : trawl parameter
+  // nu         : trawl parameter
+  //
+  // author: Dries Cornilly
   
   int n_h = h.n_elem;
   arma::vec z = arma::sqrt(1.0 - 2.0 * h / (gamma * gamma));

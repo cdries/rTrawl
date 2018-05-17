@@ -8,9 +8,6 @@ export(fit_levy)
 export(fit_trawl)
 export(sim_trawl)
 export(vs_trawl)
-<<<<<<< HEAD
 importFrom(methods,hasArg)
-=======
->>>>>>> 48f229477283d4838dbda870cccbf4153062bb52
 importFrom(nloptr,nloptr)
 useDynLib(rTrawl)

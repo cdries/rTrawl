@@ -149,7 +149,7 @@ levy_cum_fit_mv <- function(levy_seed, k1_sample, k2_sample, design_matrix, cons
       return (list("objective" = val, "gradient" = grad))
     }
     
-    if (hasArg(x0)) x0 <- list(...)$x0 else x0 <- rep(0.1, k)
+    if (hasArg(x0)) x0 <- list(...)$x0 else x0 <- x0_negBin(k1_sample, k2_sample, design_matrix)
     optscontrol <- list(algorithm = "NLOPT_LD_MMA", xtol_rel = 1e-05, maxeval = 10000, 
                         print_level = 0, check_derivatives = FALSE)
     ub <- rep(Inf, k)
@@ -191,3 +191,28 @@ theta2theta_par <- function(theta, design_matrix) {
   }
   return (theta_par)
 }
+
+x0_negBin <- function(k1, k2, design_matrix) {
+  p <- length(k1)
+  ind <- rep(FALSE, length(k2))
+  kk <- 1
+  for (ii in 1:p) {
+    for (jj in ii:p) {
+      if (ii == jj) ind[kk] <- TRUE
+      kk <- kk + 1
+    }
+  }
+  k2 <- k2[ind]
+  
+  x0_mat <- matrix(NA, nrow = p, ncol = 2)
+  for (ii in 1:p) {
+    x0_mat[ii,] <- levy_cum_fit("negBin", k1[ii], k2[ii])
+  }
+  x0 <- x0_mat[, 2] / (1 - x0_mat[, 2])
+  x0_m <- rep(0, ncol(design_matrix))
+  x0_m[colSums(design_matrix) == 1] <- x0_mat[, 1]
+  x0 <- c(x0, x0_m)
+  return (x0)
+}
+
+

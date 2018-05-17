@@ -6,8 +6,13 @@ Date: 2018-03-12
 Author: Dries Cornilly
 Maintainer: Dries Cornilly <driescornilly@gmail.com>
 Description: A broad range of both univariate and multivariate trawl specifications are available for simulation. All specifications can also be estimated by a variety of different estimators.
+<<<<<<< HEAD
 License: GPL-2 | GPL-3
 Imports: methods, nloptr
+=======
+License: What license is it under?
+Imports: nloptr
+>>>>>>> 48f229477283d4838dbda870cccbf4153062bb52
 Depends: Rcpp (>= 0.12.15)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1

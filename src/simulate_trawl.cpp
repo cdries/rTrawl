@@ -10,6 +10,20 @@ using namespace Rcpp;
 // [[Rcpp::export()]]
 List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string trawl, 
                        arma::vec trawl_par, double T0, double TT, double observed_freq, double b) {
+  // simulates univariate trawl process with given specifications, returns both the
+  // latent trawl process and the trawl process observed at a requested frequency
+  //
+  // arguments:
+  // levy_seed      : levy seed of the process
+  // levy_par       : parameters for the levy seed
+  // trawl          : trawl of the process
+  // trawl_par      : parameters for the trawl
+  // T0             : beginpoint of observation interval
+  // TT             : endpoint of observation interval
+  // observed_freq  : new observation frequency
+  // b              : b parameter, as in Shephard and Yang (2017)
+  //
+  // author: Dries Cornilly
   
   // latent time grid
   double intens = levy_intens(levy_seed, levy_par);
@@ -49,6 +63,20 @@ List simulate_trawl_uv(std::string levy_seed, arma::vec levy_par, std::string tr
 List simulate_trawl_mv_Poisson(arma::mat levy_par, List trawl, List trawl_par, 
                                arma::mat design_matrix, double T0, double TT, 
                                double observed_freq, arma::vec b) {
+  // simulates multivariate Poisson / Skellam process with given specifications, returns both the
+  // latent trawl process and the trawl process observed at a requested frequency
+  //
+  // arguments:
+  // levy_par       : parameters for the levy seed, column matrix with length ncol(design_matrix)
+  // trawl          : list with trawls of the process
+  // trawl_par      : list with trawl parameters
+  // design_matrix  : X = AY, where A is the design matrix (-1, 1 or 0 entries) and Y iid Poissons
+  // T0             : beginpoint of observation interval
+  // TT             : endpoint of observation interval
+  // observed_freq  : new observation frequency
+  // b              : b parameters, as in Shephard and Yang (2017)
+  //
+  // author: Dries Cornilly
   
   int p = design_matrix.n_rows;
   int k = design_matrix.n_cols;
@@ -151,6 +179,22 @@ List simulate_trawl_mv_Poisson(arma::mat levy_par, List trawl, List trawl_par,
 List simulate_trawl_mv_negBin(arma::mat levy_par, List trawl, List trawl_par, 
                               arma::mat design_matrix, double T0, double TT, 
                               double observed_freq, arma::vec b) {
+  // simulates multivariate negative binomial process with given specifications, returns both the
+  // latent trawl process and the trawl process observed at a requested frequency,
+  // see Veraart (2018)
+  //
+  // arguments:
+  // levy_par       : parameters for the levy seed, column matrix with length ncol(design_matrix)
+  // trawl          : list with trawls of the process
+  // trawl_par      : list with trawl parameters
+  // design_matrix  : X = AY, where A is the design matrix (1 or 0 entries) and 
+  //                  Y are bivariate negative binomials or univariate negative binomials
+  // T0             : beginpoint of observation interval
+  // TT             : endpoint of observation interval
+  // observed_freq  : new observation frequency
+  // b              : b parameters, as in Shephard and Yang (2017)
+  //
+  // author: Dries Cornilly
   
   int p = design_matrix.n_rows;
   int k = design_matrix.n_cols;

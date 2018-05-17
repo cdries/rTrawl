@@ -6,6 +6,17 @@ using namespace Rcpp;
 
 List observe_process(arma::vec x_grid_latent, arma::vec p_grid_latent, 
                      double T0, double TT, double observed_freq) {
+  // returns time stamps and process values at a chosen observation frequency,
+  // handles non-equidistant observations and does not return an equidistant grid
+  //
+  // arguments:
+  // x_grid_latent  : vector with observed times
+  // p_grid_latent  : corresponding process values
+  // T0             : beginpoint of observation interval
+  // TT             : endpoint of observation interval
+  // observed_freq  : new observation frequency
+  //
+  // author: Dries Cornilly
 
   double Mprec = std::numeric_limits<double>::epsilon();
   

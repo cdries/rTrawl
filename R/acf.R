@@ -15,10 +15,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export acf_sample
 #' @useDynLib rTrawl
@@ -61,10 +61,10 @@ acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, ...) 
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export acf_trawl
 acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {

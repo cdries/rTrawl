@@ -7,6 +7,7 @@
 #' CITE TODO.
 #' @name fit_trawl
 #' @concept trawl
+#' @param object bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -15,10 +16,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export fit_trawl
 fit_trawl <- function(object, ...) {
@@ -66,7 +67,7 @@ fit_trawl <- function(object, ...) {
 }
 
 
-#' @import nloptr
+#' @importFrom nloptr nloptr
 fit_trawl_vs_C <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, include_b, ...) {
   
   # contants
@@ -134,7 +135,7 @@ fit_trawl_vs_C <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, inclu
 }
 
 
-#' @import nloptr
+#' @importFrom nloptr nloptr
 fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, include_b, ...) {
   
   # contants
@@ -198,7 +199,7 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
 }
 
 
-#' @import nloptr
+#' @importFrom nloptr nloptr
 fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
   
   # contants

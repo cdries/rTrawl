@@ -19,10 +19,10 @@ CITE TODO.
 }
 \examples{
 
-TODO
+#TODO
 
 # simulations estimation
-TODO
+#TODO
 
 }
 \references{

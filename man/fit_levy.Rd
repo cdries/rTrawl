@@ -7,6 +7,8 @@
 fit_levy(object, ...)
 }
 \arguments{
+\item{object}{bla}
+
 \item{\dots}{any other passthru pareters}
 }
 \description{
@@ -19,10 +21,10 @@ CITE TODO.
 }
 \examples{
 
-TODO
+#TODO
 
 # simulations estimation
-TODO
+#TODO
 
 }
 \references{

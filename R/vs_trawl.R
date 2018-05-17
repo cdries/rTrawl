@@ -7,6 +7,9 @@
 #' CITE TODO.
 #' @name vs_trawl
 #' @concept trawl
+#' @param object bla
+#' @param h bla
+#' @param method bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -15,10 +18,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export vs_trawl
 vs_trawl <- function(object, h, method = "sample", ...) {

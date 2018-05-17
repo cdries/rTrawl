@@ -7,6 +7,10 @@
 #' CITE TODO.
 #' @name ccf_sample
 #' @concept trawl
+#' @param object bla
+#' @param h bla
+#' @param dff bla
+#' @param lag_max bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -15,10 +19,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export ccf_sample
 #' @useDynLib rTrawl
@@ -53,6 +57,10 @@ ccf_sample <- function(object, h, dff = 0, lag_max = 25, ...) {
 #' CITE TODO.
 #' @name ccf_trawl
 #' @concept trawl
+#' @param object bla
+#' @param h bla
+#' @param dff bla
+#' @param lag_max bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -61,10 +69,10 @@ ccf_sample <- function(object, h, dff = 0, lag_max = 25, ...) {
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export ccf_trawl
 ccf_trawl <- function(object, h, dff = 0, lag_max = 25) {

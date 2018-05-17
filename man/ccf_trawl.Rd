@@ -7,6 +7,14 @@
 ccf_trawl(object, h, dff = 0, lag_max = 25)
 }
 \arguments{
+\item{object}{bla}
+
+\item{h}{bla}
+
+\item{dff}{bla}
+
+\item{lag_max}{bla}
+
 \item{\dots}{any other passthru pareters}
 }
 \description{
@@ -19,10 +27,10 @@ CITE TODO.
 }
 \examples{
 
-TODO
+#TODO
 
 # simulations estimation
-TODO
+#TODO
 
 }
 \references{

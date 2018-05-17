@@ -49,7 +49,7 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
       lsim <- simulate_trawl_mv_negBin(levy_par, trawl, trawl_par, design_matrix, as.numeric(T0), 
                                        as.numeric(TT), as.numeric(observed_freq), as.numeric(b))
     } else {
-      stop("Multivariate trawls are not implemented for this choice of Lévy seed.")
+      stop("Multivariate trawls are not implemented for this choice of Levy seed.")
     }
   }
   

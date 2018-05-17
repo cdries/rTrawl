@@ -1,12 +1,13 @@
 Package: rTrawl
 Type: Package
-Title: Simulatino and estimation of trawl processes
+Title: Simulation and estimation of trawl processes
 Version: 1.0
 Date: 2018-03-12
 Author: Dries Cornilly
 Maintainer: Dries Cornilly <driescornilly@gmail.com>
 Description: A broad range of both univariate and multivariate trawl specifications are available for simulation. All specifications can also be estimated by a variety of different estimators.
-License: What license is it under?
+License: GPL-2 | GPL-3
+Imports: nloptr
 Depends: Rcpp (>= 0.12.15)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1

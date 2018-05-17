@@ -7,6 +7,8 @@
 #' CITE TODO.
 #' @name sim_trawl
 #' @concept trawl
+#' @param object bla
+#' @param univariate bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -15,10 +17,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @useDynLib rTrawl
 #' @export sim_trawl

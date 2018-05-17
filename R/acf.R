@@ -7,6 +7,11 @@
 #' CITE TODO.
 #' @name acf_sample
 #' @concept trawl
+#' @param object bla
+#' @param h bla
+#' @param dff bla
+#' @param lag_max bla
+#' @param drop_zero bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -15,10 +20,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export acf_sample
 #' @useDynLib rTrawl
@@ -53,6 +58,11 @@ acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, ...) 
 #' CITE TODO.
 #' @name acf_trawl
 #' @concept trawl
+#' @param object bla
+#' @param h bla
+#' @param dff bla
+#' @param lag_max bla
+#' @param drop_zero bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -61,10 +71,10 @@ acf_sample <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE, ...) 
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export acf_trawl
 acf_trawl <- function(object, h, dff = 0, lag_max = 25, drop_zero = TRUE) {

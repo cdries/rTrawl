@@ -7,6 +7,12 @@
 vs_trawl(object, h, method = "sample", ...)
 }
 \arguments{
+\item{object}{bla}
+
+\item{h}{bla}
+
+\item{method}{bla}
+
 \item{\dots}{any other passthru pareters}
 }
 \description{
@@ -19,10 +25,10 @@ CITE TODO.
 }
 \examples{
 
-TODO
+#TODO
 
 # simulations estimation
-TODO
+#TODO
 
 }
 \references{

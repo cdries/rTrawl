@@ -7,6 +7,7 @@
 #' CITE TODO.
 #' @name fit_levy
 #' @concept trawl
+#' @param object bla
 #' @param \dots any other passthru pareters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
@@ -15,10 +16,10 @@
 #'
 #' @examples
 #'
-#' TODO
+#' #TODO
 #'
 #' # simulations estimation
-#' TODO
+#' #TODO
 #'
 #' @export fit_levy
 fit_levy <- function(object, ...) {
@@ -36,8 +37,8 @@ fit_levy <- function(object, ...) {
     
     if (length(trawl) == 1) {
       lebA <- leb_AtA(0.0, trawl, trawl_par)
-      k1_sample <- cum_sample(1L, as.numeric(x_grid), as.numeric(p_grid), as.numeric(TT)) / lebA
-      k2_sample <- cum_sample(2L, as.numeric(x_grid), as.numeric(p_grid), as.numeric(TT)) / lebA
+      k1_sample <- cum_sample(1L, as.numeric(object$x_grid), as.numeric(object$p_grid), as.numeric(object$TT)) / lebA
+      k2_sample <- cum_sample(2L, as.numeric(object$x_grid), as.numeric(object$p_grid), as.numeric(object$TT)) / lebA
     } else {
       k_temp <- levy_cum_mv2fit(object$T0, object$TT, object$x_grid, object$p_grid, trawl, trawl_par, length(trawl))
       k1_sample <- k_temp$k1_sample
@@ -58,6 +59,7 @@ fit_levy <- function(object, ...) {
 }
 
 
+#' @importFrom nloptr nloptr
 levy_cum_fit_mv <- function(levy_seed, k1_sample, k2_sample, design_matrix, constraints, ...) {
   
   p <- nrow(design_matrix)

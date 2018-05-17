@@ -7,6 +7,10 @@
 sim_trawl(object, univariate = TRUE, ...)
 }
 \arguments{
+\item{object}{bla}
+
+\item{univariate}{bla}
+
 \item{\dots}{any other passthru pareters}
 }
 \description{
@@ -19,10 +23,10 @@ CITE TODO.
 }
 \examples{
 
-TODO
+#TODO
 
 # simulations estimation
-TODO
+#TODO
 
 }
 \references{

@@ -13,7 +13,7 @@ double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double TT) {
   int n = x_grid.n_elem;
   arma::vec diff_x = arma::diff(x_grid);
   double k1L = (arma::sum(diff_x % p_grid.head(n - 1)) +
-                (TT - x_grid(n - 1)) * p_grid(n - 1)) / (TT - p_grid(0));
+                (TT - x_grid(n - 1)) * p_grid(n - 1)) / (TT - x_grid(0));
   
   double cum = 0.0;
   if (ord == 1) {
@@ -24,7 +24,7 @@ double cum_sample(int ord, arma::vec x_grid, arma::vec p_grid, double TT) {
     
     // variance
     cum = (arma::sum(diff_x % p_grid.head(n - 1) % p_grid.head(n - 1)) +
-      (TT - x_grid(n - 1)) * p_grid(n - 1) * p_grid(n - 1)) / (TT - p_grid(0));
+      (TT - x_grid(n - 1)) * p_grid(n - 1) * p_grid(n - 1)) / (TT - x_grid(0));
   }
   
   return cum;

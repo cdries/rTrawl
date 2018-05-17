@@ -8,6 +8,17 @@ using namespace Rcpp;
 
 // [[Rcpp::export()]]
 arma::vec vs_sample(arma::vec h, arma::vec x_grid, arma::vec p_grid, double T0, double TT, int multi) {
+  // sample variance signature values, see Shephard and Yang (2017)
+  //
+  // arguments:
+  // h        : length of differences / observation frequency
+  // x_grid   : vector with times for given process values 
+  // p_grid   : vector with process values
+  // T0       : beginpoint of observation interval
+  // TT       : endpoint of observation interval
+  // multi    : number of offsets to use in order to reduce estimation variance
+  //
+  // author: Dries Cornilly
   
   int n_h = h.n_elem;
   double DTT = TT - T0;
@@ -31,6 +42,19 @@ arma::vec vs_sample(arma::vec h, arma::vec x_grid, arma::vec p_grid, double T0, 
 // [[Rcpp::export()]]
 List vs_C(arma::vec h, std::string trawl, arma::vec trawl_par, double omega,
           double xi, bool include_b, double eta, bool include_cum1) {
+  // theoretical variance signature plot and its gradient, see XXX
+  //
+  // arguments:
+  // h          : length of differences / observation frequency
+  // trawl      : trawl of the process
+  // trawl_par  : values for the trawl
+  // omega      : second cumulant of the noise process
+  // xi         : second cumulant of the efficient process
+  // include_b  : whether or not to include an efficient part (xi)
+  // eta        : squared first cumulant of the efficient part
+  // include_cum1 : whether or not to include the first cumulant 
+  //
+  // author: Dries Cornilly
   
   int n_h = h.n_elem;
   
@@ -57,6 +81,19 @@ List vs_C(arma::vec h, std::string trawl, arma::vec trawl_par, double omega,
 // [[Rcpp::export()]]
 List vs_SY(arma::vec h, std::string trawl, arma::vec trawl_par, double beta_0,
            arma::mat levy_alpha, bool include_cum1, double b, bool include_b) {
+  // theoretical variance signature plot and its gradient, see Shephard and Yang (2017)
+  //
+  // arguments:
+  // h          : length of differences / observation frequency
+  // trawl      : trawl of the process
+  // trawl_par  : values for the trawl
+  // beta_0     : rate of observed price changes, see Shephard and Yang (2017)
+  // levy_alpha : instantaneous jump probabilities, see Shephard and Yang (2017)
+  // include_cum1 : whether or not to include the first cumulant
+  // b          : b value used, see Shephard and Yang (2017)
+  // include_b  : whether or not to include an efficient part (xi)
+  //
+  // author: Dries Cornilly
   
   int n_h = h.n_elem;
   

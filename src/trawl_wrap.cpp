@@ -11,6 +11,17 @@ using namespace Rcpp;
 
 arma::vec trawl_times(arma::vec unif_seed, std::string trawl, arma::vec trawl_par,
                       double observed_freq, double Tmax, double b) {
+  // compute the time an observation is coverd by the trawl set 
+  //
+  // arguments:
+  // unif_seed  : standard uniform randomly generated numbers
+  // trawl      : trawl of the process
+  // trawl_par  : trawl parameters
+  // observed_freq : determines how accurate survival times should be approximated
+  // Tmax       : maximum observation window, times larger than this are not useful
+  // b          : b parameters, as in Shephard and Yang (2017)
+  //
+  // author: Dries Cornilly
   
   arma::vec surv_times(unif_seed.n_elem);
   if (trawl == "exp") {
@@ -30,6 +41,12 @@ arma::vec trawl_times(arma::vec unif_seed, std::string trawl, arma::vec trawl_pa
 
 // [[Rcpp::export()]]
 int number_parameters_trawl(std::string trawl) {
+  // gives the number of parameters for each trawl
+  //
+  // arguments:
+  // trawl      : trawl of the process
+  //
+  // author: Dries Cornilly
   
   int n = 0;
   if (trawl == "exp") {
@@ -49,6 +66,12 @@ int number_parameters_trawl(std::string trawl) {
 
 // [[Rcpp::export()]]
 List trawl_bounds(std::string trawl) {
+  // provides upper and lower bounds for each of the trawl parameters
+  //
+  // arguments:
+  // trawl      : trawl of the process
+  //
+  // author: Dries Cornilly
   
   arma::vec lb;
   arma::vec ub;
@@ -79,6 +102,12 @@ List trawl_bounds(std::string trawl) {
 
 // [[Rcpp::export()]]
 arma::vec trawl_x0(std::string trawl) {
+  // provides initial values for each of the trawl parameters
+  //
+  // arguments:
+  // trawl      : trawl of the process
+  //
+  // author: Dries Cornilly
   
   arma::vec x0;
   if (trawl == "exp") {
@@ -102,6 +131,14 @@ arma::vec trawl_x0(std::string trawl) {
 
 // [[Rcpp::export()]]
 arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
+  // wrapper function to compute the lebesgue measure of A_0 cap A_h
+  //
+  // arguments:
+  // h          : determines A_h, if 0, then leb(A) is computed
+  // trawl      : trawl of the process
+  // trawl_par  : trawl parameters
+  //
+  // author: Dries Cornilly
   
   arma::vec leb;
   if (trawl == "exp") {
@@ -120,6 +157,15 @@ arma::vec leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
 }
 
 arma::mat d_leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
+  // wrapper function to compute gradient the lebesgue measure of A_0 cap A_h
+  // with respect to the trawl parameters
+  //
+  // arguments:
+  // h          : determines A_h, if 0, then leb(A) is computed
+  // trawl      : trawl of the process
+  // trawl_par  : trawl parameters
+  //
+  // author: Dries Cornilly
   
   arma::mat d_leb;
   if (trawl == "exp") {
@@ -139,6 +185,16 @@ arma::mat d_leb_AtA(arma::vec h, std::string trawl, arma::vec trawl_par) {
 
 arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_par1,
                              std::string trawl2, arma::vec trawl_par2) {
+  // wrapper function to compute the lebesgue measure of the minimum of trawl 1 and trawl 2
+  //
+  // arguments:
+  // h          : argument for A_h^1 cap A_0^2 with h positive and -h at 2 for h negative
+  // trawl1     : trawl 1
+  // trawl_par1 : trawl parameters for trawl 1
+  // trawl2     : trawl 2
+  // trawl_par2 : trawl parameters for trawl 2
+  //
+  // author: Dries Cornilly
   
   int n_h = h.n_elem;
   arma::vec leb = arma::zeros(n_h);
@@ -169,6 +225,16 @@ arma::vec leb_autocorrelator(arma::vec h, std::string trawl1, arma::vec trawl_pa
 
 // [[Rcpp::export()]]
 arma::vec trawl_function(arma::vec h, std::string trawl, arma::vec trawl_par) {
+  // wrapper function to each of the trawl functions
+  //
+  // arguments:
+  // h          : argument at which to compute the function
+  // trawl1     : trawl 1
+  // trawl_par1 : trawl parameters for trawl 1
+  // trawl2     : trawl 2
+  // trawl_par2 : trawl parameters for trawl 2
+  //
+  // author: Dries Cornilly
   
   arma::vec val;
   if (trawl == "exp") {
@@ -190,6 +256,24 @@ double leb_autocorrelator_general(double t1, double t2, double s1, double s2,
                                   double b1, double b2, bool area1, bool area2,
                                   std::string trawl1, std::string trawl2,
                                   arma::vec trawl_par1, arma::vec trawl_par2) {
+  // helper function to compute the lebesgue measure at the intersection of two 
+  // trawls, mainly used when working with differenced series
+  //
+  // arguments:
+  // t1         : lower bound for trawl 1
+  // t2         : upper bound for trawl 1
+  // s1         : lower bound for trawl 2
+  // s2         : upper bound for trawl 2
+  // b1         : b parameter for trawl 1, see Shephard and Yang (2017)
+  // b2         : b parameter for trawl 2, see Shephard and Yang (2017)
+  // area1      : boolean indicating if the area under b1 is measured or not for trawl 1
+  // area2      : boolean indicating if the area under b2 is measured or not for trawl 2
+  // trawl1     : trawl 1
+  // trawl2     : trawl 2
+  // trawl_par1 : trawl parameters for trawl 1
+  // trawl_par2 : trawl parameters for trawl 2
+  //
+  // author: Dries Cornilly
   
   double leb = 0.0;
   double Nsupp1 = 100000;

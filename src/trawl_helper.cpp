@@ -5,8 +5,16 @@
 using namespace Rcpp;
 
 
-// h always positive! - trawl 1 is on (-infty, 0) - trawl 2 is on (-infty, h)
 double leb_EXP_EXP(double h, double lambda1, double lambda2) {
+  // compute lebesgue measure of the minimum of trawl 1 and trawl 2 for exponential trawls,
+  // h always positive! - trawl 1 is on (-infty, 0) - trawl 2 is on (-infty, h)
+  //
+  // arguments:
+  // h          : argument for the support of trawl 2
+  // lambda1    : trawl parameter for trawl 1
+  // lambda2    : trawl parameter for trawl 2
+  //
+  // author: Dries Cornilly
   
   double leb;
   
@@ -23,6 +31,17 @@ double leb_EXP_EXP(double h, double lambda1, double lambda2) {
 // h always positive! - trawl 1 is on (-infty, 0) - trawl 2 is on (-infty, h)
 double leb_GEN_GEN(double h, std::string trawl1, arma::vec trawl_par1, 
                    std::string trawl2, arma::vec trawl_par2) {
+  // approximate lebesgue measure of the minimum of trawl 1 and trawl 2 for general trawls,
+  // h always positive! - trawl 1 is on (-infty, 0) - trawl 2 is on (-infty, h)
+  //
+  // arguments:
+  // h          : argument for the support of trawl 2
+  // trawl1     : trawl 1
+  // trawl_par1 : trawl parameters for trawl 1
+  // trawl2     : trawl 2
+  // trawl_par2 : trawl parameters for trawl 2
+  //
+  // author: Dries Cornilly
   
   double ub = 100.0;
   double Nsupp1 = 10000;

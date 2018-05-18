@@ -6,7 +6,8 @@
 #' the object is either an output object from sim_trawl for the empirical autocorrelation
 #' values, or an output object from fit_trawl for the theoretical ones. When computing the sample
 #' ACF, it is possible to add the argument 'multi' for reducing the 
-#' estimation variance.
+#' estimation variance. This is only useful when considering the differenced time series,
+#' since the non-differenced autocorrelations are exact.
 #' 
 #' The sample method works for any type of time series, regularly or irregularly spaced.
 #'

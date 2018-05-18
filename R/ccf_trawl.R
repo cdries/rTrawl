@@ -3,28 +3,103 @@
 #' compute empirical or theoretical cross correlation values of either the processes
 #' itself or the processes of first differences
 #'
-#' TODO
+#' the object is either an output object from sim_trawl for the empirical autocorrelation
+#' values, or a combination of fit_trawl and fit_levy. See the examples. When computing the sample
+#' ACF, it is possible to add the argument 'multi' for reducing the 
+#' estimation variance. This is only useful when considering the differenced time series,
+#' since the non-differenced autocorrelations are exact.
+#' 
+#' The sample method works for any type of time series, regularly or irregularly spaced.
 #'
-#' CITE TODO.
 #' @name ccf_trawl
 #' @concept trawl
-#' @param object bla
-#' @param h bla
+#' @param object object containing all the specifications for the process, see details
+#' @param h observation frequency
 #' @param method "sample" for the empirical values, something else for the theoretical values
-#' @param dff bla
-#' @param lag_max bla
-#' @param \dots any other passthru pareters
+#' @param dff number of times the series has to be differenced before computing the 
+#' autocorrelation, possible values are 0 (default) and 1
+#' @param lag_max number of lags to consider, default 25
+#' @param \dots any other passthrough parameters
 #' @author Dries Cornilly
-#' @seealso \code{\link{fit_trawl}}
+#' @seealso \code{\link{fit_trawl}}, \code{\link{sim_trawl}}, \code{\link{acf_trawl}}
 #' @references
-#' TODO
+#' Barndorff‐Nielsen, O. E., Lunde, A., Shephard, N., & Veraart, A. E. (2014). 
+#' Integer‐valued Trawl Processes: A Class of Stationary Infinitely Divisible Processes. 
+#' Scandinavian Journal of Statistics, 41(3), 693-724.
+#' 
+#' Veraart, A. E. (2018). 
+#' Modelling, simulation and inference for multivariate time series of counts. 
+#' arXiv preprint arXiv:1608.03154.
 #'
 #' @examples
+#' ### multivariate negative binomial trawl process
+#' trawl <- list("gamma", "exp")
+#' trawl_par <- list(c(0.9, 1.8), c(0.5))
+#' levy_par <- matrix(c(1.5, 0.4, 0.3,
+#'                      0.7, 0.4, NA,
+#'                      0.6, 0.3, NA), ncol = 3, byrow = TRUE)
+#' design_matrix <- matrix(c(1, 1, 1, 0, 0, 1), nrow = 2)
+# 
+#' sm <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = levy_par,
+#'                      "trawl" = trawl, "trawl_par" = trawl_par,
+#'                      "design_matrix" = design_matrix, "b" = c(0, 0),
+#'                      "T0" = 0, "TT" = 25400, "observed_freq" = 1e-6),
+#'                 univariate = FALSE)
+#' 
+#' # cross correlation
+#' lag_max <- 10
+#' ht <- 0.5
+#' plot(seq(-lag_max * ht, lag_max * ht, ht), ccf_trawl(sm, ht, lag_max = lag_max), 
+#'      pch = 16, main = "cross correlation")
+#' lines(seq(-lag_max * ht, lag_max * ht, ht),
+#'       ccf_trawl(list("trawl" = trawl, "trawl_par" = trawl_par, "levy_seed" = "negBin", 
+#'                      "levy_par" = levy_par, "design_matrix" = design_matrix), 
+#'                 h = ht, method = "theor", dff = 0, lag_max = lag_max), lwd = 2, col = "blue")
+#' 
+#' # cross correlation of differenced series
+#' lag_max <- 10
+#' ht <- 0.5
+#' plot(seq(-lag_max * ht, lag_max * ht, ht), ccf_trawl(sm, ht, dff = 1, lag_max = lag_max), 
+#'      pch = 16, main = "cross correlation differenced series")
+#' lines(seq(-lag_max * ht, lag_max * ht, ht),
+#'       ccf_trawl(list("trawl" = trawl, "trawl_par" = trawl_par,
+#'                      "levy_seed" = "negBin", "levy_par" = levy_par,
+#'                      "design_matrix" = design_matrix, "b" = c(0, 0)), 
+#'                 h = ht, method = "theor", dff = 1, lag_max = lag_max), lwd = 2, col = "blue")
 #'
-#' #TODO
-#'
-#' # simulations estimation
-#' #TODO
+#' ### multivariate Poisson / Skellam trawl process
+#' trawl <- list("gamma", "exp")
+#' trawl_par <- list(c(0.9, 1.8), c(0.5))
+#' levy_par <- matrix(c(0.13, 0.13, 0.23, 0.11, 0.05), ncol = 1)
+#' design_matrix <- matrix(c(1, 0, 0, 1, -1, 1, 1, -1, 1, 0), nrow = 2)
+# 
+#' sm <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = levy_par,
+#'                      "trawl" = trawl, "trawl_par" = trawl_par,
+#'                      "design_matrix" = design_matrix, "b" = c(0, 0), 
+#'                      "T0" = 35, "TT" = 24600, "observed_freq" = 1e-6),
+#'                 univariate = FALSE)
+#' 
+#' # cross correlation
+#' lag_max <- 10
+#' ht <- 0.5
+#' plot(seq(-lag_max * ht, lag_max * ht, ht), ccf_trawl(sm, ht, lag_max = lag_max), 
+#'      pch = 16, main = "cross correlation")
+#' lines(seq(-lag_max * ht, lag_max * ht, ht),
+#'       ccf_trawl(list("trawl" = trawl, "trawl_par" = trawl_par,
+#'                      "levy_seed" = "Poisson", "levy_par" = levy_par,
+#'                      "design_matrix" = design_matrix), 
+#'                 h = ht, method = "theor", dff = 0, lag_max = lag_max), lwd = 2, col = "blue")
+#' 
+#' # cross correlation of differenced series
+#' lag_max <- 10
+#' ht <- 1
+#' plot(seq(-lag_max * ht, lag_max * ht, ht), ccf_trawl(sm, ht, dff = 1, lag_max = lag_max), 
+#'      pch = 16, main = "cross correlation differenced series")
+#' lines(seq(-lag_max * ht, lag_max * ht, ht),
+#'       ccf_trawl(list("trawl" = trawl, "trawl_par" = trawl_par,
+#'                      "levy_seed" = "Poisson", "levy_par" = levy_par,
+#'                      "design_matrix" = design_matrix, "b" = c(0, 0)), 
+#'                 h = ht, method = "theor", dff = 1, lag_max = lag_max), lwd = 2, col = "blue")
 #'
 #' @export ccf_trawl
 ccf_trawl <- function(object, h, method = "sample", dff = 0, lag_max = 25, ...) {

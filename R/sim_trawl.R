@@ -40,10 +40,28 @@
 #'
 #' @examples
 #'
-#' #TODO
+#' # default settings
+#' sim <- sim_trawl(list())
+#' 
+#' # Skellam process with gig trawl
+#' sim <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(0.131, 0.130),
+#'                       "trawl" = "gig", "trawl_par" = c(0.01, 0.45, -0.6),
+#'                       "T0" = 72.03, "TT" = 75600, "observed_freq" = 1e-6, 
+#'                       "b" = 0.3))
+#' 
+#' # multivariate Poisson / Skellam with exponential and inverse Gaussian trawls
+#' trawl_list <- list("gamma", "exp")
+#' trawl_par_true <- list(c(0.9, 1.8), c(0.5))
+#' levy_par_list <- matrix(c(0.13, 0.13, 0.23, 0.11, 0.05), ncol = 1)
+#' design_matrix <- matrix(c(1, 0, 0, 1, -1, 1, 1, -1, 1, 0), nrow = 2)
+#' sim <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = levy_par_list,
+#'                       "trawl" = trawl_list, "trawl_par" = trawl_par_true,
+#'                       "design_matrix" = design_matrix, "b" = c(0, 0),
+#'                       "T0" = 0, "TT" = 75600, "observed_freq" = 1e-6), 
+#'                  univariate = FALSE)
+#' 
+#' # multivariate negative binomial
 #'
-#' # simulations estimation
-#' #TODO
 #'
 #' @importFrom methods hasArg
 #' @importFrom Rcpp evalCpp
@@ -54,13 +72,13 @@ sim_trawl <- function(object, univariate = TRUE, ...) {
   # extract settings
   nn <- names(object)
   if ("levy_seed" %in% nn) levy_seed <- object$levy_seed else levy_seed <- "Poisson"
-  if ("levy_par" %in% nn) levy_par <- object$levy_par else levy_par <- 0.0131
+  if ("levy_par" %in% nn) levy_par <- object$levy_par else levy_par <- 0.131
   if ("trawl" %in% nn) trawl <- object$trawl else trawl <- "exp"
-  if ("trawl" %in% nn) trawl_par <- object$trawl_par else trawl_par <- trawl_x0(trawl)
+  if ("trawl_par" %in% nn) trawl_par <- object$trawl_par else trawl_par <- trawl_x0(trawl)
   if ("T0" %in% nn) T0 <- object$T0 else T0 <- 0
-  if ("TT" %in% n) TT <- object$TT else TT <- 3600
+  if ("TT" %in% nn) TT <- object$TT else TT <- 3600
   if ("observed_freq" %in% nn) observed_freq <- object$observed_freq else observed_freq <- 1e-3
-  if ("b" %in% n) b <- object$b else b <- 0
+  if ("b" %in% nn) b <- object$b else b <- 0
   
   
   # simulate

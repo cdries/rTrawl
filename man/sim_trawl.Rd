@@ -39,10 +39,28 @@ but it is best not to rely on these. See examples.
 }
 \examples{
 
-#TODO
+# default settings
+sim <- sim_trawl(list())
 
-# simulations estimation
-#TODO
+# Skellam process with gig trawl
+sim <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(0.131, 0.130),
+                      "trawl" = "gig", "trawl_par" = c(0.01, 0.45, -0.6),
+                      "T0" = 72.03, "TT" = 75600, "observed_freq" = 1e-6, 
+                      "b" = 0.3))
+
+# multivariate Poisson / Skellam with exponential and inverse Gaussian trawls
+trawl_list <- list("gamma", "exp")
+trawl_par_true <- list(c(0.9, 1.8), c(0.5))
+levy_par_list <- matrix(c(0.13, 0.13, 0.23, 0.11, 0.05), ncol = 1)
+design_matrix <- matrix(c(1, 0, 0, 1, -1, 1, 1, -1, 1, 0), nrow = 2)
+sim <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = levy_par_list,
+                      "trawl" = trawl_list, "trawl_par" = trawl_par_true,
+                      "design_matrix" = design_matrix, "b" = c(0, 0),
+                      "T0" = 0, "TT" = 75600, "observed_freq" = 1e-6), 
+                 univariate = FALSE)
+
+# multivariate negative binomial
+
 
 }
 \references{

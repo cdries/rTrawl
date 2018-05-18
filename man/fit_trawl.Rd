@@ -55,15 +55,16 @@ plot(log(sim$h), vs_trawl(sim, sim$h))
 lines(log(sim$h), vs_trawl(ftC, sim$h, method = "vs_C"), col = "blue")
 lines(log(sim$h), vs_trawl(ftSY, sim$h, method = "vs_SY"), col = "red")
 legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"))
-# # estimation based on the autocorrelation
+
+# estimation based on the autocorrelation
 sim <- sim_trawl(list())
 sim$h <- 0.5
 sim$trawl <- "exp"
 sim$lag_max <- 3
 sim$method <- "acf"
 ft <- fit_trawl(sim)
-plot(1:10, acf_sample(sim, sim$h, lag_max = 10))
-lines(1:10, acf_trawl(sim, sim$h, lag_max = 10), col = "blue")
+plot(1:10, acf_trawl(sim, sim$h, lag_max = 10))
+lines(1:10, acf_trawl(sim, sim$h, method = "acf", lag_max = 10), col = "blue")
 
 }
 \references{

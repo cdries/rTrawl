@@ -1,25 +1,41 @@
-#' Estimation of Trawl processes
+#' Estimation of Levy basis
 #'
-#' estimates a path of a Trawl process
+#' estimates the parameters of a univariate or multivariate levy basis using
+#' the method of moments
 #'
-#' TODO
+#' the passed object contains all the process specifications in list format. The following
+#' arguments should be present in the object: levy basis wanted to fit (levy_seed). Both the
+#' first order moments (k1_sample) and the second order cumulants (k2_sample) may be provided.
+#' If these are not present, then the sample moments are estimated and used. In order
+#' to estimate the sample moments, the fitted trawls (trawl) and corresponding trawl
+#' parameters (trawl_par) should be given, along with the vector with time stamps (x_grid),
+#' vector with process values (p_grid), initial observation time (T0), end of observation period (TT).
+#' 
+#' When fitting a multivariate levy basis, the design matrix (design_matrix) should also
+#' be provided, and a constraints matrix may be provided but is not required.
+#' 
+#' See the examples for complete use cases.
 #'
-#' CITE TODO.
 #' @name fit_levy
 #' @concept trawl
-#' @param object bla
-#' @param \dots any other passthru pareters
+#' @param object object containing all the specifications for the process, see details
+#' @param \dots any other passthrough parameters
 #' @author Dries Cornilly
-#' @seealso \code{\link{fit_trawl}}
+#' @seealso \code{\link{fit_trawl}}, \code{\link{sim_trawl}}
 #' @references
-#' TODO
+#' Barndorff‐Nielsen, O. E., Lunde, A., Shephard, N., & Veraart, A. E. (2014). 
+#' Integer‐valued Trawl Processes: A Class of Stationary Infinitely Divisible Processes. 
+#' Scandinavian Journal of Statistics, 41(3), 693-724.
+#' 
+#' Veraart, A. E. (2018). 
+#' Modelling, simulation and inference for multivariate time series of counts. 
+#' arXiv preprint arXiv:1608.03154.
 #'
 #' @examples
-#'
-#' #TODO
-#'
-#' # simulations estimation
-#' #TODO
+#' ### univariate - TODO
+#' 
+#' 
+#' ### multivariate - TODO
 #'
 #' @export fit_levy
 fit_levy <- function(object, ...) {
@@ -162,21 +178,6 @@ levy_cum_fit_mv <- function(levy_seed, k1_sample, k2_sample, design_matrix, cons
   return (levy_par)
 }
 
-# theta_par2theta_marg <- function(levy_par, design_matrix) {
-#   theta_marg <- rep(0, nrow(design_matrix))
-#   for (ii in 1:ncol(design_matrix)) {
-#     if (sum(design_matrix[, ii]) < 1.5) {
-#       ind <- which(design_matrix[, ii] > 0.5)
-#       theta_marg[ind] <- theta_marg[ind] + levy_par[ii, 2]
-#     } else {
-#       ind <- which(design_matrix[, ii] > 0.5)
-#       theta_marg[ind] <- theta_marg[ind] + levy_par[ii, 2:3]
-#     }
-#   }
-#   theta_marg <- theta_marg / rowSums(design_matrix)
-#   return (theta_marg)
-# }
-
 theta2theta_par <- function(theta, design_matrix) {
   # theta contains parameters (alpha_i..., m) - m is of length ncol(design_matrix)
   theta_par <- matrix(NA, nrow = ncol(design_matrix), ncol = 3)
@@ -216,5 +217,3 @@ x0_negBin <- function(k1, k2, design_matrix) {
   x0 <- c(x0, x0_m)
   return (x0)
 }
-
-

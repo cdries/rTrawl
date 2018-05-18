@@ -2,36 +2,51 @@
 % Please edit documentation in R/fit_levy.R
 \name{fit_levy}
 \alias{fit_levy}
-\title{Estimation of Trawl processes}
+\title{Estimation of Levy basis}
 \usage{
 fit_levy(object, ...)
 }
 \arguments{
-\item{object}{bla}
+\item{object}{object containing all the specifications for the process, see details}
 
-\item{\dots}{any other passthru pareters}
+\item{\dots}{any other passthrough parameters}
 }
 \description{
-estimates a path of a Trawl process
+estimates the parameters of a univariate or multivariate levy basis using
+the method of moments
 }
 \details{
-TODO
+the passed object contains all the process specifications in list format. The following
+arguments should be present in the object: levy basis wanted to fit (levy_seed). Both the
+first order moments (k1_sample) and the second order cumulants (k2_sample) may be provided.
+If these are not present, then the sample moments are estimated and used. In order
+to estimate the sample moments, the fitted trawls (trawl) and corresponding trawl
+parameters (trawl_par) should be given, along with the vector with time stamps (x_grid),
+vector with process values (p_grid), initial observation time (T0), end of observation period (TT).
 
-CITE TODO.
+When fitting a multivariate levy basis, the design matrix (design_matrix) should also
+be provided, and a constraints matrix may be provided but is not required.
+
+See the examples for complete use cases.
 }
 \examples{
+### univariate - TODO
 
-#TODO
 
-# simulations estimation
-#TODO
+### multivariate - TODO
 
 }
 \references{
-TODO
+Barndorff‐Nielsen, O. E., Lunde, A., Shephard, N., & Veraart, A. E. (2014). 
+Integer‐valued Trawl Processes: A Class of Stationary Infinitely Divisible Processes. 
+Scandinavian Journal of Statistics, 41(3), 693-724.
+
+Veraart, A. E. (2018). 
+Modelling, simulation and inference for multivariate time series of counts. 
+arXiv preprint arXiv:1608.03154.
 }
 \seealso{
-\code{\link{fit_trawl}}
+\code{\link{fit_trawl}}, \code{\link{sim_trawl}}
 }
 \author{
 Dries Cornilly

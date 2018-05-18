@@ -1,56 +1,7 @@
-#' Sample ACF of irregularly observed time series
+#' Cross correlation function
 #'
-#' sample autocorrelation of a trawl process
-#'
-#' TODO
-#'
-#' CITE TODO.
-#' @name ccf_sample
-#' @concept trawl
-#' @param object bla
-#' @param h bla
-#' @param dff bla
-#' @param lag_max bla
-#' @param \dots any other passthru pareters
-#' @author Dries Cornilly
-#' @seealso \code{\link{fit_trawl}}
-#' @references
-#' TODO
-#'
-#' @examples
-#'
-#' #TODO
-#'
-#' # simulations estimation
-#' #TODO
-#'
-#' @export ccf_sample
-#' @useDynLib rTrawl
-ccf_sample <- function(object, h, dff = 0, lag_max = 25, ...) {
-  
-  x_grid1 <- object$x_grid[[1]]
-  x_grid2 <- object$x_grid[[2]]
-  p_grid1 <- object$p_grid[[1]]
-  p_grid2 <- object$p_grid[[2]]
-  TT <- object$TT
-  
-  if (dff < 0.5) {
-    # cross correlation function of the process itself
-    ccfh <- as.numeric(ccf_sample_p(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max))
-  } else {
-    # cross correlation of the differenced process
-    T0 <- object$T0
-    if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
-    ccfh <- as.numeric(ccf_sample_dp(h, x_grid1, p_grid1, x_grid2, p_grid2, T0, TT, lag_max, multi))
-  }
-  
-  return (ccfh)
-}
-
-
-#' ACF of Trawl processes
-#'
-#' theoretical autocorrelation of a trawl process
+#' compute empirical or theoretical cross correlation values of either the processes
+#' itself or the processes of first differences
 #'
 #' TODO
 #'
@@ -59,6 +10,7 @@ ccf_sample <- function(object, h, dff = 0, lag_max = 25, ...) {
 #' @concept trawl
 #' @param object bla
 #' @param h bla
+#' @param method "sample" for the empirical values, something else for the theoretical values
 #' @param dff bla
 #' @param lag_max bla
 #' @param \dots any other passthru pareters
@@ -75,34 +27,56 @@ ccf_sample <- function(object, h, dff = 0, lag_max = 25, ...) {
 #' #TODO
 #'
 #' @export ccf_trawl
-ccf_trawl <- function(object, h, dff = 0, lag_max = 25) {
+ccf_trawl <- function(object, h, method = "sample", dff = 0, lag_max = 25, ...) {
   
-  trawl1 <- object$trawl[[1]]
-  trawl2 <- object$trawl[[2]]
-  trawl_par1 <- object$trawl_par[[1]]
-  trawl_par2 <- object$trawl_par[[2]]
-  levy_seed <- object$levy_seed
-  levy_par <- object$levy_par
-  design_matrix <- object$design_matrix
-  
-  if (dff < 0.5) {
-    # ACF of the process itself -
-    # TODO: make correct when b not equal to zero
-    ccfh <- as.numeric(ccf_trawl_p(h, trawl1, trawl_par1, trawl2, trawl_par2, 
-                                   levy_seed, levy_par, design_matrix, lag_max))
-  } else {
-    # ACF of the differenced process
-    b <- object$b
-    if (is.null(b)) {
-      if (is.null(object$xi)) {
-        b <- 0
-      } else {
-        b <- object$xi / object$omega
-        b <- b / (1 + b)
-      }
+  if (method == "sample") {
+    
+    x_grid1 <- object$x_grid[[1]]
+    x_grid2 <- object$x_grid[[2]]
+    p_grid1 <- object$p_grid[[1]]
+    p_grid2 <- object$p_grid[[2]]
+    TT <- object$TT
+    
+    if (dff < 0.5) {
+      # cross correlation function of the process itself
+      ccfh <- as.numeric(ccf_sample_p(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max))
+    } else {
+      # cross correlation of the differenced process
+      T0 <- object$T0
+      if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
+      ccfh <- as.numeric(ccf_sample_dp(h, x_grid1, p_grid1, x_grid2, p_grid2, T0, TT, lag_max, multi))
     }
-    ccfh <- as.numeric(ccf_trawl_dp(h, trawl1, trawl_par1, trawl2, trawl_par2, b,
-                                    levy_seed, levy_par, design_matrix, lag_max))
+    
+  } else {
+    
+    # any other method means theoretical cross correlation is computed
+    trawl1 <- object$trawl[[1]]
+    trawl2 <- object$trawl[[2]]
+    trawl_par1 <- object$trawl_par[[1]]
+    trawl_par2 <- object$trawl_par[[2]]
+    levy_seed <- object$levy_seed
+    levy_par <- object$levy_par
+    design_matrix <- object$design_matrix
+    
+    if (dff < 0.5) {
+      # ACF of the process itself -
+      # TODO: make correct when b not equal to zero
+      ccfh <- as.numeric(ccf_trawl_p(h, trawl1, trawl_par1, trawl2, trawl_par2, 
+                                     levy_seed, levy_par, design_matrix, lag_max))
+    } else {
+      # ACF of the differenced process
+      b <- object$b
+      if (is.null(b)) {
+        if (is.null(object$xi)) {
+          b <- 0
+        } else {
+          b <- object$xi / object$omega
+          b <- b / (1 + b)
+        }
+      }
+      ccfh <- as.numeric(ccf_trawl_dp(h, trawl1, trawl_par1, trawl2, trawl_par2, b,
+                                      levy_seed, levy_par, design_matrix, lag_max))
+    }
   }
   
   return (ccfh)

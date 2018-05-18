@@ -26,6 +26,7 @@
 #'
 #' @name fit_trawl
 #' @concept trawl
+#' @encoding UTF-8
 #' @param object object containing all the specifications for the process, see details
 #' @param \dots any other passthrough parameters
 #' @author Dries Cornilly

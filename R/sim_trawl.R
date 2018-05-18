@@ -17,6 +17,7 @@
 #'
 #' @name sim_trawl
 #' @concept trawl
+#' @encoding UTF-8
 #' @param object object containing all the specifications for the process, see details
 #' @param univariate boolean indicating univariate or multivariate simulation
 #' @param \dots any other passthrough parameters

@@ -11,6 +11,7 @@
 #' The sample method works for any type of time series, regularly or irregularly spaced.
 #'
 #' @name acf_trawl
+#' @encoding UTF-8
 #' @concept trawl
 #' @param object object containing all the specifications for the process, see details
 #' @param h observation frequency
@@ -36,7 +37,6 @@
 #' arXiv preprint arXiv:1608.03154.
 #'
 #' @examples
-#'
 #' # empirical and estimated autocorrelations
 #' sim <- sim_trawl(list())
 #' sim$h <- 0.5

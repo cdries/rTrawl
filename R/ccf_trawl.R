@@ -12,13 +12,14 @@
 #' The sample method works for any type of time series, regularly or irregularly spaced.
 #'
 #' @name ccf_trawl
+#' @encoding UTF-8
 #' @concept trawl
 #' @param object object containing all the specifications for the process, see details
 #' @param h observation frequency
 #' @param method "sample" for the empirical values, something else for the theoretical values
 #' @param dff number of times the series has to be differenced before computing the 
 #' autocorrelation, possible values are 0 (default) and 1
-#' @param lag_max number of lags to consider, default 25
+#' @param lag_max number of lags to consider in each direction, default 25
 #' @param \dots any other passthrough parameters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}, \code{\link{sim_trawl}}, \code{\link{acf_trawl}}

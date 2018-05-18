@@ -39,7 +39,6 @@
 #' arXiv preprint arXiv:1608.03154.
 #'
 #' @examples
-#'
 #' # default settings - Poisson process with exponential trawl
 #' sim <- sim_trawl(list())
 #' 

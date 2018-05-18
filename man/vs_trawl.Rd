@@ -15,7 +15,7 @@ which to compute the variance signature values}
 \item{method}{"sample" for the empirical values, "vs_C" or "vs_SY" for theoretical values when
 estimated by these respective mtehods with fit_trawl}
 
-\item{\dots}{any other passthru pareters}
+\item{\dots}{any other passthrough parameters}
 }
 \description{
 compute empirical and theoretical variance signature values
@@ -28,7 +28,6 @@ estimation variance. See Shephard and Yang (2017) for a definition of the varian
 signature values.
 }
 \examples{
-
 # simulate a trawl process
 sim <- sim_trawl(list("levy_seed" = "Skellam", levy_par = c(0.13, 0.11), b = 0.3))
 h <- exp(seq(log(1e-2), log(60), length.out = 51))
@@ -52,7 +51,7 @@ vsSY <- vs_trawl(ft, h, method = "vs_SY")  # compute fitted variance signature v
 plot(log(h), vsS)
 lines(log(h), vsC, col = "blue")
 lines(log(h), vsSY, col = "red")
-legend("topright", c("vs_C", "vs_SY"), col = c("blue", "red"))
+legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"))
 
 }
 \references{

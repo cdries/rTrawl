@@ -15,7 +15,7 @@
 #' which to compute the variance signature values
 #' @param method "sample" for the empirical values, "vs_C" or "vs_SY" for theoretical values when
 #' estimated by these respective mtehods with fit_trawl
-#' @param \dots any other passthru pareters
+#' @param \dots any other passthrough parameters
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}, \code{\link{sim_trawl}}
 #' @references
@@ -24,7 +24,6 @@
 #' Journal of the American Statistical Association, 112(519), 1090-1106.
 #'
 #' @examples
-#' 
 #' # simulate a trawl process
 #' sim <- sim_trawl(list("levy_seed" = "Skellam", levy_par = c(0.13, 0.11), b = 0.3))
 #' h <- exp(seq(log(1e-2), log(60), length.out = 51))

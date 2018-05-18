@@ -38,7 +38,6 @@ For the b parameter, we refer to Shephard and Yang (2017). Some default paramete
 but it is best not to rely on these. See examples.
 }
 \examples{
-
 # default settings - Poisson process with exponential trawl
 sim <- sim_trawl(list())
 

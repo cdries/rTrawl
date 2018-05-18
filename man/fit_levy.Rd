@@ -36,6 +36,34 @@ See the examples for complete use cases.
 
 ### multivariate - TODO
 
+## negative binomial
+trawl <- list("gamma", "exp")
+trawl_par <- list(c(0.9, 1.8), c(0.5))
+levy_par <- matrix(c(1.5, 0.4, 0.3,
+                     0.7, 0.4, NA,
+                     0.6, 0.3, NA), ncol = 3, byrow = TRUE)
+design_matrix <- matrix(c(1, 1, 1, 0, 0, 1), nrow = 2)
+sm <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = levy_par,
+                     "trawl" = trawl, "trawl_par" = trawl_par,
+                     "design_matrix" = design_matrix, "b" = c(0, 0),
+                     "T0" = 0, "TT" = 25400, "observed_freq" = 1e-6),
+                univariate = FALSE)
+  
+h <- 1       
+lag_max <- 2       
+ft1 <- fit_trawl(list("T0" = 0, "TT" = 25400, "method" = "acf", "h" = h, "trawl" = trawl[[1]],
+                      "x_grid" = sm$x_grid[[1]], "p_grid" = sm$p_grid[[1]],
+                      "lag_max" = lag_max, "b" = 0), multi = 1)
+ft2 <- fit_trawl(list("T0" = 0, "TT" = 25400, "method" = "acf", "h" = h, "trawl" = trawl[[2]],
+                      "x_grid" = sm$x_grid[[2]], "p_grid" = sm$p_grid[[2]],
+                      "lag_max" = lag_max, "b" = 0), multi = 1)
+                      
+lv_fit <- fit_levy(list("levy_seed" = "negBin", "trawl" = trawl,
+                        "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 0, "TT" = 25400,
+                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, "design_matrix" = design_matrix))
+
+## Poisson / Skellam
+
 }
 \references{
 Barndorff‐Nielsen, O. E., Lunde, A., Shephard, N., & Veraart, A. E. (2014). 

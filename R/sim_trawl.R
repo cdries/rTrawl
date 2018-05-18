@@ -1,19 +1,42 @@
-#' Simulation of Trawl processes
+#' Simulation of trawl processes
 #'
-#' simulates a path of a Trawl process
+#' simulation of univariate or multivariate trawl processes
 #'
-#' TODO
+#' the passed object contains all the process specifications in list format. The following
+#' arguments should ideally be present in the object: levy seed (levy_seed), corresponding
+#' levy parameters (levy_par), trawl (trawl), corresponding trawl parameters (trawl_par),
+#' initial observation time (T0), end of observation period (TT), the frequency at which
+#' the process is observed (observed_freq), and the b parameter governing the distinction
+#' between levy and trawl process changes. In case of multivariate simulation, also the
+#' design matrix showing the underlying factors should be provided (design_matrix).
+#' 
+#' The observation frequency is for example 1 second, 
+#' which means that a change in the process value is only observed the next round second. 
+#' For the b parameter, we refer to Shephard and Yang (2017). Some default parameters are set,
+#' but it is best not to rely on these. See examples.
 #'
-#' CITE TODO.
 #' @name sim_trawl
 #' @concept trawl
-#' @param object bla
-#' @param univariate bla
-#' @param \dots any other passthru pareters
+#' @param object object containing all the specifications for the process, see details
+#' @param univariate boolean indicating univariate or multivariate simulation
+#' @param \dots any other passthrough parameters
+#' @return x_grid: vector of time points where the process value is given
+#' @return p_grid: vector with process values for the time points in x_grid
+#' @return the other return arguments echo the process specifications
 #' @author Dries Cornilly
 #' @seealso \code{\link{fit_trawl}}
 #' @references
-#' TODO
+#' Barndorff‐Nielsen, O. E., Lunde, A., Shephard, N., & Veraart, A. E. (2014). 
+#' Integer‐valued Trawl Processes: A Class of Stationary Infinitely Divisible Processes. 
+#' Scandinavian Journal of Statistics, 41(3), 693-724.
+#' 
+#' Shephard, N., & Yang, J. J. (2017). 
+#' Continuous time analysis of fleeting discrete price moves. 
+#' Journal of the American Statistical Association, 112(519), 1090-1106.
+#' 
+#' Veraart, A. E. (2018). 
+#' Modelling, simulation and inference for multivariate time series of counts. 
+#' arXiv preprint arXiv:1608.03154.
 #'
 #' @examples
 #'

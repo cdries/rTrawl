@@ -2,14 +2,17 @@
 % Please edit documentation in R/acf.R
 \name{acf_trawl}
 \alias{acf_trawl}
-\title{ACF of Trawl processes}
+\title{Autocorrelation function}
 \usage{
-acf_trawl(object, h, dff = 0, lag_max = 25, drop_zero = TRUE)
+acf_trawl(object, h, method = "sample", dff = 0, lag_max = 25,
+  drop_zero = TRUE)
 }
 \arguments{
 \item{object}{bla}
 
 \item{h}{bla}
+
+\item{method}{bla}
 
 \item{dff}{bla}
 

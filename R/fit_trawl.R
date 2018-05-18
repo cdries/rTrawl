@@ -25,6 +25,7 @@
 fit_trawl <- function(object, ...) {
   
   # extract settings
+  nn <- names(object)
   method <- object$method
   trawl <- object$trawl
   x_grid <- object$x_grid
@@ -36,16 +37,16 @@ fit_trawl <- function(object, ...) {
   if (method == "vs_C") {
     
     # variance signature plot - cum2_levy, cum2_trawl and cum1_levy as explicit parameters
-    include_cum1 <- object$include_cum1
-    include_b <- object$include_b # if false, only cum2_trawl is a parameter
+    if ("include_cum1" %in% nn) include_cum1 <- object$include_cum1 else include_cum1 <- FALSE
+    if ("include_b" %in% nn) include_b <- object$include_b else include_b <- TRUE # if false, only cum2_trawl is a parameter
     lfit <- fit_trawl_vs_C(as.numeric(h), as.numeric(x_grid), as.numeric(p_grid), as.numeric(T0), 
                            as.numeric(TT), trawl, include_cum1, include_b, ...)
     
   } else if (method == "vs_SY") {
     
     # variance signature plot - cum2_Levy and cum1 as function of b, beta_0 and alpha_y
-    include_cum1 <- object$include_cum1
-    include_b <- object$include_b
+    if ("include_cum1" %in% nn) include_cum1 <- object$include_cum1 else include_cum1 <- FALSE
+    if ("include_b" %in% nn) include_b <- object$include_b else include_b <- TRUE
     lfit <- fit_trawl_vs_SY(as.numeric(h), as.numeric(x_grid), as.numeric(p_grid), as.numeric(T0), 
                             as.numeric(TT), trawl, include_cum1, include_b, ...)
     

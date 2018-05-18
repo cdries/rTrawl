@@ -7,31 +7,80 @@
 fit_trawl(object, ...)
 }
 \arguments{
-\item{object}{bla}
+\item{object}{object containing all the specifications for the process, see details}
 
-\item{\dots}{any other passthru pareters}
+\item{\dots}{any other passthrough parameters}
 }
 \description{
-estimates a path of a Trawl process
+fits chosen trawl to a given univariate trawl process, multivariate process should be passed
+individually sequantially.
 }
 \details{
-TODO
+the passed object contains all the process specifications in list format. The following
+arguments should ideally be present in the object: vector with time points of the observations
+(x_grid), vector with process values (p_grid), trawl (trawl), corresponding trawl parameters (trawl_par),
+initial observation time (T0), end of observation period (TT), vector with observation
+frequencies (h) when fitting with "vs_C" or "vs_SY", or single observation frequency when fitting
+with "acf". In addition, the estimation method should be passed, "vs_C" (default), "vs_SY" or "acf",
+we refer to the literature for further details on these.
 
-CITE TODO.
+When estamating based on the variance signature plot ("vs_C" or "vs_SY"), it is also
+possible to specify whether the first cumulant (include_cum1") should be included (default FALSE),
+and whether or not a pure levy component is present (include b, default TRUE).
+
+When estimating based on the autocorrelation function, there should not be a pure levy
+component present, and it is possible to set the maximum number of lag used by
+"lag_max", default equals 5.
+
+All estimation methods accept the passthrough arguument 'multi' for reducing the 
+estimation variance.
+
+See examples for the three methods of estimation.
 }
 \examples{
+# estimation based on the variance signature plot
+sim <- sim_trawl(list("levy_seed" = "Skellam", levy_par = c(0.13, 0.11), b = 0.3))
+sim$h <- exp(seq(log(1e-2), log(60), length.out = 51))
+sim$trawl <- "exp"
+sim$include_b <- TRUE
+sim$include_cum1 <- FALSE
 
-#TODO
+sim$method <- "vs_C"
+ftC <- fit_trawl(sim)
 
-# simulations estimation
-#TODO
+sim$method <- "vs_SY"
+ftSY <- fit_trawl(sim)
+
+plot(log(sim$h), vs_trawl(sim, sim$h))
+lines(log(sim$h), vs_trawl(ftC, sim$h, method = "vs_C"), col = "blue")
+lines(log(sim$h), vs_trawl(ftSY, sim$h, method = "vs_SY"), col = "red")
+legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"))
+# # estimation based on the autocorrelation
+sim <- sim_trawl(list())
+sim$h <- 0.5
+sim$trawl <- "exp"
+sim$lag_max <- 3
+sim$method <- "acf"
+ft <- fit_trawl(sim)
+plot(1:10, acf_sample(sim, sim$h, lag_max = 10))
+lines(1:10, acf_trawl(sim, sim$h, lag_max = 10), col = "blue")
 
 }
 \references{
-TODO
+Barndorff‐Nielsen, O. E., Lunde, A., Shephard, N., & Veraart, A. E. (2014). 
+Integer‐valued Trawl Processes: A Class of Stationary Infinitely Divisible Processes. 
+Scandinavian Journal of Statistics, 41(3), 693-724.
+
+Shephard, N., & Yang, J. J. (2017). 
+Continuous time analysis of fleeting discrete price moves. 
+Journal of the American Statistical Association, 112(519), 1090-1106.
+
+Veraart, A. E. (2018). 
+Modelling, simulation and inference for multivariate time series of counts. 
+arXiv preprint arXiv:1608.03154.
 }
 \seealso{
-\code{\link{fit_trawl}}
+\code{\link{sim_trawl}}, \code{\link{vs_trawl}}, \code{\link{acf_trawl}}
 }
 \author{
 Dries Cornilly

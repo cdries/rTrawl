@@ -2,40 +2,66 @@
 % Please edit documentation in R/vs_trawl.R
 \name{vs_trawl}
 \alias{vs_trawl}
-\title{Estimation of Trawl processes}
+\title{Variance signature values}
 \usage{
 vs_trawl(object, h, method = "sample", ...)
 }
 \arguments{
-\item{object}{bla}
+\item{object}{object containing all the specifications for the process, see details}
 
-\item{h}{bla}
+\item{h}{vector containing the observation frequencies at 
+which to compute the variance signature values}
 
-\item{method}{bla}
+\item{method}{"sample" for the empirical values, "vs_C" or "vs_SY" for theoretical values when
+estimated by these respective mtehods with fit_trawl}
 
 \item{\dots}{any other passthru pareters}
 }
 \description{
-display variance signature plot
+compute empirical and theoretical variance signature values
 }
 \details{
-TODO
-
-CITE TODO.
+the object is either an output object from sim_trawl for the empirical variance signature
+values, or an output object from fit_trawl for the theoretical ones. When computing the sample
+variance signature plot, it is possible to add the argument 'multi' for reducing the 
+estimation variance. See Shephard and Yang (2017) for a definition of the variance 
+signature values.
 }
 \examples{
 
-#TODO
+# simulate a trawl process
+sim <- sim_trawl(list("levy_seed" = "Skellam", levy_par = c(0.13, 0.11), b = 0.3))
+h <- exp(seq(log(1e-2), log(60), length.out = 51))
 
-# simulations estimation
-#TODO
+# empirical variance signature values
+vsS <- vs_trawl(sim, h)
+
+# theoretical values when estimated with "vs_C"
+sim$method <- "vs_C"     # add fitting method
+sim$h <- h               # add grid on which to fit
+ft <- fit_trawl(sim)     # fit the trawl process
+vsC <- vs_trawl(ft, h, method = "vs_C")  # compute fitted variance signature values
+
+# theoretical values when estimated with "vs_SY"
+sim$method <- "vs_SY"    # add fitting method
+sim$h <- h               # add grid on which to fit
+ft <- fit_trawl(sim)     # fit the trawl process
+vsSY <- vs_trawl(ft, h, method = "vs_SY")  # compute fitted variance signature values
+
+# plot resulting fits
+plot(log(h), vsS)
+lines(log(h), vsC, col = "blue")
+lines(log(h), vsSY, col = "red")
+legend("topright", c("vs_C", "vs_SY"), col = c("blue", "red"))
 
 }
 \references{
-TODO
+Shephard, N., & Yang, J. J. (2017). 
+Continuous time analysis of fleeting discrete price moves. 
+Journal of the American Statistical Association, 112(519), 1090-1106.
 }
 \seealso{
-\code{\link{fit_trawl}}
+\code{\link{fit_trawl}}, \code{\link{sim_trawl}}
 }
 \author{
 Dries Cornilly

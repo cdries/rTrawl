@@ -258,6 +258,7 @@ fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
   # contants
   n_trawl <- number_parameters_trawl(trawl)
   acf_emp <- acf_sample_p(h, x_grid, p_grid, TT, lag_max)
+  levy_ab <- levy_alpha_beta(p_grid, T0, TT)
   
   # bounds
   bounds <- trawl_bounds(trawl)
@@ -291,5 +292,6 @@ fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
   # return object
   trawl_par <- sol$solution
 
-  return (list("trawl" = trawl, "trawl_par" = trawl_par))
+  return (list("trawl" = trawl, "trawl_par" = trawl_par,
+               "beta_0" = levy_ab$beta_0, "levy_alpha" = levy_ab$levy_alpha))
 }

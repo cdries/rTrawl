@@ -31,11 +31,23 @@ be provided, and a constraints matrix may be provided but is not required.
 See the examples for complete use cases.
 }
 \examples{
-### univariate - TODO
+### univariate
+sim <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(0.131, 0.130),
+                      "trawl" = "gig", "trawl_par" = c(0.01, 0.45, -0.6),
+                      "T0" = 72.03, "TT" = 75600, "observed_freq" = 1e-6, 
+                      "b" = 0))
+                      
+sim$h <- 0.5
+sim$trawl <- "gig"
+sim$lag_max <- 3
+sim$method <- "acf"
+ft <- fit_trawl(sim) 
 
+lv_fit <- fit_levy(list("levy_seed" = "Skellam", "trawl" = "gig",
+                        "trawl_par" = ft$trawl_par, "T0" = 72.03, "TT" = 75600,
+                        "x_grid" = sim$x_grid, "p_grid" = sim$p_grid))                    
 
-### multivariate - TODO
-
+### multivariate
 ## negative binomial
 trawl <- list("gamma", "exp")
 trawl_par <- list(c(0.9, 1.8), c(0.5))
@@ -60,7 +72,8 @@ ft2 <- fit_trawl(list("T0" = 0, "TT" = 25400, "method" = "acf", "h" = h, "trawl"
                       
 lv_fit <- fit_levy(list("levy_seed" = "negBin", "trawl" = trawl,
                         "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 0, "TT" = 25400,
-                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, "design_matrix" = design_matrix))
+                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
+                        "design_matrix" = design_matrix))
 
 ## Poisson / Skellam
 trawl <- list("gamma", "exp")
@@ -84,7 +97,8 @@ ft2 <- fit_trawl(list("T0" = 35, "TT" = 24600, "method" = "acf", "h" = h, "trawl
 
 lv_fit <- fit_levy(list("levy_seed" = "Poisson", "trawl" = trawl, 
                         "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 35, "TT" = 24600,
-                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, "design_matrix" = design_matrix))
+                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
+                        "design_matrix" = design_matrix))
 
 }
 \references{

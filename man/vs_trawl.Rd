@@ -53,6 +53,21 @@ lines(log(h), vsC, col = "blue")
 lines(log(h), vsSY, col = "red")
 legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"))
 
+# trawl process estimated by fitting the autocorrelation function
+sim <- sim_trawl(list())
+sim$h <- 0.5
+sim$trawl <- "exp"
+sim$lag_max <- 3
+sim$method <- "acf"
+ft <- fit_trawl(sim)
+
+h <- exp(seq(log(1e-2), log(60), length.out = 51))
+vsS <- vs_trawl(sim, h)
+vsACF <- vs_trawl(ft, h, method = "acf")
+
+plot(log(h), vsS)
+lines(log(h), vsACF, col = "blue")
+
 }
 \references{
 Shephard, N., & Yang, J. J. (2017). 

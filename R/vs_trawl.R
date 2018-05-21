@@ -48,6 +48,21 @@
 #' lines(log(h), vsC, col = "blue")
 #' lines(log(h), vsSY, col = "red")
 #' legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"))
+#' 
+#' # trawl process estimated by fitting the autocorrelation function
+#' sim <- sim_trawl(list())
+#' sim$h <- 0.5
+#' sim$trawl <- "exp"
+#' sim$lag_max <- 3
+#' sim$method <- "acf"
+#' ft <- fit_trawl(sim)
+#' 
+#' h <- exp(seq(log(1e-2), log(60), length.out = 51))
+#' vsS <- vs_trawl(sim, h)
+#' vsACF <- vs_trawl(ft, h, method = "acf")
+#' 
+#' plot(log(h), vsS)
+#' lines(log(h), vsACF, col = "blue")
 #'
 #' @export vs_trawl
 vs_trawl <- function(object, h, method = "sample", ...) {
@@ -69,6 +84,12 @@ vs_trawl <- function(object, h, method = "sample", ...) {
                 as.numeric(object$beta_0), object$levy_alpha, object$include_cum1, 
                 as.numeric(object$b), FALSE)$vs_theor
 
+  } else if (method == "acf") {
+    
+    vs <- vs_SY(as.numeric(h), object$trawl, as.numeric(object$trawl_par),
+                as.numeric(object$beta_0), object$levy_alpha, TRUE, 
+                as.numeric(0), FALSE)$vs_theor
+    
   } else {
     stop("provide a valid method.")
   }

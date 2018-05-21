@@ -1,0 +1,135 @@
+---
+title: "Simulation and estimation of trawl processes"
+author: "Dries Cornilly"
+date: "May 21, 2018"
+output: html_document
+bibliography: bibliography.bib
+csl: ASA.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(rTrawl)
+```
+
+# Introduction
+
+Trawl processes are a novel way of describing continuous-time integer-valued autocorrelated processes that are either stationary or non-stationary. Such integer-valued processes appear in various applications, including actuarial science, econometrics and finance. 
+
+Traditionally, the focus in the literature has been on two types of processes: discrete autoregressive moving average models (@jacobs1978discrete1, @jacobs1978discrete2), and integer valued processes resulting from thinning operations (@weiss2008thinning). The advantage of the former class is the flexibility in handling marginal distributions, but this comes at the cost of rather unrealistic sample paths. For the latter processes, the sample paths appear to be more realistic, but the possible marginal distributions are restricted.
+
+@barndorff2014integer introduce the class of integer-valued trawl process which allow for a flexible autocorrelation structure in combination with any kind of marginal distribution within the class of integer-valued infinitely divisible distributions. The trawl processes are nested within the class of ambit fields (@barndorff2013levy, @barndorff2014modelling).
+
+Originally, trawl processes were stationary processes where all moves are fleeting. However, @continuous2017 introduced a mixture process of a trawl process combined with a pure Lévy process with the same basis. In their paper, this process describes intra-day price changes in futures prices. Recently, @veraart2018modelling provides a multivariate framework for trawl processes which is motivated by the joint behaviour of orders and cancellations.
+
+The intuition behind trawl process is fairly straightforward. Consider the left figure below, the black dots represent a Poisson Lévy basis and each of the dots has as value '+1'. However, at a certain time, only the dots that fall inside of the shaded region count. So, at time 5, there are two dots inside that region and hence, the process value equals 2. We remark that even though the Lévy basis only provides positive values, the shape of the shaded region is such that all dots remain inside for only a finite amount of time. This shaded region is called the trawl set and required to have a finite measure. In addition, the upper boundary of the set called the trawl function is usually assumed to be strictly increasing, as is the case in the example here.
+
+The shape of the trawl function is what determines the autocorrelation function, and the Lévy basis is responsible for the marginal distribution and the sizes of changes in process value.
+
+In this vignette, we describe how to use the `rTrawl` to estimate and simulate univariate and multivariate trawl processes. The first two section are dedicated to explaining the simulation and estimation of the processes using some small examples. Then, we show some examples of how to apply the package to real data by replicating some empirical studies done in the literature.
+
+```{r trawl intuition, echo=FALSE, out.width = "49%"}
+
+set.seed(2018)
+n <- 25
+mm <- 0
+MM <- 10
+lo <- 251
+gr <- seq(mm, MM, length.out = lo)
+x <- sort(runif(n, mm, MM))
+y <- runif(n)
+jumps <- rep(1, n)
+
+x_ext <- c(x, x - log(y))
+jumps_ext <- c(jumps, -jumps)
+ord <- order(x_ext)
+x_ext <- x_ext[ord]
+jumps_ext <- jumps_ext[ord]
+
+gr_ord <- (1:length(gr) + round(length(gr) / 2)) %% length(gr) + 1
+ii <- gr_ord[1]
+
+# plot Lévy seed
+plot(x, y, ylim = c(0, 1), xlim = c(mm, MM),
+     las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5,
+     type = 'n', xlab = "time", ylab = "seed")
+
+xtemp <- seq(0, gr[ii], length.out = 251)
+ytemp <- exp(-(gr[ii] - xtemp))
+polygon(c(xtemp, rev(xtemp)), c(rep(-0.005, length(xtemp)), rev(ytemp) + 0.005), 
+        col = scales::alpha("red", 0.4), border = NA)
+points(x[jumps > 0], y[jumps > 0], pch = 16)
+points(x[jumps < 0], y[jumps < 0])
+abline(v = gr[ii], lwd = 2)
+
+# plot process values
+xtemp <- c(0, x_ext[x_ext <= gr[ii]])
+ztemp <- c(0, cumsum(jumps_ext[x_ext <= gr[ii]]))
+plot(c(xtemp, gr[ii]), c(ztemp, ztemp[length(ztemp)]), ylim = c(0, 10), xlim = c(mm, MM),
+     las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5,
+     type = 's', lwd = 2, xlab = "time", ylab = "process value")
+abline(v = gr[ii], lwd = 2)
+```
+
+
+# Simulation
+
+This section concerns the simulation of trawl processes. We will focus on some small code examples, explain the chosen settings and elaborate on the possible options for each of the settings. The first part of this section handles univariate trawl processes, while the second part shows the implemented multivariate processes.
+
+## Univariate trawl processes
+
+To simulate a trawl process, one requires two main ingredients: the Lévy basis and the trawl function. At the time of writing the package contains four different Lévy bases:
+
+* Poisson basis: each arrival counts as +1,
+* Skellam basis: difference of two Poisson bases, each arrival is either +1 or -1,
+* Negative binomial basis: the process changes of the arrivals follow a logarthmic distributions, hence values larger than +1 are possible,
+* $\Delta$NB: difference of two negative binomial bases.
+
+Sample paths for each of the four bases applied as a pure Lévy process are shown below and the processes are obtained by executing the following code. Notice how the Lévy seed is specified by `levy_seed` and its parameters by `levy_par`.
+
+```{r compute bases}
+sim_Poisson <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = 1.1, "b" = 1, "T0" = 0, "TT" = 10))
+sim_Skellam <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(3, 2.5), "b" = 1, "T0" = 0, "TT" = 10))
+sim_negBin <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = c(2, 0.4), "b" = 1, "T0" = 0, "TT" = 10))
+sim_DnegBin <- sim_trawl(list("levy_seed" = "DnegBin", "levy_par" = c(2, 0.4, 1.8, 0.5), "b" = 1, "T0" = 0, "TT" = 10))
+```
+
+```{r plot bases, echo=FALSE, out.width = "49%"}
+plot(sim_Poisson$x_grid, sim_Poisson$p_grid, xlab = "time", ylab = "process value", main = "Poisson",
+     type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+plot(sim_Skellam$x_grid, sim_Skellam$p_grid, xlab = "time", ylab = "process value", main = "Skellam",
+     type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+plot(sim_negBin$x_grid, sim_negBin$p_grid, xlab = "time", ylab = "process value", main = "Negative Binomial",
+     type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+plot(sim_DnegBin$x_grid, sim_DnegBin$p_grid, xlab = "time", ylab = "process value", main = "Delta Negative Binomial",
+     type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+```
+
+The argument `b=1` determines that the sampled process is a pure Lévy process with independent increments. We will elaborate on the use of `b` later. The arguments `T0` and `TT` determine the time range in which to sample the process, as can be seen in each of the x-axes of the figures. These could be omitted, in which case the default values are `T0=0` and `TT=3600`.
+
+The next ingredient is the trawl function which determines the autocorrelation structure of the process. There are currently four different parametric trawls implemented in the package:
+
+* Exponential trawl: $(\lambda > 0)$, gives rise a a process with short memory,
+* Gamma trawl: $(\alpha > 0, H > 1)$, gives rise to a short memory process when $H > 2$ and a long memory process when $H \in (1, 2]$.
+* Inverse Gaussian trawl: $(\gamma > 0, \delta > 0)$, special case of the gig trawl where $\nu = 1/2$. 
+* Generalized inverse Gaussian trawl: $(\gamma > 0, \delta > 0, \nu \in \mathbb R)$, the most flexible trawl. It has short memory, but degenerates to the long memory trawl process by letting $\gamma \to \sqrt{2\alpha}, \nu = H$ and $\delta \to 0$. When $\gamma \to 0$, it degenerates to the inverse gamma trawl, which have polynomial decay resulting in short but substantial memory.
+
+The trawl and its parameters are specified by `trawl` and `trawl_par` respectively.
+
+
+## Multivariate trawl processes
+
+
+# Estimation
+
+## Univariate trawl processes
+
+## Multivariate trawl processes
+
+
+# Case studies
+
+
+
+# References

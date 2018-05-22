@@ -223,7 +223,7 @@ The method proposed in @barndorff2014integer to estimate the parameters in a sta
 
 ```{r fit univariate trawl example}
 sim <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = 4, "trawl" =  "exp", 
-                              "trawl_par" = 0.7, "b" = 0, "T0" = 0, "TT" = 36000))
+                              "trawl_par" = 0.7, "b" = 0, "T0" = 0, "TT" = 3600))
 sim$h <- 0.5
 sim$trawl <- "exp"
 sim$lag_max <- 3
@@ -231,10 +231,53 @@ sim$method <- "acf"
 ft <- fit_trawl(sim)
 ```
 
-```{r plot fit univariate trawl example, echo=FALSE, out.width = "49%"}
-plot(1:5, acf_trawl(sim, sim$h, lag_max = 5))
-lines(1:5, acf_trawl(ft, sim$h, method = "acf", lag_max = 5), col = "blue", lwd = 2)
+```{r plot fit univariate trawl example, echo=FALSE, out.width = "50%"}
+plot(sim$x_grid, sim$p_grid, xlab = "time", ylab = "process value", main = "Poisson",
+     type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+
+plot(1:10, acf_trawl(sim, sim$h, lag_max = 10), xlab = "lag", ylab = "autocorrelation", main = "ACF",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ft, sim$h, method = "acf", lag_max = 10), col = "blue", lwd = 2)
 ```
+
+Note how we fitted the trawl parameter only on the first three lags, but the figure shows a good fit on the first 10 lags.
+
+This method using the autocorrelation is no longer feasible when estimating trawl processes as in @continuous2017 where `b` is not equal to zero. For this kind of trawl processes, it proposed to fit the parameters based on the variance signature plot. To use the estimation method proposed in @continuous2017, simply set `method="vs_SY`. If you suspect the underlying Lévy basis to have a nonzero mean, then also set `include_cum1=TRUE`. However, for intra-day price moves, the mean is assumed to be zero and the default equals `FALSE`. We remark that this estimation method only works for integer-valued processes, hence if the tick size is 0.01 or 0.25, the process has to be multiplied in advance in order to have process changes a multiple of 1.
+
+A more robust way of estimating trawl processes as in @continuous2017 based on the variance signature plot is by the option `method="vs_C"`. Here, the tick size does not have to be a multiple of 1. In addition, the option `include_cum1` is available for trending series or stationary trawl processes. The difference in estimation is minimal under clean data, but `method="vs_C"` is the better choice when the observation frequency is low, or you suspect contaminated data.
+
+```{r fit univariate price trawl example}
+sim <- sim_trawl(list(levy_seed = "Skellam", levy_par = c(0.13, 0.11), b = 0.3, TT = 1200))
+sim$h <- exp(seq(log(1e-2), log(60), length.out = 51))
+sim$trawl <- "exp"
+sim$include_b <- TRUE
+sim$include_cum1 <- FALSE
+
+sim$method <- "vs_C"
+ftC <- fit_trawl(sim)
+
+sim$method <- "vs_SY"
+ftSY <- fit_trawl(sim)
+```
+
+```{r plot fit univariate price trawl example, echo=FALSE, out.width = "50%"}
+plot(sim$x_grid, 100 + sim$p_grid, xlab = "time", ylab = "process value", main = "Skellam price process",
+     type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+
+plot(log(sim$h), vs_trawl(sim, sim$h), xlab = "log(observation frequency)", 
+     ylab = "Realized variance / observation frequency", 
+     main = "Variance signature plot",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(log(sim$h), vs_trawl(ftC, sim$h, method = "vs_C"), col = "blue", lwd = 2)
+lines(log(sim$h), vs_trawl(ftSY, sim$h, method = "vs_SY"), col = "red", lwd = 2, lty = 1)
+legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"), lty = c(1, 1))
+```
+
+In the above figure, both fitted lines lie almost on top of each other.
+
+For both estimation methods, it is possible to set `include_b=FALSE` (in combination with `include_cum1`) to use the variance signature fit as an alternate estimation approach to the ACF for pure stationary trawl processes.
+
+So far, we have shown three different methods for estimating the trawl parameters, but what about the parameters of the underlying Lévy seed?
 
 
 ## Multivariate trawl processes

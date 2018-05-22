@@ -32,7 +32,7 @@ The intuition behind trawl process is fairly straightforward. Consider the left 
 
 The shape of the trawl function is what determines the autocorrelation function, and the Lévy basis is responsible for the marginal distribution and the sizes of changes in process value.
 
-In this vignette, we describe how to use the `rTrawl` to estimate and simulate univariate and multivariate trawl processes. The first two section are dedicated to explaining the simulation and estimation of the processes using some small examples. Then, we show some examples of how to apply the package to real data by replicating some empirical studies done in the literature.
+In this vignette, we describe how to use the `rTrawl` to estimate and simulate univariate and multivariate trawl processes. The first two section are dedicated to explaining the simulation and estimation of the processes using some small examples. Then, we show some examples of how to apply the package to real data by replicating some empirical studies done in the literature. In order to run the examples in this vignette, the `rTrawl` package should be loaded.
 
 ```{r trawl intuition, echo=FALSE, out.width = "49%"}
 
@@ -223,7 +223,7 @@ The method proposed in @barndorff2014integer to estimate the parameters in a sta
 
 ```{r fit univariate trawl example}
 sim <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = 4, "trawl" =  "exp", 
-                              "trawl_par" = 0.7, "b" = 0, "T0" = 0, "TT" = 3600))
+                      "trawl_par" = 0.7, "b" = 0, "T0" = 0, "TT" = 3600))
 sim$h <- 0.5
 sim$trawl <- "exp"
 sim$lag_max <- 3
@@ -242,7 +242,7 @@ lines(1:10, acf_trawl(ft, sim$h, method = "acf", lag_max = 10), col = "blue", lw
 
 Note how we fitted the trawl parameter only on the first three lags, but the figure shows a good fit on the first 10 lags.
 
-This method using the autocorrelation is no longer feasible when estimating trawl processes as in @continuous2017 where `b` is not equal to zero. For this kind of trawl processes, it proposed to fit the parameters based on the variance signature plot. To use the estimation method proposed in @continuous2017, simply set `method="vs_SY`. If you suspect the underlying Lévy basis to have a nonzero mean, then also set `include_cum1=TRUE`. However, for intra-day price moves, the mean is assumed to be zero and the default equals `FALSE`. We remark that this estimation method only works for integer-valued processes, hence if the tick size is 0.01 or 0.25, the process has to be multiplied in advance in order to have process changes a multiple of 1.
+This method using the autocorrelation is no longer feasible when estimating trawl processes as in @continuous2017 where `b` is not equal to zero. For this kind of trawl processes, it proposed to fit the parameters based on the variance signature plot. To use the estimation method proposed in @continuous2017, simply set `method="vs_SY`. If you suspect the underlying Lévy basis to have a nonzero mean, then also set `include_cum1=TRUE`. However, for intra-day price moves, the mean is assumed to be zero and the default equals `FALSE`. We remark that this estimation method only works for integer-valued processes, hence if the tick size is 0.01 or 0.25, the process has to be multiplied in advance in order to have process changes a multiple of 1. The grid on which the variance signature values are computed needs to be provided in the argument `h`.
 
 A more robust way of estimating trawl processes as in @continuous2017 based on the variance signature plot is by the option `method="vs_C"`. Here, the tick size does not have to be a multiple of 1. In addition, the option `include_cum1` is available for trending series or stationary trawl processes. The difference in estimation is minimal under clean data, but `method="vs_C"` is the better choice when the observation frequency is low, or you suspect contaminated data.
 
@@ -277,14 +277,258 @@ In the above figure, both fitted lines lie almost on top of each other.
 
 For both estimation methods, it is possible to set `include_b=FALSE` (in combination with `include_cum1`) to use the variance signature fit as an alternate estimation approach to the ACF for pure stationary trawl processes.
 
-So far, we have shown three different methods for estimating the trawl parameters, but what about the parameters of the underlying Lévy seed?
+So far, we have shown three different methods for estimating the trawl parameters, but what about the parameters of the underlying Lévy seed? For the stationary trawl processes, @barndorff2014integer and @veraart2018modelling adopt a step-wide procedure where first the trawl parameters are estimated, as explained above, and next the Lévy parameters are fitted. This fitting is done in the `fit_levy` function with the method of moments, using either the first moment in case of the Poisson basis, or the first and second moments in case of the Skellam and negative binomial basis. An example of this step-wise procedure is given below.
 
+```{r univariate step wise}
+sim <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(0.131, 0.130),
+                      "trawl" = "gig", "trawl_par" = c(0.01, 0.45, -0.6),
+                      "T0" = 72.03, "TT" = 75600, "observed_freq" = 1e-6, 
+                      "b" = 0))
+
+# fit the trawl parameters
+sim$h <- 0.5
+sim$trawl <- "gig"
+sim$lag_max <- 3
+sim$method <- "acf"
+ft <- fit_trawl(sim) 
+
+# fit the Skellam basis
+lv_fit <- fit_levy(list("levy_seed" = "Skellam", "trawl" = "gig",
+                        "trawl_par" = ft$trawl_par, "T0" = 72.03, "TT" = 75600,
+                        "x_grid" = sim$x_grid, "p_grid" = sim$p_grid))  
+```
+
+When estimating based on the option `"vs_SY"`, a nonparametric Lévy basis is returned. If necessary, one can fit this to a theoretical distribution using maximum likelihood or the method of moments. Under the option `"vs_C"`, the output parameter `xi` contains the second cumulant of the efficient part of process, `omega` the second cumulant of the trawl process and `eta` the squared first moment of the efficient part. These can be used to fit a Lévy seed with the method of moments if necessary.
 
 ## Multivariate trawl processes
 
+The way multivariate trawl processes are constructed makes a two-step procedure as in @veraart2018modelling the best option. First, the univariate trawls are estimated. Then, the multivariate Lévy seed is fitted according to the required specification, given similarly as to the simulation function. This procedure is somewhat more elaborate to use since each of the steps requires new specification to be set. Below are two detailed code examples for the Skellam and negative binomial processes.
 
-# Case studies
+```{r multivariate Skellam}
+trawl <- list("gamma", "exp")
+trawl_par <- list(c(0.9, 1.8), c(0.5))
+levy_par <- matrix(c(0.13, 0.13, 0.23, 0.11, 0.05), ncol = 1)
+design_matrix <- matrix(c(1, 0, 0, 1, -1, 1, 1, -1, 1, 0), nrow = 2)
+sm <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = levy_par, "trawl" = trawl, "trawl_par" = trawl_par,
+                     "design_matrix" = design_matrix, "b" = c(0, 0), 
+                     "T0" = 35, "TT" = 24600, "observed_freq" = 1e-6),
+                univariate = FALSE)
 
+h <- 1
+lag_max <- 2              
+ft1 <- fit_trawl(list("T0" = 35, "TT" = 24600, "method" = "acf", "h" = h, "trawl" = trawl[[1]],
+                      "x_grid" = sm$x_grid[[1]], "p_grid" = sm$p_grid[[1]],
+                      "lag_max" = lag_max, "b" = 0), multi = 1)
+ft2 <- fit_trawl(list("T0" = 35, "TT" = 24600, "method" = "acf", "h" = h, "trawl" = trawl[[2]],
+                      "x_grid" = sm$x_grid[[2]], "p_grid" = sm$p_grid[[2]],
+                      "lag_max" = lag_max, "b" = 0), multi = 1)
+
+lv_fit <- fit_levy(list("levy_seed" = "Poisson", "trawl" = trawl, 
+                        "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 35, "TT" = 24600,
+                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
+                        "design_matrix" = design_matrix)) 
+```
+
+A similar approach is followed when applying the two-step procedure to the multivariate negative binomial trawl process.
+
+```{r multivariate negative binomial}
+trawl <- list("gamma", "exp")
+trawl_par <- list(c(0.9, 1.8), c(0.5))
+levy_par <- matrix(c(1.5, 0.4, 0.3,
+                     0.7, 0.4, NA,
+                     0.6, 0.3, NA), ncol = 3, byrow = TRUE)
+design_matrix <- matrix(c(1, 1, 1, 0, 0, 1), nrow = 2)
+sm <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = levy_par,
+                     "trawl" = trawl, "trawl_par" = trawl_par,
+                     "design_matrix" = design_matrix, "b" = c(0, 0),
+                     "T0" = 0, "TT" = 25400, "observed_freq" = 1e-6),
+                univariate = FALSE)
+
+h <- 1       
+lag_max <- 2       
+ft1 <- fit_trawl(list("T0" = 0, "TT" = 25400, "method" = "acf", "h" = h, "trawl" = trawl[[1]],
+                      "x_grid" = sm$x_grid[[1]], "p_grid" = sm$p_grid[[1]],
+                      "lag_max" = lag_max, "b" = 0), multi = 1)
+ft2 <- fit_trawl(list("T0" = 0, "TT" = 25400, "method" = "acf", "h" = h, "trawl" = trawl[[2]],
+                      "x_grid" = sm$x_grid[[2]], "p_grid" = sm$p_grid[[2]],
+                      "lag_max" = lag_max, "b" = 0), multi = 1)
+
+lv_fit <- fit_levy(list("levy_seed" = "negBin", "trawl" = trawl,
+                        "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 0, "TT" = 25400,
+                        "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
+                        "design_matrix" = design_matrix))
+```
+
+
+# Case study
+
+In the final section of this vignette, we apply the estimation techniques presented earlier to real price data. The study here is along the lines as the one presented as empirical study in @continuous2017. The `ESM8` dataset contains prices at which trades in the financial instrument `ES` have happened between 8h30 and 12h00 on May 7, 2018. First, we load the `xts` time series package and then have a visual look at the data.
+
+```{r xts, message=FALSE}
+library(xts)
+data(ESM8)
+```
+
+```{r ESM8 visual 1, echo=FALSE, out.width = "50%"}
+plot(ESM8, type = 's')
+plot(diff(ESM8), pch = 16)
+```
+
+Note that the tick size equals $\$0.25$ and that most price changes are with 1 tick. In order to be able to apply both the methods `"vs_SY"` and `"vs_C"`, we multiply the price process by a factor 4. As for the vector with event times, we offset it from 8h30 and count in seconds.
+
+```{r ESM8 make object}
+p_grid <- as.numeric(ESM8$Price) * 4
+x_grid <- as.numeric(difftime(index(ESM8), as.POSIXct("2018-05-07 08:30:00"), 
+                              tz = "America/Chicago", units = "secs"))
+T0 <- 0
+TT <- 12600
+trs <- list("x_grid" = x_grid, "p_grid" = p_grid, "T0" = T0, "TT" = TT)
+```
+
+The dataset concerns the period 8h30 - 12h00, hence if we set 8h30 to `T0=0`, then `TT=12600` seconds. On these variables, we estimate the trawl processes with all four specification, for both methods `"vs_C"` and `"vs_SY"`.
+
+```{r ESM8 estimate vs}
+h <- exp(seq(log(1e-3), log(5 * 60), length.out = 51))
+
+ftSY_exp <- fit_trawl(list("method" = "vs_SY", "trawl" = "exp", "x_grid" = x_grid, 
+                           "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+ftSY_gamma <- fit_trawl(list("method" = "vs_SY", "trawl" = "gamma", "x_grid" = x_grid, 
+                             "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+ftSY_invGauss <- fit_trawl(list("method" = "vs_SY", "trawl" = "invGauss", "x_grid" = x_grid, 
+                                "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+ftSY_gig <- fit_trawl(list("method" = "vs_SY", "trawl" = "gig", "x_grid" = x_grid, 
+                           "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+
+ftC_exp <- fit_trawl(list("method" = "vs_C", "trawl" = "exp", "x_grid" = x_grid, 
+                          "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+ftC_gamma <- fit_trawl(list("method" = "vs_C", "trawl" = "gamma", "x_grid" = x_grid, 
+                            "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+ftC_invGauss <- fit_trawl(list("method" = "vs_C", "trawl" = "invGauss", "x_grid" = x_grid, 
+                               "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+ftC_gig <- fit_trawl(list("method" = "vs_C", "trawl" = "gig", "x_grid" = x_grid, 
+                          "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
+```
+
+These fittings provide the following match to the empirical variance signature plot
+
+```{r ESM8 vs fittings, echo=FALSE, out.width = "49%"}
+plot(log(h), vs_trawl(trs, h), xlab = "log(observation frequency)", 
+     ylab = "Realized variance / observation frequency", 
+     main = "Variance signature plot - vs_SY",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(log(h), vs_trawl(ftSY_exp, h, method = "vs_SY"), col = "red", lwd = 2)
+lines(log(h), vs_trawl(ftSY_gamma, h, method = "vs_SY"), col = "blue", lwd = 2)
+lines(log(h), vs_trawl(ftSY_invGauss, h, method = "vs_SY"), col = "orange", lwd = 2)
+lines(log(h), vs_trawl(ftSY_gig, h, method = "vs_SY"), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+
+plot(log(h), vs_trawl(trs, h), xlab = "log(observation frequency)", 
+     ylab = "Realized variance / observation frequency", 
+     main = "Variance signature plot - vs_C",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(log(h), vs_trawl(ftC_exp, h, method = "vs_C"), col = "red", lwd = 2)
+lines(log(h), vs_trawl(ftC_gamma, h, method = "vs_C"), col = "blue", lwd = 2)
+lines(log(h), vs_trawl(ftC_invGauss, h, method = "vs_C"), col = "orange", lwd = 2)
+lines(log(h), vs_trawl(ftC_gig, h, method = "vs_C"), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+```
+
+When estimating using `"vs_SY"`, the gig trawl seems the best fit both at the high frequencies and the lower frequencies. For the more robust `"vs_C"` approach,  all except the exponential trawl provide a reasonably good fit. 
+
+As a check of the different fits, we also plot some of the autocorrelation functions of differenced price series below.
+
+```{r ESM8 acf fittings, echo=FALSE, out.width = "49%"}
+h <- 1
+plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
+     main = "ACF - h=1 - vs_SY",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ftSY_exp, h, method = "vs_SY", dff = 1, lag_max = 10), col = "red", lwd = 2)
+lines(1:10, acf_trawl(ftSY_gamma, h, method = "vs_SY", dff = 1, lag_max = 10), col = "blue", lwd = 2)
+lines(1:10, acf_trawl(ftSY_invGauss, h, method = "vs_SY", dff = 1, lag_max = 10), col = "orange", lwd = 2)
+lines(1:10, acf_trawl(ftSY_gig, h, method = "vs_SY", dff = 1, lag_max = 10), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+
+plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
+     main = "ACF - h=1 - vs_C",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ftC_exp, h, method = "vs_C", dff = 1, lag_max = 10), col = "red", lwd = 2)
+lines(1:10, acf_trawl(ftC_gamma, h, method = "vs_C", dff = 1, lag_max = 10), col = "blue", lwd = 2)
+lines(1:10, acf_trawl(ftC_invGauss, h, method = "vs_C", dff = 1, lag_max = 10), col = "orange", lwd = 2)
+lines(1:10, acf_trawl(ftC_gig, h, method = "vs_C", dff = 1, lag_max = 10), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+
+h <- 0.1
+plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
+     main = "ACF - h=0.1 - vs_SY",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ftSY_exp, h, method = "vs_SY", dff = 1, lag_max = 10), col = "red", lwd = 2)
+lines(1:10, acf_trawl(ftSY_gamma, h, method = "vs_SY", dff = 1, lag_max = 10), col = "blue", lwd = 2)
+lines(1:10, acf_trawl(ftSY_invGauss, h, method = "vs_SY", dff = 1, lag_max = 10), col = "orange", lwd = 2)
+lines(1:10, acf_trawl(ftSY_gig, h, method = "vs_SY", dff = 1, lag_max = 10), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+
+plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
+     main = "ACF - h=0.1 - vs_C",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ftC_exp, h, method = "vs_C", dff = 1, lag_max = 10), col = "red", lwd = 2)
+lines(1:10, acf_trawl(ftC_gamma, h, method = "vs_C", dff = 1, lag_max = 10), col = "blue", lwd = 2)
+lines(1:10, acf_trawl(ftC_invGauss, h, method = "vs_C", dff = 1, lag_max = 10), col = "orange", lwd = 2)
+lines(1:10, acf_trawl(ftC_gig, h, method = "vs_C", dff = 1, lag_max = 10), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+
+h <- 0.01
+plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
+     main = "ACF - h=0.01 - vs_SY",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ftSY_exp, h, method = "vs_SY", dff = 1, lag_max = 10), col = "red", lwd = 2)
+lines(1:10, acf_trawl(ftSY_gamma, h, method = "vs_SY", dff = 1, lag_max = 10), col = "blue", lwd = 2)
+lines(1:10, acf_trawl(ftSY_invGauss, h, method = "vs_SY", dff = 1, lag_max = 10), col = "orange", lwd = 2)
+lines(1:10, acf_trawl(ftSY_gig, h, method = "vs_SY", dff = 1, lag_max = 10), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+
+plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
+     main = "ACF - h=0.01 - vs_C",
+     pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
+lines(1:10, acf_trawl(ftC_exp, h, method = "vs_C", dff = 1, lag_max = 10), col = "red", lwd = 2)
+lines(1:10, acf_trawl(ftC_gamma, h, method = "vs_C", dff = 1, lag_max = 10), col = "blue", lwd = 2)
+lines(1:10, acf_trawl(ftC_invGauss, h, method = "vs_C", dff = 1, lag_max = 10), col = "orange", lwd = 2)
+lines(1:10, acf_trawl(ftC_gig, h, method = "vs_C", dff = 1, lag_max = 10), col = "purple", lwd = 2)
+legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
+       col = c("red", "blue", "orange", "purple"))
+```
+
+Based on these figures, it appears that the gig fit from method `"vs_C"` is best considered over all frequencies. Given the autocorrelation structure, one could try to exploit the information by using it to predict future autocorrelation structures.
+
+As seen in the estimation section, fitting the trawl is only one main ingredient of a trawl process. The other one is the underlying Lévy measure. The nonparametric Lévy measure obtained by the `"vs_SY"` setting, regardless of chosen trawl, equals
+
+```{r ESM8 nonparametric levy par}
+ftSY_gig$levy_par
+ftSY_gig$b
+```
+
+The intensity of a +2 two move is almost negligible and one could approximate this Lévy seed by a Skellam seed with parameters $\nu_+ = 261$ and $\nu_- = 0.256$. Based on these parameters, the first cumulant equals $\kappa_1 = 0.005$ and the second cumulant (variance) is $\kappa_2 = 0.517$. Note however that this is the variance of the underlying Lévy seed, not of the observed process. Since $b = 0.232$, the variance of the efficient price moves (pure Lévy component) equals $\kappa_2^{eff} = b \kappa_2 = 0.120$, while the variance of the market microstructure noise (trawl component) equals $\kappa_2^{mm} = (1 - b) \kappa_2 = 0.397$.
+
+Since the `"vs_C"` approach directly returns some of the moments, we can compare the approaches.
+```{r ESM8 cumulants, echo=FALSE, results = 'asis'}
+library(knitr)
+cums <- matrix(NA, nrow = 2, ncol = 5)
+rownames(cums) <- c("second cumulant efficient process", "second cumulant trawl process")
+colnames(cums) <- c("vs_SY", "vs_C (exp)", "vs_C (gamma)", "vs_C (invG)", "vs_C (gig)")
+cums[1,] <- c(ftSY_gig$b * sum(ftSY_gig$levy_par[, 2]), ftC_exp$xi, ftC_gamma$xi, ftC_invGauss$xi, ftC_gig$xi)
+cums[2,] <- c((1 - ftSY_gig$b) * sum(ftSY_gig$levy_par[, 2]), ftC_exp$omega, ftC_gamma$omega, ftC_invGauss$omega, ftC_gig$omega)
+kable(cums, caption = "Estimated cumulants")
+```
+
+The results are in line which each other. It is, however, important to keep in mind that accurate estimation of the Lévy measure under `"vs_SY"` requires to observe the process at an ultra-high frequency so one observes all the price changes that happen. If this is not the case, then this estimation method breaks down. When estimation using the option `"vs_C"`, this is not required. The estimation is robust to the observation frequency as long as there are enough observations. 
+
+Also, estimation of the Lévy measure is independent of the chosen trawl process for `"vs_SY"`, while `"vs_C"` performs a joint optimization over the trawl parameters and the Lévy cumulants.
 
 
 # References

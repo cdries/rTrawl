@@ -71,7 +71,7 @@
 #' sim$method <- "acf"
 #' ft <- fit_trawl(sim)
 #' plot(1:10, acf_trawl(sim, sim$h, lag_max = 10))
-#' lines(1:10, acf_trawl(sim, sim$h, method = "acf", lag_max = 10), col = "blue")
+#' lines(1:10, acf_trawl(ft, sim$h, method = "acf", lag_max = 10), col = "blue")
 #'
 #' @export fit_trawl
 fit_trawl <- function(object, ...) {

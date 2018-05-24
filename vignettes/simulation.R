@@ -1,44 +1,9 @@
----
-title: "Simulation and estimation of trawl processes"
-author: "Dries Cornilly"
-date: "May 21, 2018"
-header-includes:
-- \usepackage{bm}
-output: 
-  html_document:
-    toc: true
-    number_sections: true
-vignette: >
-  %\VignetteIndexEntry{Simulation and estimation of trawl processes}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
-bibliography: bibliography.bib
-csl: ASA.csl
----
-
-```{r setup, include=FALSE}
+## ----setup, include=FALSE------------------------------------------------
 knitr::opts_chunk$set(echo = TRUE)
 
 library(rTrawl)
-```
 
-# Introduction
-
-Trawl processes are a novel way of describing continuous-time integer-valued autocorrelated processes that are either stationary or non-stationary. Such integer-valued processes appear in various applications, including actuarial science, econometrics and finance. 
-
-Traditionally, the focus in the literature has been on two types of processes: discrete autoregressive moving average models (@jacobs1978discrete1, @jacobs1978discrete2), and integer valued processes resulting from thinning operations (@weiss2008thinning). The advantage of the former class is the flexibility in handling marginal distributions, but this comes at the cost of rather unrealistic sample paths. For the latter processes, the sample paths appear to be more realistic, but the possible marginal distributions are restricted.
-
-@barndorff2014integer introduce the class of integer-valued trawl process which allow for a flexible autocorrelation structure in combination with any kind of marginal distribution within the class of integer-valued infinitely divisible distributions. The trawl processes are nested within the class of ambit fields (@barndorff2013levy, @barndorff2014modelling).
-
-Originally, trawl processes were stationary processes where all moves are fleeting. However, @continuous2017 introduced a mixture process of a trawl process combined with a pure Lévy process with the same basis. In their paper, this process describes intra-day price changes in futures prices. Recently, @veraart2018modelling provides a multivariate framework for trawl processes which is motivated by the joint behaviour of orders and cancellations.
-
-The intuition behind trawl process is fairly straightforward. Consider the left figure below, the black dots represent a Poisson Lévy basis and each of the dots has as value '+1'. However, at a certain time, only the dots that fall inside of the shaded region count. So, at time 5, there are two dots inside that region and hence, the process value equals 2. We remark that even though the Lévy basis only provides positive values, the shape of the shaded region is such that all dots remain inside for only a finite amount of time. This shaded region is called the trawl set and required to have a finite measure. In addition, the upper boundary of the set called the trawl function is usually assumed to be strictly increasing, as is the case in the example here.
-
-The shape of the trawl function is what determines the autocorrelation function, and the Lévy basis is responsible for the marginal distribution and the sizes of changes in process value.
-
-In this vignette, we describe how to use the `rTrawl` to estimate and simulate univariate and multivariate trawl processes. The first two section are dedicated to explaining the simulation and estimation of the processes using some small examples. Then, we show some examples of how to apply the package to real data by replicating some empirical studies done in the literature. In order to run the examples in this vignette, the `rTrawl` package should be loaded.
-
-```{r trawl intuition, echo=FALSE, out.width = "49%"}
+## ----trawl intuition, echo=FALSE, out.width = "49%"----------------------
 
 set.seed(2018)
 n <- 25
@@ -79,32 +44,14 @@ plot(c(xtemp, gr[ii]), c(ztemp, ztemp[length(ztemp)]), ylim = c(0, 10), xlim = c
      las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5,
      type = 's', lwd = 2, xlab = "time", ylab = "process value")
 abline(v = gr[ii], lwd = 2)
-```
 
-
-# Simulation
-
-This section concerns the simulation of trawl processes. We will focus on some small code examples, explain the chosen settings and elaborate on the possible options for each of the settings. The first part of this section handles univariate trawl processes, while the second part shows the implemented multivariate processes.
-
-## Univariate trawl processes
-
-To simulate a trawl process, one requires two main ingredients: the Lévy basis and the trawl function. At the time of writing the package contains four different Lévy bases:
-
-* Poisson basis: each arrival counts as +1,
-* Skellam basis: difference of two Poisson bases, each arrival is either +1 or -1,
-* Negative binomial basis: the process changes of the arrivals follow a logarthmic distributions, hence values larger than +1 are possible,
-* $\Delta$NB: difference of two negative binomial bases.
-
-Sample paths for each of the four bases applied as a pure Lévy process are shown below and the processes are obtained by executing the following code. Notice how the Lévy seed is specified by `levy_seed` and its parameters by `levy_par`.
-
-```{r compute bases}
+## ----compute bases-------------------------------------------------------
 sim_Poisson <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = 1.1, "b" = 1, "T0" = 0, "TT" = 10))
 sim_Skellam <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(3, 2.5), "b" = 1, "T0" = 0, "TT" = 10))
 sim_negBin <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = c(2, 0.4), "b" = 1, "T0" = 0, "TT" = 10))
 sim_DnegBin <- sim_trawl(list("levy_seed" = "DnegBin", "levy_par" = c(2, 0.4, 1.8, 0.5), "b" = 1, "T0" = 0, "TT" = 10))
-```
 
-```{r plot bases, echo=FALSE, out.width = "49%"}
+## ----plot bases, echo=FALSE, out.width = "49%"---------------------------
 plot(sim_Poisson$x_grid, sim_Poisson$p_grid, xlab = "time", ylab = "process value", main = "Poisson",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 plot(sim_Skellam$x_grid, sim_Skellam$p_grid, xlab = "time", ylab = "process value", main = "Skellam",
@@ -113,20 +60,8 @@ plot(sim_negBin$x_grid, sim_negBin$p_grid, xlab = "time", ylab = "process value"
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 plot(sim_DnegBin$x_grid, sim_DnegBin$p_grid, xlab = "time", ylab = "process value", main = "Delta Negative Binomial",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
-```
 
-The argument `b=1` determines that the sampled process is a pure Lévy process with independent increments. We will elaborate on the use of `b` later. The arguments `T0` and `TT` determine the time range in which to sample the process, as can be seen in each of the x-axes of the figures. These could be omitted, in which case the default values are `T0=0` and `TT=3600`.
-
-The next ingredient is the trawl function which determines the autocorrelation structure of the process. There are currently four different parametric trawls implemented in the package:
-
-* Exponential trawl: $(\lambda > 0)$, gives rise a a process with short memory,
-* Gamma trawl: $(\alpha > 0, H > 1)$, gives rise to a short memory process when $H > 2$ and a long memory process when $H \in (1, 2]$.
-* Inverse Gaussian trawl: $(\gamma > 0, \delta > 0)$, special case of the gig trawl where $\nu = 1/2$. 
-* Generalized inverse Gaussian trawl: $(\gamma > 0, \delta > 0, \nu \in \mathbb R)$, the most flexible trawl. It has short memory, but degenerates to the long memory trawl process by letting $\gamma \to \sqrt{2\alpha}, \nu = H$ and $\delta \to 0$. When $\gamma \to 0$, it degenerates to the inverse gamma trawl, which have polynomial decay resulting in short but substantial memory.
-
-The trawl and its parameters are specified by `trawl` and `trawl_par` respectively. A stationary trawl process, as in @barndorff2014integer and @veraart2018modelling are them simulated by the following code. Note that we chose different Lévy bases for the four trawl processes. It is important to see that this time, we set `b=0`, as is also the default value.
-
-```{r pure trawl example}
+## ----pure trawl example--------------------------------------------------
 sim_Poisson <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = 4, "trawl" =  "exp", 
                               "trawl_par" = 0.7, "b" = 0, "T0" = 0, "TT" = 30))
 sim_Skellam <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(3, 2.5), "trawl" =  "gamma", 
@@ -135,9 +70,8 @@ sim_negBin <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = c(8, 0.7), "tr
                              "trawl_par" = c(0.3, 0.6), "b" = 0, "T0" = 0, "TT" = 30))
 sim_DnegBin <- sim_trawl(list("levy_seed" = "DnegBin", "levy_par" = c(3, 0.4, 2.8, 0.5), "trawl" = "gig",
                               "trawl_par" = c(0.1, 0.4, -0.7), "b" = 0, "T0" = 0, "TT" = 30))
-```
 
-```{r plot trawl example, echo=FALSE, out.width = "49%"}
+## ----plot trawl example, echo=FALSE, out.width = "49%"-------------------
 plot(sim_Poisson$x_grid, sim_Poisson$p_grid, xlab = "time", ylab = "process value", main = "Poisson",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 plot(sim_Skellam$x_grid, sim_Skellam$p_grid, xlab = "time", ylab = "process value", main = "Skellam",
@@ -146,27 +80,8 @@ plot(sim_negBin$x_grid, sim_negBin$p_grid, xlab = "time", ylab = "process value"
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 plot(sim_DnegBin$x_grid, sim_DnegBin$p_grid, xlab = "time", ylab = "process value", main = "Delta Negative Binomial",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
-```
 
-The parameter `b` can also be set between 0 and 1, in which case a nonstationary trawl process with Lévy component is simulated, as proposed in @continuous2017. The `b` parameter governs the percentage of the arrivals that are permanent. Hence, `b=1` was set for a pure Lévy process while `b=0` was set for a stationary trawl process.
-
-## Multivariate trawl processes
-
-In @barndorff2014integer, a multivariate trawl process was proposed, but not used anywhere. @veraart2018modelling provides a full theoretical treatment of multivariate trawl processes. The cases of the multivariate Poisson and negative binomial are handled in depth.
-
-### Poisson / Skellam process
-
-The Poisson / Skellam process is based on the following factor decomposition:
-\begin{equation}
-X = A Z,
-\end{equation}
-where $X$ is the observed $p$-dimensional process, $Z$ is a $k$-dimensional process consisting of independent Poisson components and $A$ is a $p \times k$ matrix containing entries $-1$, $1$ or $0$. In, @veraart2018modelling only entries 0 or 1 were allowed, but adding $-1$ entries extends the pure Poisson case to the Skellam case. There is no restriction on the dimension of $Z$, it can be smaller, equal or larger than $p$.
-
-The matrix $A$ has to be provided to the `sim_trawl` function by the argument `design_matrix`, while the parameters for the components in $Z$ are given in `levy_par`. Since a multivariate process means that there have to be multiple trawls specified, one for each component, these are added in list form to the arguments `trawl` and `trawl_par`. In addition, the flag `univariate` should be set to `FALSE`.
-
-An example of simulating a multivariate trawl process with Skellam basis and gamma and exponential trawls is as follows:
-
-```{r mvSkellam trawl example}
+## ----mvSkellam trawl example---------------------------------------------
 trawl <- list("gamma", "exp")
 trawl_par <- list(c(0.9, 1.8), c(0.5))
 levy_par <- matrix(c(0.13, 0.23, 0.11), ncol = 1)
@@ -176,22 +91,14 @@ sim_mvSkellam <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = levy_par,
                                 "design_matrix" = design_matrix, "b" = c(0, 0),
                                 "T0" = 0, "TT" = 3600, "observed_freq" = 1e-6), 
                            univariate = FALSE)
-```
 
-```{r plot mvSkellam trawl example, echo=FALSE, out.width = "49%"}
+## ----plot mvSkellam trawl example, echo=FALSE, out.width = "49%"---------
 plot(sim_mvSkellam$x_grid[[1]], sim_mvSkellam$p_grid[[1]], xlab = "time", ylab = "process value", main = "Skellam - component 1",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 plot(sim_mvSkellam$x_grid[[2]], sim_mvSkellam$p_grid[[2]], xlab = "time", ylab = "process value", main = "Skellam - component 2",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
-```
 
-### Negative binomial process
-
-Since the Skellam process is restricted in the sense that it only allows movements of +1 or -1, the negative binomial may be a more natural choice. @veraart2018modelling shows how to introduce dependence through a common factor when computing the negative binomial distribution as a Poisson mixture model. Currently, only bivariate interactions have been implemented. This approach is equivalent to generating a compound Poisson process with multivariate logarithmic increments additional to independent univariate negative binomial trawl processes.
-
-Again, `design_matrix` governs the common and independent factors. This time the column sums should be lower or equal to two. The parameters for each of the latent components are stored in the argument `trawl_par`. An example will make this clear. Here, we consider the most general case where there is dependence through a common factor and there are additional independent factors.
-
-```{r mvSkellamNegbin trawl example}
+## ----mvSkellamNegbin trawl example---------------------------------------
 trawl <- list("gamma", "exp")
 trawl_par <- list(c(0.9, 1.8), c(0.5))
 levy_par <- matrix(c(1.5, 0.4, 0.3,
@@ -203,29 +110,14 @@ sim_mvNegBin <- sim_trawl(list("levy_seed" = "negBin", "levy_par" = levy_par,
                                "design_matrix" = design_matrix, "b" = c(0, 0),
                                "T0" = 15.3, "TT" = 1200, "observed_freq" = 1e-3), 
                           univariate = FALSE)
-```
 
-```{r plot mvSkellamNegbin trawl example, echo=FALSE, out.width = "49%"}
+## ----plot mvSkellamNegbin trawl example, echo=FALSE, out.width = "49%"----
 plot(sim_mvNegBin$x_grid[[1]], sim_mvNegBin$p_grid[[1]], xlab = "time", ylab = "process value", main = "Negative binomial - component 1",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 plot(sim_mvNegBin$x_grid[[2]], sim_mvNegBin$p_grid[[2]], xlab = "time", ylab = "process value", main = "Negative binomial - component 2",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
-```
 
-We remark that more restricted cases, such as an independent multivariate binomial, or dependence through a common factor without all independent additional factors, are obtained be removing the corresponding parameters from the input.
-
-The parameter convention used here corresponds to the one used in the univariate case in @barndorff2014integer and is related to the one in @veraart2018modelling but not identical.
-
-
-# Estimation
-
-The previous section showed how to simulate trawl processes. This section will explain the different estimation procedures to estimate the parameters in univariate and multivariate trawl processes.
-
-## Univariate trawl processes
-
-The method proposed in @barndorff2014integer to estimate the parameters in a stationary trawl process is by fitting the theoretical autocorrelation function to the empirically observed one. This can be done by the `fit_trawl` function with `method="acf"`. In addition, we have to specify the trawl we want to fit (`trawl`), the observation frequency or lag length used (`h`) and the number of lags `lag_max`. Of course, the process itself has to be provided and optimally also the observation window `T0` and `TT`. The following code contains an example how to fit the exponential trawl process simulated in previous section
-
-```{r fit univariate trawl example}
+## ----fit univariate trawl example----------------------------------------
 sim <- sim_trawl(list("levy_seed" = "Poisson", "levy_par" = 4, "trawl" =  "exp", 
                       "trawl_par" = 0.7, "b" = 0, "T0" = 0, "TT" = 3600))
 sim$h <- 0.5
@@ -233,24 +125,16 @@ sim$trawl <- "exp"
 sim$lag_max <- 3
 sim$method <- "acf"
 ft <- fit_trawl(sim)
-```
 
-```{r plot fit univariate trawl example, echo=FALSE, out.width = "50%"}
+## ----plot fit univariate trawl example, echo=FALSE, out.width = "50%"----
 plot(sim$x_grid, sim$p_grid, xlab = "time", ylab = "process value", main = "Poisson",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 
 plot(1:10, acf_trawl(sim, sim$h, lag_max = 10), xlab = "lag", ylab = "autocorrelation", main = "ACF",
      pch = 16, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 lines(1:10, acf_trawl(ft, sim$h, method = "acf", lag_max = 10), col = "blue", lwd = 2)
-```
 
-Note how we fitted the trawl parameter only on the first three lags, but the figure shows a good fit on the first 10 lags.
-
-This method using the autocorrelation is no longer feasible when estimating trawl processes as in @continuous2017 where `b` is not equal to zero. For this kind of trawl processes, it proposed to fit the parameters based on the variance signature plot. To use the estimation method proposed in @continuous2017, simply set `method="vs_SY`. If you suspect the underlying Lévy basis to have a nonzero mean, then also set `include_cum1=TRUE`. However, for intra-day price moves, the mean is assumed to be zero and the default equals `FALSE`. We remark that this estimation method only works for integer-valued processes, hence if the tick size is 0.01 or 0.25, the process has to be multiplied in advance in order to have process changes a multiple of 1. The grid on which the variance signature values are computed needs to be provided in the argument `h`.
-
-A more robust way of estimating trawl processes as in @continuous2017 based on the variance signature plot is by the option `method="vs_C"`. Here, the tick size does not have to be a multiple of 1. In addition, the option `include_cum1` is available for trending series or stationary trawl processes. The difference in estimation is minimal under clean data, but `method="vs_C"` is the better choice when the observation frequency is low, or you suspect contaminated data.
-
-```{r fit univariate price trawl example}
+## ----fit univariate price trawl example----------------------------------
 sim <- sim_trawl(list(levy_seed = "Skellam", levy_par = c(0.13, 0.11), b = 0.3, TT = 1200))
 sim$h <- exp(seq(log(1e-2), log(60), length.out = 51))
 sim$trawl <- "exp"
@@ -262,9 +146,8 @@ ftC <- fit_trawl(sim)
 
 sim$method <- "vs_SY"
 ftSY <- fit_trawl(sim)
-```
 
-```{r plot fit univariate price trawl example, echo=FALSE, out.width = "50%"}
+## ----plot fit univariate price trawl example, echo=FALSE, out.width = "50%"----
 plot(sim$x_grid, 100 + sim$p_grid, xlab = "time", ylab = "process value", main = "Skellam price process",
      type = 's', lwd = 2, las = 1, bty = 'n', cex.axis = 1.3, cex.lab = 1.5)
 
@@ -275,15 +158,8 @@ plot(log(sim$h), vs_trawl(sim, sim$h), xlab = "log(observation frequency)",
 lines(log(sim$h), vs_trawl(ftC, sim$h, method = "vs_C"), col = "blue", lwd = 2)
 lines(log(sim$h), vs_trawl(ftSY, sim$h, method = "vs_SY"), col = "red", lwd = 2, lty = 1)
 legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"), lty = c(1, 1))
-```
 
-In the above figure, both fitted lines lie almost on top of each other.
-
-For both estimation methods, it is possible to set `include_b=FALSE` (in combination with `include_cum1`) to use the variance signature fit as an alternate estimation approach to the ACF for pure stationary trawl processes.
-
-So far, we have shown three different methods for estimating the trawl parameters, but what about the parameters of the underlying Lévy seed? For the stationary trawl processes, @barndorff2014integer and @veraart2018modelling adopt a step-wide procedure where first the trawl parameters are estimated, as explained above, and next the Lévy parameters are fitted. This fitting is done in the `fit_levy` function with the method of moments, using either the first moment in case of the Poisson basis, or the first and second moments in case of the Skellam and negative binomial basis. An example of this step-wise procedure is given below.
-
-```{r univariate step wise}
+## ----univariate step wise------------------------------------------------
 sim <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(0.131, 0.130),
                       "trawl" = "gig", "trawl_par" = c(0.01, 0.45, -0.6),
                       "T0" = 72.03, "TT" = 75600, "observed_freq" = 1e-6, 
@@ -300,15 +176,8 @@ ft <- fit_trawl(sim)
 lv_fit <- fit_levy(list("levy_seed" = "Skellam", "trawl" = "gig",
                         "trawl_par" = ft$trawl_par, "T0" = 72.03, "TT" = 75600,
                         "x_grid" = sim$x_grid, "p_grid" = sim$p_grid))  
-```
 
-When estimating based on the option `"vs_SY"`, a nonparametric Lévy basis is returned. If necessary, one can fit this to a theoretical distribution using maximum likelihood or the method of moments. Under the option `"vs_C"`, the output parameter `xi` contains the second cumulant of the efficient part of process, `omega` the second cumulant of the trawl process and `eta` the squared first moment of the efficient part. These can be used to fit a Lévy seed with the method of moments if necessary.
-
-## Multivariate trawl processes
-
-The way multivariate trawl processes are constructed makes a two-step procedure as in @veraart2018modelling the best option. First, the univariate trawls are estimated. Then, the multivariate Lévy seed is fitted according to the required specification, given similarly as to the simulation function. This procedure is somewhat more elaborate to use since each of the steps requires new specification to be set. Below are two detailed code examples for the Skellam and negative binomial processes.
-
-```{r multivariate Skellam}
+## ----multivariate Skellam------------------------------------------------
 trawl <- list("gamma", "exp")
 trawl_par <- list(c(0.9, 1.8), c(0.5))
 levy_par <- matrix(c(0.13, 0.13, 0.23, 0.11, 0.05), ncol = 1)
@@ -331,11 +200,8 @@ lv_fit <- fit_levy(list("levy_seed" = "Poisson", "trawl" = trawl,
                         "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 35, "TT" = 24600,
                         "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
                         "design_matrix" = design_matrix)) 
-```
 
-A similar approach is followed when applying the two-step procedure to the multivariate negative binomial trawl process.
-
-```{r multivariate negative binomial}
+## ----multivariate negative binomial--------------------------------------
 trawl <- list("gamma", "exp")
 trawl_par <- list(c(0.9, 1.8), c(0.5))
 levy_par <- matrix(c(1.5, 0.4, 0.3,
@@ -361,37 +227,24 @@ lv_fit <- fit_levy(list("levy_seed" = "negBin", "trawl" = trawl,
                         "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 0, "TT" = 25400,
                         "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
                         "design_matrix" = design_matrix))
-```
 
-
-# Case study
-
-In the final section of this vignette, we apply the estimation techniques presented earlier to real price data. The study here is along the lines as the one presented as empirical study in @continuous2017. The `ESM8` dataset contains prices at which trades in the financial instrument `ES` have happened between 8h30 and 12h00 on May 7, 2018. First, we load the `xts` time series package and then have a visual look at the data.
-
-```{r xts, message=FALSE}
+## ----xts, message=FALSE--------------------------------------------------
 library(xts)
 data(ESM8)
-```
 
-```{r ESM8 visual 1, echo=FALSE, out.width = "50%"}
+## ----ESM8 visual 1, echo=FALSE, out.width = "50%"------------------------
 plot(ESM8, type = 's')
 plot(diff(ESM8), pch = 16)
-```
 
-Note that the tick size equals $\$0.25$ and that most price changes are with 1 tick. In order to be able to apply both the methods `"vs_SY"` and `"vs_C"`, we multiply the price process by a factor 4. As for the vector with event times, we offset it from 8h30 and count in seconds.
-
-```{r ESM8 make object}
+## ----ESM8 make object----------------------------------------------------
 p_grid <- as.numeric(ESM8$Price) * 4
 x_grid <- as.numeric(difftime(index(ESM8), as.POSIXct("2018-05-07 08:30:00"), 
                               tz = "America/Chicago", units = "secs"))
 T0 <- 0
 TT <- 12600
 trs <- list("x_grid" = x_grid, "p_grid" = p_grid, "T0" = T0, "TT" = TT)
-```
 
-The dataset concerns the period 8h30 - 12h00, hence if we set 8h30 to `T0=0`, then `TT=12600` seconds. On these variables, we estimate the trawl processes with all four specification, for both methods `"vs_C"` and `"vs_SY"`.
-
-```{r ESM8 estimate vs}
+## ----ESM8 estimate vs----------------------------------------------------
 h <- exp(seq(log(1e-3), log(5 * 60), length.out = 51))
 
 ftSY_exp <- fit_trawl(list("method" = "vs_SY", "trawl" = "exp", "x_grid" = x_grid, 
@@ -411,11 +264,8 @@ ftC_invGauss <- fit_trawl(list("method" = "vs_C", "trawl" = "invGauss", "x_grid"
                                "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
 ftC_gig <- fit_trawl(list("method" = "vs_C", "trawl" = "gig", "x_grid" = x_grid, 
                           "p_grid" = p_grid, "T0" = T0, "TT" = TT, "h" = h))
-```
 
-These fittings provide the following match to the empirical variance signature plot
-
-```{r ESM8 vs fittings, echo=FALSE, out.width = "49%"}
+## ----ESM8 vs fittings, echo=FALSE, out.width = "49%"---------------------
 plot(log(h), vs_trawl(trs, h), xlab = "log(observation frequency)", 
      ylab = "Realized variance / observation frequency", 
      main = "Variance signature plot - vs_SY",
@@ -437,13 +287,8 @@ lines(log(h), vs_trawl(ftC_invGauss, h, method = "vs_C"), col = "orange", lwd = 
 lines(log(h), vs_trawl(ftC_gig, h, method = "vs_C"), col = "purple", lwd = 2)
 legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
        col = c("red", "blue", "orange", "purple"))
-```
 
-When estimating using `"vs_SY"`, the gig trawl seems the best fit both at the high frequencies and the lower frequencies. For the more robust `"vs_C"` approach,  all except the exponential trawl provide a reasonably good fit. 
-
-As a check of the different fits, we also plot some of the autocorrelation functions of differenced price series below.
-
-```{r ESM8 acf fittings, echo=FALSE, out.width = "49%"}
+## ----ESM8 acf fittings, echo=FALSE, out.width = "49%"--------------------
 h <- 1
 plot(1:10, acf_trawl(trs, h, dff = 1, lag_max = 10), xlab = "lag", ylab = "autocorrelation", 
      main = "ACF - h=1 - vs_SY",
@@ -506,21 +351,12 @@ lines(1:10, acf_trawl(ftC_invGauss, h, method = "vs_C", dff = 1, lag_max = 10), 
 lines(1:10, acf_trawl(ftC_gig, h, method = "vs_C", dff = 1, lag_max = 10), col = "purple", lwd = 2)
 legend("topright", c("exp", "gamma", "invGauss", "gig"), lwd = rep(2, 4), 
        col = c("red", "blue", "orange", "purple"))
-```
 
-Based on these figures, it appears that the gig fit from method `"vs_C"` is best considered over all frequencies. Given the autocorrelation structure, one could try to exploit the information by using it to predict future autocorrelation structures.
-
-As seen in the estimation section, fitting the trawl is only one main ingredient of a trawl process. The other one is the underlying Lévy measure. The nonparametric Lévy measure obtained by the `"vs_SY"` setting, regardless of chosen trawl, equals
-
-```{r ESM8 nonparametric levy par}
+## ----ESM8 nonparametric levy par-----------------------------------------
 ftSY_gig$levy_par
 ftSY_gig$b
-```
 
-The intensity of a +2 two move is almost negligible and one could approximate this Lévy seed by a Skellam seed with parameters $\nu_+ = 261$ and $\nu_- = 0.256$. Based on these parameters, the first cumulant equals $\kappa_1 = 0.005$ and the second cumulant (variance) is $\kappa_2 = 0.517$. Note however that this is the variance of the underlying Lévy seed, not of the observed process. Since $b = 0.232$, the variance of the efficient price moves (pure Lévy component) equals $\kappa_2^{eff} = b \kappa_2 = 0.120$, while the variance of the market microstructure noise (trawl component) equals $\kappa_2^{mm} = (1 - b) \kappa_2 = 0.397$.
-
-Since the `"vs_C"` approach directly returns some of the moments, we can compare the approaches.
-```{r ESM8 cumulants, echo=FALSE, results = 'asis'}
+## ----ESM8 cumulants, echo=FALSE, results = 'asis'------------------------
 library(knitr)
 cums <- matrix(NA, nrow = 2, ncol = 5)
 rownames(cums) <- c("second cumulant efficient process", "second cumulant trawl process")
@@ -528,11 +364,4 @@ colnames(cums) <- c("vs_SY", "vs_C (exp)", "vs_C (gamma)", "vs_C (invG)", "vs_C 
 cums[1,] <- c(ftSY_gig$b * sum(ftSY_gig$levy_par[, 2]), ftC_exp$xi, ftC_gamma$xi, ftC_invGauss$xi, ftC_gig$xi)
 cums[2,] <- c((1 - ftSY_gig$b) * sum(ftSY_gig$levy_par[, 2]), ftC_exp$omega, ftC_gamma$omega, ftC_invGauss$omega, ftC_gig$omega)
 kable(cums, caption = "Estimated cumulants")
-```
 
-The results are in line which each other. It is, however, important to keep in mind that accurate estimation of the Lévy measure under `"vs_SY"` requires to observe the process at an ultra-high frequency so one observes all the price changes that happen. If this is not the case, then this estimation method breaks down. When estimation using the option `"vs_C"`, this is not required. The estimation is robust to the observation frequency as long as there are enough observations. 
-
-Also, estimation of the Lévy measure is independent of the chosen trawl process for `"vs_SY"`, while `"vs_C"` performs a joint optimization over the trawl parameters and the Lévy cumulants.
-
-
-# References

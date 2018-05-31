@@ -1,15 +1,17 @@
 #include "RcppArmadillo.h"
+#include "observe_process.h"
 
 // [[Rcpp::depends(RcppArmadillo)]]
 using namespace Rcpp;
 
 
 // [[Rcpp::export()]]
-List levy_alpha_beta(arma::vec p_grid, double T0, double TT) {
+List levy_alpha_beta(arma::vec x_grid, arma::vec p_grid, double T0, double TT) {
   // computes instantaneous jump probabilities and
   // jump rate, as in Shephard and Yang (2017) - needs integer jump sizes!
   // 
   // arguments:
+  // x_grid   : vector with observed times
   // p_grid   : vector with process values
   // T0       : beginpoint of observation interval
   // TT       : endpoint of observation interval
@@ -17,6 +19,9 @@ List levy_alpha_beta(arma::vec p_grid, double T0, double TT) {
   // author: Dries Cornilly
   
   double Mprec = std::numeric_limits<double>::epsilon();
+  
+  arma::vec oprocess = observe_process(x_grid, p_grid, T0, TT, 1e-9)["p_grid_observed"];
+  p_grid = oprocess;
   
   arma::vec Dp_grid = diff(p_grid, 1);
   double beta_0 = sum(abs(diff(p_grid)) > sqrt(Mprec)) / (TT - T0);

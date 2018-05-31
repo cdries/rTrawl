@@ -196,7 +196,7 @@ fit_trawl_vs_SY <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, incl
   n_h <- length(h)
   if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
   vs_emp <- vs_sample(h, x_grid, p_grid, T0, TT, multi)
-  tmp <- levy_alpha_beta(p_grid, T0, TT)
+  tmp <- levy_alpha_beta(x_grid, p_grid, T0, TT)
   beta_0 <- tmp$beta_0
   levy_alpha <- tmp$levy_alpha
   
@@ -258,7 +258,7 @@ fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
   # contants
   n_trawl <- number_parameters_trawl(trawl)
   acf_emp <- acf_sample_p(h, x_grid, p_grid, TT, lag_max)
-  levy_ab <- levy_alpha_beta(p_grid, T0, TT)
+  levy_ab <- levy_alpha_beta(x_grid, p_grid, T0, TT)
   
   # bounds
   bounds <- trawl_bounds(trawl)

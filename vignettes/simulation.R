@@ -125,6 +125,7 @@ sim$trawl <- "exp"
 sim$lag_max <- 3
 sim$method <- "acf"
 ft <- fit_trawl(sim)
+print(ft$trawl_par)
 
 ## ----plot fit univariate trawl example, echo=FALSE, out.width = "50%"----
 plot(sim$x_grid, sim$p_grid, xlab = "time", ylab = "process value", main = "Poisson",
@@ -143,9 +144,11 @@ sim$include_cum1 <- FALSE
 
 sim$method <- "vs_C"
 ftC <- fit_trawl(sim)
+print(ft$trawl_par)
 
 sim$method <- "vs_SY"
 ftSY <- fit_trawl(sim)
+print(ft$trawl_par)
 
 ## ----plot fit univariate price trawl example, echo=FALSE, out.width = "50%"----
 plot(sim$x_grid, 100 + sim$p_grid, xlab = "time", ylab = "process value", main = "Skellam price process",
@@ -161,7 +164,7 @@ legend("topright", c("vs_C", "vs_SY"), lwd = c(2, 2), col = c("blue", "red"), lt
 
 ## ----univariate step wise------------------------------------------------
 sim <- sim_trawl(list("levy_seed" = "Skellam", "levy_par" = c(0.131, 0.130),
-                      "trawl" = "gig", "trawl_par" = c(0.01, 0.45, -0.6),
+                      "trawl" = "gig", "trawl_par" = c(0.3, 0.45, -0.6),
                       "T0" = 72.03, "TT" = 75600, "observed_freq" = 1e-6, 
                       "b" = 0))
 
@@ -171,11 +174,13 @@ sim$trawl <- "gig"
 sim$lag_max <- 3
 sim$method <- "acf"
 ft <- fit_trawl(sim) 
+print(ft$trawl_par)
 
 # fit the Skellam basis
 lv_fit <- fit_levy(list("levy_seed" = "Skellam", "trawl" = "gig",
                         "trawl_par" = ft$trawl_par, "T0" = 72.03, "TT" = 75600,
                         "x_grid" = sim$x_grid, "p_grid" = sim$p_grid))  
+print(lv_fit)
 
 ## ----multivariate Skellam------------------------------------------------
 trawl <- list("gamma", "exp")
@@ -192,14 +197,17 @@ lag_max <- 2
 ft1 <- fit_trawl(list("T0" = 35, "TT" = 24600, "method" = "acf", "h" = h, "trawl" = trawl[[1]],
                       "x_grid" = sm$x_grid[[1]], "p_grid" = sm$p_grid[[1]],
                       "lag_max" = lag_max, "b" = 0), multi = 1)
+print(ft1$trawl_par)
 ft2 <- fit_trawl(list("T0" = 35, "TT" = 24600, "method" = "acf", "h" = h, "trawl" = trawl[[2]],
                       "x_grid" = sm$x_grid[[2]], "p_grid" = sm$p_grid[[2]],
                       "lag_max" = lag_max, "b" = 0), multi = 1)
+print(ft2$trawl_par)
 
 lv_fit <- fit_levy(list("levy_seed" = "Poisson", "trawl" = trawl, 
                         "trawl_par" = list(ft1$trawl_par, ft2$trawl_par), "T0" = 35, "TT" = 24600,
                         "x_grid" = sm$x_grid, "p_grid" = sm$p_grid, 
-                        "design_matrix" = design_matrix)) 
+                        "design_matrix" = design_matrix))
+print(lv_fit)
 
 ## ----multivariate negative binomial--------------------------------------
 trawl <- list("gamma", "exp")

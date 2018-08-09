@@ -21,6 +21,10 @@ acf_BN_V <- function(h, trawl, trawl_par, lag_max) {
     .Call('_rTrawl_acf_BN_V', PACKAGE = 'rTrawl', h, trawl, trawl_par, lag_max)
 }
 
+acov <- function(h, x_grid, p_grid, T0, TT, lag_max) {
+    .Call('_rTrawl_acov', PACKAGE = 'rTrawl', h, x_grid, p_grid, T0, TT, lag_max)
+}
+
 ccf_sample_p <- function(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max) {
     .Call('_rTrawl_ccf_sample_p', PACKAGE = 'rTrawl', h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max)
 }
@@ -45,12 +49,12 @@ levy_cum_mv2fit <- function(T0, TT, x_grid, p_grid, trawl, trawl_par, p) {
     .Call('_rTrawl_levy_cum_mv2fit', PACKAGE = 'rTrawl', T0, TT, x_grid, p_grid, trawl, trawl_par, p)
 }
 
-levy_alpha2nu <- function(levy_alpha, b, beta_0) {
-    .Call('_rTrawl_levy_alpha2nu', PACKAGE = 'rTrawl', levy_alpha, b, beta_0)
-}
-
 levy_alpha_beta <- function(x_grid, p_grid, T0, TT) {
     .Call('_rTrawl_levy_alpha_beta', PACKAGE = 'rTrawl', x_grid, p_grid, T0, TT)
+}
+
+levy_alpha2nu <- function(levy_alpha, b, beta_0) {
+    .Call('_rTrawl_levy_alpha2nu', PACKAGE = 'rTrawl', levy_alpha, b, beta_0)
 }
 
 levy_cum_fit <- function(levy_seed, k1_sample, k2_sample) {

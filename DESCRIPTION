@@ -1,7 +1,7 @@
 Package: rTrawl
 Type: Package
 Title: Simulation and estimation of trawl processes
-Version: 1.0
+Version: 0.1
 Date: 2018-03-12
 Author: Dries Cornilly
 Maintainer: Dries Cornilly <driescornilly@gmail.com>
@@ -13,4 +13,4 @@ Depends: Rcpp (>= 0.12.15)
 LinkingTo: Rcpp, RcppArmadillo
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 6.0.1.9000

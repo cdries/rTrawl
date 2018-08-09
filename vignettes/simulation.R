@@ -238,7 +238,7 @@ plot(diff(ESM8), pch = 16)
 
 ## ----ESM8 make object----------------------------------------------------
 p_grid <- as.numeric(ESM8$Price) * 4
-x_grid <- as.numeric(difftime(index(ESM8), as.POSIXct("2018-05-07 08:30:00"), 
+x_grid <- as.numeric(difftime(index(ESM8), as.POSIXct("2018-05-07 08:30:00", tz = "America/Chicago"), 
                               tz = "America/Chicago", units = "secs"))
 T0 <- 0
 TT <- 12600

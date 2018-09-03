@@ -4,6 +4,7 @@
 using namespace Rcpp;
 
 
+// [[Rcpp::export()]]
 List observe_process(arma::vec x_grid_latent, arma::vec p_grid_latent, 
                      double T0, double TT, double observed_freq) {
   // returns time stamps and process values at a chosen observation frequency,

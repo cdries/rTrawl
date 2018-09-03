@@ -25,6 +25,10 @@ acov <- function(h, x_grid, p_grid, T0, TT, lag_max) {
     .Call('_rTrawl_acov', PACKAGE = 'rTrawl', h, x_grid, p_grid, T0, TT, lag_max)
 }
 
+add_processes <- function(x_grid1, p_grid1, x_grid2, p_grid2, T0, TT, observed_freq) {
+    .Call('_rTrawl_add_processes', PACKAGE = 'rTrawl', x_grid1, p_grid1, x_grid2, p_grid2, T0, TT, observed_freq)
+}
+
 ccf_sample_p <- function(h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max) {
     .Call('_rTrawl_ccf_sample_p', PACKAGE = 'rTrawl', h, x_grid1, p_grid1, x_grid2, p_grid2, TT, lag_max)
 }
@@ -49,12 +53,12 @@ levy_cum_mv2fit <- function(T0, TT, x_grid, p_grid, trawl, trawl_par, p) {
     .Call('_rTrawl_levy_cum_mv2fit', PACKAGE = 'rTrawl', T0, TT, x_grid, p_grid, trawl, trawl_par, p)
 }
 
-levy_alpha_beta <- function(x_grid, p_grid, T0, TT) {
-    .Call('_rTrawl_levy_alpha_beta', PACKAGE = 'rTrawl', x_grid, p_grid, T0, TT)
-}
-
 levy_alpha2nu <- function(levy_alpha, b, beta_0) {
     .Call('_rTrawl_levy_alpha2nu', PACKAGE = 'rTrawl', levy_alpha, b, beta_0)
+}
+
+levy_alpha_beta <- function(x_grid, p_grid, T0, TT) {
+    .Call('_rTrawl_levy_alpha_beta', PACKAGE = 'rTrawl', x_grid, p_grid, T0, TT)
 }
 
 levy_cum_fit <- function(levy_seed, k1_sample, k2_sample) {
@@ -63,6 +67,10 @@ levy_cum_fit <- function(levy_seed, k1_sample, k2_sample) {
 
 levy_varcovar <- function(levy_seed, levy_par, design_matrix) {
     .Call('_rTrawl_levy_varcovar', PACKAGE = 'rTrawl', levy_seed, levy_par, design_matrix)
+}
+
+observe_process <- function(x_grid_latent, p_grid_latent, T0, TT, observed_freq) {
+    .Call('_rTrawl_observe_process', PACKAGE = 'rTrawl', x_grid_latent, p_grid_latent, T0, TT, observed_freq)
 }
 
 simulate_trawl_uv <- function(levy_seed, levy_par, trawl, trawl_par, T0, TT, observed_freq, b) {

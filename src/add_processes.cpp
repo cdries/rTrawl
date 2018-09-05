@@ -106,6 +106,8 @@ List add_processes(arma::vec x_grid1, arma::vec p_grid1, arma::vec x_grid2, arma
   outnames(0) = "x_grid";
   outnames(1) = "p_grid";
   out.names() = outnames;
+  out["T0"] = T0;
+  out["TT"] = TT;
   
   return out;
 }

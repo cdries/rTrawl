@@ -80,6 +80,4 @@ arXiv preprint arXiv:1608.03154.
 \author{
 Dries Cornilly
 }
-\concept{
-trawl
-}
+\concept{trawl}

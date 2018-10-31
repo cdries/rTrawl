@@ -220,19 +220,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// levy_alpha2nu
-arma::mat levy_alpha2nu(arma::mat levy_alpha, double b, double beta_0);
-RcppExport SEXP _rTrawl_levy_alpha2nu(SEXP levy_alphaSEXP, SEXP bSEXP, SEXP beta_0SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type levy_alpha(levy_alphaSEXP);
-    Rcpp::traits::input_parameter< double >::type b(bSEXP);
-    Rcpp::traits::input_parameter< double >::type beta_0(beta_0SEXP);
-    rcpp_result_gen = Rcpp::wrap(levy_alpha2nu(levy_alpha, b, beta_0));
-    return rcpp_result_gen;
-END_RCPP
-}
 // levy_alpha_beta
 List levy_alpha_beta(arma::vec x_grid, arma::vec p_grid, double T0, double TT);
 RcppExport SEXP _rTrawl_levy_alpha_beta(SEXP x_gridSEXP, SEXP p_gridSEXP, SEXP T0SEXP, SEXP TTSEXP) {
@@ -244,6 +231,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type T0(T0SEXP);
     Rcpp::traits::input_parameter< double >::type TT(TTSEXP);
     rcpp_result_gen = Rcpp::wrap(levy_alpha_beta(x_grid, p_grid, T0, TT));
+    return rcpp_result_gen;
+END_RCPP
+}
+// levy_alpha2nu
+arma::mat levy_alpha2nu(arma::mat levy_alpha, double b, double beta_0);
+RcppExport SEXP _rTrawl_levy_alpha2nu(SEXP levy_alphaSEXP, SEXP bSEXP, SEXP beta_0SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type levy_alpha(levy_alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type beta_0(beta_0SEXP);
+    rcpp_result_gen = Rcpp::wrap(levy_alpha2nu(levy_alpha, b, beta_0));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -468,8 +468,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rTrawl_ccf_trawl_dp", (DL_FUNC) &_rTrawl_ccf_trawl_dp, 10},
     {"_rTrawl_cum_sample", (DL_FUNC) &_rTrawl_cum_sample, 4},
     {"_rTrawl_levy_cum_mv2fit", (DL_FUNC) &_rTrawl_levy_cum_mv2fit, 7},
-    {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_alpha_beta", (DL_FUNC) &_rTrawl_levy_alpha_beta, 4},
+    {"_rTrawl_levy_alpha2nu", (DL_FUNC) &_rTrawl_levy_alpha2nu, 3},
     {"_rTrawl_levy_cum_fit", (DL_FUNC) &_rTrawl_levy_cum_fit, 3},
     {"_rTrawl_levy_varcovar", (DL_FUNC) &_rTrawl_levy_varcovar, 3},
     {"_rTrawl_observe_process", (DL_FUNC) &_rTrawl_observe_process, 5},

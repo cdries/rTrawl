@@ -80,6 +80,4 @@ Journal of the American Statistical Association, 112(519), 1090-1106.
 \author{
 Dries Cornilly
 }
-\concept{
-trawl
-}
+\concept{trawl}

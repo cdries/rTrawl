@@ -53,12 +53,12 @@ levy_cum_mv2fit <- function(T0, TT, x_grid, p_grid, trawl, trawl_par, p) {
     .Call('_rTrawl_levy_cum_mv2fit', PACKAGE = 'rTrawl', T0, TT, x_grid, p_grid, trawl, trawl_par, p)
 }
 
-levy_alpha2nu <- function(levy_alpha, b, beta_0) {
-    .Call('_rTrawl_levy_alpha2nu', PACKAGE = 'rTrawl', levy_alpha, b, beta_0)
-}
-
 levy_alpha_beta <- function(x_grid, p_grid, T0, TT) {
     .Call('_rTrawl_levy_alpha_beta', PACKAGE = 'rTrawl', x_grid, p_grid, T0, TT)
+}
+
+levy_alpha2nu <- function(levy_alpha, b, beta_0) {
+    .Call('_rTrawl_levy_alpha2nu', PACKAGE = 'rTrawl', levy_alpha, b, beta_0)
 }
 
 levy_cum_fit <- function(levy_seed, k1_sample, k2_sample) {

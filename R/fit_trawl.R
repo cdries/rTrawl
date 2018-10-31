@@ -85,7 +85,7 @@ fit_trawl <- function(object, ...) {
   if ("T0" %in% nn) T0 <- object$T0 else T0 <- 0
   if ("TT" %in% nn) TT <- object$TT else TT <- 3600
   if ("h" %in% nn) h <- object$h else h <- exp(seq(log(1e-2), log(60), length.out = 51))
-
+  
   if (method == "vs_C") {
     
     # variance signature plot - cum2_levy, cum2_trawl and cum1_levy as explicit parameters
@@ -127,7 +127,7 @@ fit_trawl_vs_C <- function(h, x_grid, p_grid, T0, TT, trawl, include_cum1, inclu
   n_trawl <- number_parameters_trawl(trawl)
   n_h <- length(h)
   if (hasArg(multi)) multi <- as.integer(list(...)$multi) else multi <- 1L
-  vs_emp <- vs_sample(h, x_grid, p_grid, T0, TT, multi)
+  if (hasArg(vs)) vs_emp <- list(...)$vs else vs_emp <- vs_sample(h, x_grid, p_grid, T0, TT, multi)
   
   # bounds
   bounds <- trawl_bounds(trawl)
@@ -276,11 +276,11 @@ fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
     tmp <- acf_BN_V(h, trawl, theta, lag_max)
     acf_diff <- tmp$acf_theor - acf_emp
     val <- sum(acf_diff^2)
-
+    
     # gradient
     acf_grad <- tmp$acf_grad
     grad <- 2 * colSums(matrix(acf_diff, nrow = lag_max, ncol = n_theta, byrow = FALSE) * acf_grad)
-
+    
     return (list("objective" = val, "gradient" = grad))
   }
   
@@ -291,7 +291,7 @@ fit_trawl_acf <- function(h, lag_max, x_grid, p_grid, T0, TT, trawl, ...) {
   
   # return object
   trawl_par <- sol$solution
-
+  
   return (list("trawl" = trawl, "trawl_par" = trawl_par,
                "beta_0" = levy_ab$beta_0, "levy_alpha" = levy_ab$levy_alpha))
 }

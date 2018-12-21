@@ -91,13 +91,13 @@ List add_processes(arma::vec x_grid1, arma::vec p_grid1, arma::vec x_grid2, arma
 
     // add last part of series 2
     x_grid_joint.subvec(jj, n_joint - 1) = x_grid2.subvec(ii2, n2 - 1);
-    p_grid_joint.subvec(jj, n_joint - 1) = current_value + diff2.subvec(ii2 - 1, n2 - 2);
+    p_grid_joint.subvec(jj, n_joint - 1) = current_value + arma::cumsum(diff2.subvec(ii2 - 1, n2 - 2));
 
   } else {
 
     // add last part of series 1
     x_grid_joint.subvec(jj, n_joint - 1) = x_grid1.subvec(ii1, n1 - 1);
-    p_grid_joint.subvec(jj, n_joint - 1) = current_value + diff1.subvec(ii1 - 1, n1 - 2);
+    p_grid_joint.subvec(jj, n_joint - 1) = current_value + arma::cumsum(diff1.subvec(ii1 - 1, n1 - 2));
   }
 
   // return list  
